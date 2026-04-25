@@ -1,0 +1,16 @@
+@theme {
+    --color-woodsmoke-50: #f5f6f6;
+    --color-woodsmoke-100: #e5e8e7;
+    --color-woodsmoke-200: #cdd4d3;
+    --color-woodsmoke-300: #abb5b3;
+    --color-woodsmoke-400: #818f8d;
+    --color-woodsmoke-500: #667472;
+    --color-woodsmoke-600: #576362;
+    --color-woodsmoke-700: #4a5453;
+    --color-woodsmoke-800: #424847;
+    --color-woodsmoke-900: #3a3f3f;
+    --color-woodsmoke-950: #111313;
+
+    --font-peyda: Peyda;
+    --font-space-grotesk: SpaceGrotesk;
+}

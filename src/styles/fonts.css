@@ -1,0 +1,71 @@
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-Regular.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-Bold.ttf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-ExtraBold.ttf");
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: Peyda;
+    src: url("../../public/fonts/Peyda-Black.ttf");
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: SpaceGrotesk;
+    src: url("../../public/fonts/SpaceGrotesk-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: SpaceGrotesk;
+    src: url("../../public/fonts/SpaceGrotesk-Regular.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: SpaceGrotesk;
+    src: url("../../public/fonts/SpaceGrotesk-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: SpaceGrotesk;
+    src: url("../../public/fonts/SpaceGrotesk-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: SpaceGrotesk;
+    src: url("../../public/fonts/SpaceGrotesk-Bold.ttf");
+    font-weight: 700;
+}

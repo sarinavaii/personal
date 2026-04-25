@@ -1,0 +1,32 @@
+{
+    "common": {
+        "site-name": "Salar Sari Navaii"
+    },
+    "pages": {
+        "home": "home",
+        "about": "about",
+        "contact": "contact",
+        "experience": "experience",
+        "projects": "projects"
+    },
+    "home": {
+        "hero": {
+            "tagline-1": "Crafting Code",
+            "tagline-2": "with a taste of experience",
+            "description": "Hi, I’m Salar — a Senior Front-End Developer. I used to write code; now I mostly tell Claude what to write and review its work — patiently waiting for the day it stops needing me to do even that."
+        },
+        "blogs": {
+            "title": "Articles",
+            "view-all": "View All"
+        }
+    },
+    "metadata": {
+        "profession": "Web Developer",
+        "description": "Experienced frontend developer creating user-friendly and modern websites",
+        "personal-website": "Personal Website",
+        "keywords": "frontend developer,web development,React,Next.js,JavaScript,TypeScript"
+    },
+    "footer": {
+        "copyright": "© 2026 Salar Sari Navaii. All rights reserved."
+    }
+}
