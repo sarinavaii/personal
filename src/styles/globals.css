@@ -11,4 +11,39 @@
     .container {
         @apply !max-w-5xl mx-auto;
     }
+
+    .content-formatter {
+        @apply my-4 bg-white dark:bg-woodsmoke-900 p-6 rounded-xl;
+
+        h1 {
+            @apply font-black text-2xl mb-4;
+        }
+
+        h2 {
+            @apply font-bold text-xl mb-2;
+        }
+
+        h3 {
+            @apply font-bold text-lg mb-2;
+        }
+
+        p {
+            @apply text-base mb-2;
+        }
+
+        pre:has(code) {
+            @apply p-2 my-4 rounded bg-woodsmoke-100 dark:bg-woodsmoke-700 text-sm font-mono text-woodsmoke-700 dark:text-woodsmoke-200;
+        }
+
+        ul {
+            @apply list-disc pl-6 mb-2;
+            li {
+                @apply mb-1 last:mb-0;
+            }
+        }
+
+        hr {
+            @apply border-t border-woodsmoke-200 dark:border-woodsmoke-700 my-6;
+        }
+    }
 }

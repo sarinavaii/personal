@@ -3,8 +3,8 @@ import React from "react";
 
 type ISwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & SwitchProps;
 
-const SSwitch = (props: ISwitchProps) => {
+const XSwitch = (props: ISwitchProps) => {
     return <Switch {...props} />;
 };
 
-export default SSwitch;
+export default XSwitch;

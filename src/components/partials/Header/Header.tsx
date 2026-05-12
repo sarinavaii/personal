@@ -1,21 +1,33 @@
 "use client";
 
-import SButton from "@atoms/Button";
-import Section from "@atoms/Section";
+import XButton from "@atoms/XButton";
+import XSection from "@atoms/XSection";
 import { Link } from "@i18n/navigation";
 import { Drawer } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Sidebar from "@partials/Sidebar";
 import { IconMenu, IconX } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const t = useTranslations();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        close();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathname]);
+
     return (
         <>
-            <Section className="flex items-center justify-between">
-                <SButton
+            <XSection className="flex items-center justify-between">
+                <Link href={"/"} className="uppercase">
+                    {t("common.site-name")}
+                </Link>
+                <XButton
                     variant="transparent"
                     color="woodsmoke"
                     classNames={{
@@ -26,12 +38,11 @@ const Header = () => {
                     onClick={open}
                 >
                     <IconMenu size={20} />
-                </SButton>
-                <h1 className="uppercase">{t("common.site-name")}</h1>
-                <div className="flex gap-1 text-sm">
+                </XButton>
+                {/* <div className="flex gap-1 text-sm">
                     <Link href="en">EN</Link>|<Link href="fa">FA</Link>
-                </div>
-            </Section>
+                </div> */}
+            </XSection>
 
             <Drawer
                 classNames={{
@@ -40,6 +51,7 @@ const Header = () => {
                 }}
                 opened={opened}
                 onClose={close}
+                position="right"
                 size="xs"
                 closeButtonProps={{
                     icon: <IconX size={20} />,

@@ -110,6 +110,9 @@ export default async function LocaleLayout({ children }: PropsWithChildren) {
 
     return (
         <html lang={locale} dir={locale === "en" ? "ltr" : "rtl"} {...mantineHtmlProps}>
+            <head>
+                <ColorSchemeScript />
+            </head>
             <body
                 className={cn("bg-woodsmoke-200 text-woodsmoke-900 dark:bg-woodsmoke-950 dark:text-woodsmoke-100", {
                     "font-peyda": locale === "fa",

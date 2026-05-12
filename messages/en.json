@@ -18,6 +18,11 @@
         "blogs": {
             "title": "Articles",
             "view-all": "View All"
+        },
+        "about": {
+            "title": "About Me",
+            "experience": "Experience",
+            "education": "Education"
         }
     },
     "metadata": {

@@ -1,0 +1,30 @@
+[
+  {
+    "title": "CSS Superpower: Unlocking the Magic of Container Queries",
+    "description": "A beginner-friendly deep dive into container queries in CSS.",
+    "date": "2026-05-09T00:00:00.000Z",
+    "published": true,
+    "tags": [
+      "css",
+      "tutorial",
+      "layout",
+      "beginner"
+    ],
+    "slug": "container-query",
+    "content": "<h1>Did You Know About the Power of CSS Container Queries?</h1>\n<p>Welcome back! Today, let’s explore a revolutionary CSS feature that’s changing how we build responsive components: <strong>container queries</strong>.</p>\n<h2>What are Container Queries?</h2>\n<p>Traditionally, CSS media queries let us change styles based on the <em>viewport</em> size (the entire browser window). But what if you want a component to adapt to its <strong>container’s</strong> size, not the viewport? Enter <strong>container queries</strong>.</p>\n<p>Instead of asking “How big is the window?”, you can now ask: “How big is <em>this box right here</em>?” — and style accordingly!</p>\n<pre><code class=\"language-css\">.card {\r\n    container-type: inline-size;\r\n}\r\n\r\n@container (min-width: 400px) {\r\n    .card-title {\r\n        font-size: 2rem;\r\n    }\r\n}\n</code></pre>\n<h2>Why Is This Awesome?</h2>\n<p>Let’s break it down:</p>\n<ul>\n<li><strong>Local responsiveness:</strong> Components adapt to <em>their container</em>, not the whole page.</li>\n<li><strong>Better design systems:</strong> Build truly reusable components that look great anywhere.</li>\n<li><strong>No more hacks:</strong> Forget workarounds like extra wrapper divs or JavaScript resize observers.</li>\n</ul>\n<p>So, widgets, cards, or sidebars can intelligently change layout or style when they have more (or less) space, all by themselves!</p>\n<h2>When Would I Use Container Queries?</h2>\n<ul>\n<li><strong>Reusable UI components:</strong><br>\nYou want your buttons, cards, or widgets to look good no matter where they live.</li>\n<li><strong>Dynamic grids:</strong><br>\nLet grid items adapt when the grid grows or shrinks.</li>\n<li><strong>Complex layouts:</strong><br>\nSidebars or tool panels that should adjust spacing, font sizes, or orientation based on their own size.</li>\n</ul>\n<h3>Real-World Example</h3>\n<p>Imagine a product card that displays vertically when small but turns horizontal with larger space:</p>\n<pre><code class=\"language-css\">.product-card {\r\n    container-type: inline-size;\r\n    display: flex;\r\n    flex-direction: column;\r\n}\r\n\r\n@container (min-width: 600px) {\r\n    .product-card {\r\n        flex-direction: row;\r\n    }\r\n    .product-image {\r\n        width: 300px;\r\n    }\r\n}\n</code></pre>\n<ul>\n<li>In a tight sidebar? Stacks vertically.</li>\n<li>In a roomy page? Flips to a horizontal layout with a big image!</li>\n</ul>\n<h3>One More Fun Fact</h3>\n<p>Container queries aren’t limited just to width—you can use them for height and other container features, too. They’re already supported in all modern browsers, so you can start container-querying today!</p>\n<hr>\n<p>Give CSS container queries a spin in your next layout, and watch your components come alive! Stay tuned for more CSS tips and tricks.</p>"
+  },
+  {
+    "title": "A Fun CSS Fact: Meet the Magic of clamp()",
+    "description": "A quirky and enlightening CSS tip.",
+    "date": "2026-05-09T00:00:00.000Z",
+    "published": true,
+    "tags": [
+      "css",
+      "tutorial",
+      "fun-facts",
+      "beginner"
+    ],
+    "slug": "css-clamp",
+    "content": "<h1>Did You Know About the <code>clamp()</code> Function in CSS?</h1>\n<p>Welcome to my very first blog post! Let's kick things off with a stylish CSS trick that's both funky and super practical.</p>\n<h2>What is <code>clamp()</code>?</h2>\n<p>In CSS, the <code>clamp()</code> function lets you set a value that sits <em>somewhere</em> between a defined minimum and maximum, based on a flexible preferred value. It’s like giving your styles superpowers—you can tell CSS, “Stay within these boundaries, but try to be this size if possible!”</p>\n<p>Try it out in your browser’s dev tools:</p>\n<pre><code class=\"language-css\">font-size: clamp(1rem, 2.5vw, 2rem);\n</code></pre>\n<h2>Why is This Awesome?</h2>\n<p>Let’s break it down:</p>\n<ul>\n<li><strong>1rem</strong>: the minimum value (never get smaller than this)</li>\n<li><strong>2.5vw</strong>: the preferred, flexible value (changes with the viewport width)</li>\n<li><strong>2rem</strong>: the maximum value (never get bigger than this)</li>\n</ul>\n<p>So, the font size will shrink or grow with the user’s window, but always stays readable!</p>\n<h2>When Would I Use clamp()?</h2>\n<ul>\n<li><strong>Responsive font sizes:</strong><br>\nNo more media queries for every little thing!</li>\n<li><strong>Spacings and gaps:</strong><br>\nKeep things cozy at any screen size.</li>\n<li><strong>Width and height controls:</strong><br>\nMake boxes flexible, but never unusably tiny or excessively huge.</li>\n</ul>\n<h3>Real-World Example</h3>\n<p>Here’s how you might use <code>clamp()</code> for a snazzy, always-legible heading:</p>\n<pre><code class=\"language-css\">h1 {\r\n    font-size: clamp(1.5rem, 5vw, 3rem);\r\n}\n</code></pre>\n<ul>\n<li>On small screens: <code>1.5rem</code></li>\n<li>On big screens: up to <code>3rem</code></li>\n<li>In-between: scales smoothly based on the viewport width!</li>\n</ul>\n<h3>One More Fun Fact</h3>\n<p><code>clamp()</code> isn’t just for sizes—you can use it for shadows, margins, padding, and more. It’s supported in all modern browsers, so it’s safe to use right now!</p>\n<hr>\n<p>Enjoy trying out CSS <code>clamp()</code>, and stay tuned for more fun facts and tutorials!</p>"
+  }
+]

@@ -1,4 +1,4 @@
-import Section from "@atoms/Section";
+import XSection from "@atoms/XSection";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
@@ -6,7 +6,7 @@ import React from "react";
 const Hero = () => {
     const t = useTranslations();
     return (
-        <Section transparent className="mt-8">
+        <XSection transparent className="mt-8">
             <div className="flex justify-center items-center gap-4">
                 <Image
                     className="rounded-full sm:w-24 w-20"
@@ -21,7 +21,7 @@ const Hero = () => {
                 </h2>
             </div>
             <p className="text-center max-w-xl mx-auto mt-6">{t("home.hero.description")}</p>
-        </Section>
+        </XSection>
     );
 };
 

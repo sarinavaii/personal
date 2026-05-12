@@ -3,8 +3,8 @@ import React from "react";
 
 type IButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color"> & ButtonProps;
 
-const SButton = (props: IButtonProps) => {
+const XButton = (props: IButtonProps) => {
     return <Button {...props} />;
 };
 
-export default SButton;
+export default XButton;

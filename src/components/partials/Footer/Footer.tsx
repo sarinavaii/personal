@@ -1,7 +1,7 @@
 "use client";
 
-import Section from "@atoms/Section";
-import SSwitch from "@atoms/Switch";
+import XSection from "@atoms/XSection";
+import XSwitch from "@atoms/XSwitch";
 import HydrationBoundary from "@core/boundaries/HydrationBoundary";
 import { useMantineColorScheme } from "@mantine/core";
 import { IconMoonStars, IconSun } from "@tabler/icons-react";
@@ -12,9 +12,9 @@ const Footer = () => {
     const t = useTranslations();
     const { colorScheme, setColorScheme } = useMantineColorScheme();
     return (
-        <Section transparent className="flex flex-col gap-4 items-center">
+        <XSection transparent className="flex flex-col gap-4 items-center">
             <HydrationBoundary>
-                <SSwitch
+                <XSwitch
                     withThumbIndicator={false}
                     color="woodsmoke.5"
                     size="md"
@@ -25,7 +25,7 @@ const Footer = () => {
                 />
             </HydrationBoundary>
             <div className="text-center text-sm">{t("footer.copyright")}</div>
-        </Section>
+        </XSection>
     );
 };
 
