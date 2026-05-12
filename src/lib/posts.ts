@@ -1,4 +1,4 @@
-import { posts } from "../../.velite";
+import { posts } from "@velite";
 
 export function getPosts() {
     return posts

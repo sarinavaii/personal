@@ -28,9 +28,10 @@
             "@molecules/*": ["./src/components/molecules/*"],
             "@organisms/*": ["./src/components/organisms/*"],
             "@partials/*": ["./src/components/partials/*"],
-            "@public/*": ["./public/*"]
+            "@public/*": ["./public/*"],
+            "@velite": ["./velite"]
         }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", ".velite"],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "velite"],
     "exclude": ["node_modules"]
 }

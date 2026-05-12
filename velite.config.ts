@@ -2,6 +2,10 @@ import { defineConfig, s } from "velite";
 
 export default defineConfig({
     root: "content",
+    output: {
+        data: "velite",
+    },
+
     collections: {
         posts: {
             name: "Post",
