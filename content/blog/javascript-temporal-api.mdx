@@ -1,0 +1,108 @@
+---
+title: "The JavaScript Temporal API: Dates Done Right"
+description: "Why Temporal replaces Date, how to use it, and what it means for date/time handling in JavaScript."
+date: "2025-03-25"
+published: true
+tags:
+    - javascript
+    - tutorial
+    - beginner
+---
+
+# The JavaScript Temporal API: Dates Done Right
+
+JavaScript's `Date` object is notoriously broken — it's mutable, timezone handling is fragile, and month indexing starts at 0. The **Temporal API** (Stage 3, shipping in browsers) is the official replacement.
+
+## What's Wrong With `Date`?
+
+- `new Date(2025, 2, 25)` is March 25 — months are 0-indexed.
+- `Date` is mutable — you can accidentally change a date you're passing around.
+- No built-in timezone support beyond UTC and local.
+- Arithmetic is manual and error-prone.
+- No duration type.
+
+## Temporal's Core Types
+
+Temporal introduces distinct types for different use cases instead of one overloaded `Date` class:
+
+| Type | Use case |
+|------|----------|
+| `Temporal.PlainDate` | A calendar date with no time or timezone |
+| `Temporal.PlainTime` | A time-of-day with no date or timezone |
+| `Temporal.PlainDateTime` | Date + time, no timezone |
+| `Temporal.ZonedDateTime` | Date + time + timezone (the full thing) |
+| `Temporal.Instant` | A precise moment in time (like Unix timestamp) |
+| `Temporal.Duration` | A span of time |
+| `Temporal.Now` | Access to the current date/time |
+
+## Basic Usage
+
+```js
+// Today's date — no time, no timezone confusion
+const today = Temporal.Now.plainDateISO();
+console.log(today.toString()); // "2025-03-25"
+
+// Month is 1-indexed
+const birthday = Temporal.PlainDate.from({ year: 1990, month: 6, day: 15 });
+
+// Arithmetic returns a new immutable value
+const nextWeek = today.add({ weeks: 1 });
+const yesterday = today.subtract({ days: 1 });
+```
+
+## Timezone-Aware DateTime
+
+```js
+const meeting = Temporal.ZonedDateTime.from(
+    "2025-04-01T10:00:00[Europe/Berlin]"
+);
+
+// Convert to another timezone
+const inNewYork = meeting.withTimeZone("America/New_York");
+console.log(inNewYork.toString());
+// "2025-04-01T04:00:00-04:00[America/New_York]"
+```
+
+## Duration Arithmetic
+
+```js
+const start = Temporal.PlainDate.from("2025-01-01");
+const end = Temporal.PlainDate.from("2025-03-25");
+
+const diff = start.until(end);
+console.log(diff.toString()); // "P83D" (83 days)
+
+// Or in months and days
+const diffDetailed = start.until(end, { largestUnit: "month" });
+console.log(diffDetailed.months, diffDetailed.days); // 2 24
+```
+
+## Comparing Dates
+
+```js
+const a = Temporal.PlainDate.from("2025-01-01");
+const b = Temporal.PlainDate.from("2025-06-01");
+
+Temporal.PlainDate.compare(a, b); // -1 (a is before b)
+
+// Sort an array of dates
+const dates = [b, a].sort(Temporal.PlainDate.compare);
+```
+
+## Using It Today
+
+Temporal is available via polyfill:
+
+```bash
+npm install @js-temporal/polyfill
+```
+
+```js
+import { Temporal } from "@js-temporal/polyfill";
+```
+
+Native browser/Node support is rolling out through 2025. The polyfill is spec-compliant and production-safe.
+
+---
+
+Temporal's explicit, immutable, timezone-correct design eliminates an entire category of date bugs. Start using the polyfill now — migration is straightforward and the payoff is immediate.

@@ -1,0 +1,139 @@
+---
+title: "Next.js 15: The App Router Patterns You Should Actually Use"
+description: "Practical patterns for data fetching, caching, and layouts in Next.js 15 App Router — the ones that survive production."
+date: "2025-02-28"
+published: true
+tags:
+    - nextjs
+    - tutorial
+    - intermediate
+    - react
+---
+
+# Next.js 15: The App Router Patterns You Should Actually Use
+
+Next.js 15 stabilized several App Router behaviors that were inconsistent in v13/v14. Here are the patterns that hold up in production.
+
+## Async Request APIs Are Now Standard
+
+In Next.js 15, `cookies()`, `headers()`, and `params` are now **async**. This was a breaking change from v14.
+
+```ts
+// Next.js 14 — synchronous (deprecated)
+import { cookies } from "next/headers";
+const cookieStore = cookies();
+const token = cookieStore.get("token");
+```
+
+```ts
+// Next.js 15 — async (required)
+import { cookies } from "next/headers";
+const cookieStore = await cookies();
+const token = cookieStore.get("token");
+```
+
+Same applies to `headers()` and dynamic route `params`:
+
+```ts
+// app/posts/[id]/page.tsx
+export default async function PostPage({
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}) {
+    const { id } = await params;
+    // fetch data with id
+}
+```
+
+## Fetch Caching Changed to `no-store` by Default
+
+In Next.js 14, `fetch()` cached by default. In Next.js 15, **the default is `no-store`**. You must opt into caching explicitly.
+
+```ts
+// Cached (opt-in)
+const data = await fetch("/api/posts", { cache: "force-cache" });
+
+// Revalidated every 60 seconds
+const data = await fetch("/api/posts", { next: { revalidate: 60 } });
+
+// No cache — default behavior in Next.js 15
+const data = await fetch("/api/posts");
+```
+
+This aligns Next.js fetching with the standard Fetch API and eliminates surprising caching bugs.
+
+## Parallel Routes for Modals (the Right Way)
+
+Use `@modal` parallel route slots for dialogs that have their own URL and are dismissible without full navigation.
+
+```
+app/
+├── @modal/
+│   └── photo/[id]/
+│       └── page.tsx   ← modal content
+├── layout.tsx          ← receives { children, modal } props
+└── page.tsx            ← main feed
+```
+
+```tsx
+// app/layout.tsx
+export default function RootLayout({
+    children,
+    modal,
+}: {
+    children: React.ReactNode;
+    modal: React.ReactNode;
+}) {
+    return (
+        <html>
+            <body>
+                {children}
+                {modal}
+            </body>
+        </html>
+    );
+}
+```
+
+Navigating to `/photo/42` renders the photo page. Going back dismisses the modal without remounting the feed.
+
+## Server Actions With `useActionState`
+
+Replace manual form state management with `useActionState` (previously `useFormState`):
+
+```tsx
+"use client";
+import { useActionState } from "react";
+import { submitForm } from "./actions";
+
+export function ContactForm() {
+    const [state, action, isPending] = useActionState(submitForm, null);
+
+    return (
+        <form action={action}>
+            <input name="email" type="email" />
+            {state?.error && <p>{state.error}</p>}
+            <button disabled={isPending}>
+                {isPending ? "Sending..." : "Submit"}
+            </button>
+        </form>
+    );
+}
+```
+
+The server action receives the previous state and form data, making progressive enhancement straightforward.
+
+## Turbopack Is Now the Default Dev Server
+
+Next.js 15 ships Turbopack as the default for `next dev`. It requires no configuration and delivers **significantly faster HMR**, especially in large monorepos.
+
+If you hit a compatibility issue, fall back with:
+
+```bash
+next dev --no-turbopack
+```
+
+---
+
+Next.js 15 is a maturing platform. Adopt the async APIs and explicit caching — they make the mental model consistent and the bugs fewer.

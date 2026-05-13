@@ -1,5 +1,6 @@
 import XBadge from "@atoms/XBadge";
 import XSection from "@atoms/XSection";
+import { Link } from "@i18n/navigation";
 import ContentFormatter from "@molecules/ContentFormatter/ContentFormatter";
 
 type BlogPost = {
@@ -12,9 +13,15 @@ type BlogPost = {
     tags: string[];
 };
 
-const BlogDetailsTemplate = ({ post }: { post: BlogPost }) => {
+type Props = {
+    post: BlogPost;
+    prevPost: BlogPost | null;
+    nextPost: BlogPost | null;
+};
+
+const BlogDetailsTemplate = ({ post, prevPost, nextPost }: Props) => {
     return (
-        <XSection transparent withPadding={false}>
+        <XSection transparent withPadding={false} containerClassname="!mb-0">
             <article>
                 <h1 className="text-2xl font-bold text-center">{post.title}</h1>
                 <div className="text-sm text-woodsmoke-500 text-center">
@@ -33,6 +40,36 @@ const BlogDetailsTemplate = ({ post }: { post: BlogPost }) => {
                     ))}
                 </div>
             </article>
+
+            {/* Prev / Next navigation */}
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mt-4">
+                <div>
+                    {prevPost && (
+                        <Link href={`/blog/${prevPost.slug}`}>
+                            <XSection className="group flex flex-col gap-1">
+                                <span className="text-xs text-woodsmoke-400 uppercase tracking-wide">← Newer</span>
+                                <span className="text-sm font-semibold">{prevPost.title}</span>
+                            </XSection>
+                        </Link>
+                    )}
+                </div>
+                <div>
+                    {nextPost && (
+                        <Link href={`/blog/${nextPost.slug}`}>
+                            <XSection className="group flex flex-col gap-1 justify-end text-end">
+                                <span className="text-xs text-woodsmoke-400 uppercase tracking-wide">Older →</span>
+                                <span className="text-sm font-semibold">{nextPost.title}</span>
+                            </XSection>
+                        </Link>
+                    )}
+                </div>
+            </div>
+
+            <div className="text-center mt-8">
+                <Link className="text-xl font-bold" href="/blog">
+                    Return to Blogs
+                </Link>
+            </div>
         </XSection>
     );
 };

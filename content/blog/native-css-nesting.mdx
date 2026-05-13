@@ -1,0 +1,179 @@
+---
+title: "Native CSS Nesting Is Here: Ditch the Preprocessor"
+description: "CSS now supports nesting natively — no Sass or Less needed. Here's the syntax, the edge cases, and how to migrate."
+date: "2025-12-02"
+published: true
+tags:
+    - css
+    - tutorial
+    - beginner
+---
+
+# Native CSS Nesting Is Here: Ditch the Preprocessor
+
+CSS nesting — writing selectors inside other selectors — was the main reason many developers adopted Sass or Less. It's now natively supported in all modern browsers, with no build step required.
+
+## Basic Syntax
+
+```css
+/* Native CSS Nesting */
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        color: oklch(0.4 0.02 260);
+        margin-top: 0.75rem;
+    }
+
+    &:hover {
+        box-shadow: 0 4px 12px oklch(0 0 0 / 0.1);
+    }
+}
+```
+
+This is equivalent to writing:
+
+```css
+.card { background: white; border-radius: 8px; padding: 1.5rem; }
+.card .card-title { font-size: 1.25rem; font-weight: 600; }
+.card .card-body { color: oklch(0.4 0.02 260); margin-top: 0.75rem; }
+.card:hover { box-shadow: 0 4px 12px oklch(0 0 0 / 0.1); }
+```
+
+## The `&` Selector
+
+`&` refers to the parent selector. It's required when you're concatenating to the parent selector (not adding a descendant):
+
+```css
+.button {
+    /* Modifier classes — & is required here */
+    &.button--primary { background: oklch(0.55 0.22 260); }
+    &.button--danger  { background: oklch(0.55 0.22 25); }
+
+    /* Pseudo-classes — & is required */
+    &:hover { opacity: 0.85; }
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Pseudo-elements — & is required */
+    &::before { content: ""; display: block; }
+
+    /* Descendant — & is optional (but explicit) */
+    & .icon { width: 1em; height: 1em; }
+    .icon { width: 1em; height: 1em; } /* Same result */
+}
+```
+
+## Media Queries Inside Selectors
+
+Nesting works with `@media`, `@supports`, and other at-rules:
+
+```css
+.sidebar {
+    width: 280px;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    @supports (display: grid) {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+    }
+}
+```
+
+No more scattering media query overrides across the file. The responsive behavior lives with the component.
+
+## Nesting and Specificity
+
+Nested selectors carry the same specificity as if they were written flat. There's no specificity bonus for nesting:
+
+```css
+.card .title { color: red; }
+/* Specificity: 0-2-0 */
+
+/* Equivalent nested version */
+.card {
+    .title { color: red; }
+}
+/* Specificity: 0-2-0 — same */
+```
+
+## Key Difference From Sass: Interpolation
+
+Native CSS nesting does **not** support Sass-style selector interpolation:
+
+```scss
+/* Sass — works */
+$prefix: "btn";
+.#{$prefix}-primary { color: white; }
+```
+
+```css
+/* Native CSS — no interpolation */
+/* This is not possible natively */
+```
+
+If you need dynamic selector generation, you still need a preprocessor or JavaScript.
+
+## Mixing With CSS Custom Properties
+
+Nesting pairs well with custom properties for component themes:
+
+```css
+.button {
+    --bg: oklch(0.55 0.22 260);
+    --fg: white;
+
+    background: var(--bg);
+    color: var(--fg);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+
+    &:hover {
+        --bg: oklch(0.45 0.22 260); /* Darker on hover */
+    }
+
+    &.danger {
+        --bg: oklch(0.55 0.22 25);
+    }
+}
+```
+
+## Migrating From Sass
+
+Most Sass nesting migrates directly. Watch for these differences:
+
+| Feature | Sass | Native CSS |
+|---------|------|------------|
+| Basic nesting | ✅ | ✅ |
+| `&` concatenation | ✅ | ✅ |
+| `@media` nesting | ✅ | ✅ |
+| Variables | `$var` | `--var` |
+| Interpolation | `#{$var}` | ❌ Not supported |
+| Mixins | `@mixin` | ❌ Not supported |
+| Functions | `darken()` etc. | `oklch()`, `color-mix()` |
+| Loops | `@each`, `@for` | ❌ Not supported |
+
+For projects that only use Sass for nesting and variables, native CSS is now a complete replacement.
+
+## Browser Support
+
+Native CSS nesting is fully supported:
+- **Chrome 120+** (December 2023)
+- **Firefox 117+** (August 2023)
+- **Safari 17.2+** (December 2023)
+- **Edge 120+** (December 2023)
+
+---
+
+If your Sass usage is limited to nesting and variables, you can remove the preprocessor entirely. Less tooling, less build complexity, same result.

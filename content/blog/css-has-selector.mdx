@@ -1,0 +1,158 @@
+---
+title: "CSS :has() — The Parent Selector That Changes Everything"
+description: "How :has() works, what it enables, and practical patterns for conditional styling based on descendants, siblings, and form state."
+date: "2025-10-21"
+published: true
+tags:
+    - css
+    - tutorial
+    - intermediate
+---
+
+# CSS `:has()` — The Parent Selector That Changes Everything
+
+For decades, CSS could only style elements based on their ancestors or preceding siblings — never their descendants. `:has()` is the **relational pseudo-class** that inverts this: it matches an element based on what it contains.
+
+## Basic Syntax
+
+```css
+/* Select a figure that contains an img */
+figure:has(img) {
+    border: 1px solid oklch(0.8 0.05 260);
+    padding: 1rem;
+}
+
+/* Select a label that contains a required input */
+label:has(input[required]) {
+    font-weight: 600;
+}
+
+/* Select a section that has no children */
+section:not(:has(*)) {
+    display: none;
+}
+```
+
+## Conditional Card Layouts
+
+Style a card differently depending on whether it has an image:
+
+```css
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Card with an image gets a two-column layout */
+.card:has(.card-image) {
+    flex-direction: row;
+}
+
+.card:has(.card-image) .card-image {
+    width: 200px;
+    flex-shrink: 0;
+}
+```
+
+No JavaScript, no additional classes, no conditional rendering tricks.
+
+## Form State Styling
+
+`:has()` makes form state styling significantly cleaner:
+
+```css
+/* Form group is valid when its input has a value and no error */
+.form-group:has(input:valid:not(:placeholder-shown)) label {
+    color: oklch(0.55 0.18 145); /* Green */
+}
+
+/* Form group is invalid */
+.form-group:has(input:invalid:not(:placeholder-shown)) label {
+    color: oklch(0.55 0.22 25); /* Red */
+}
+
+/* Disable submit when any required field is empty */
+form:has(input:required:invalid) button[type="submit"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+```
+
+## Sibling Selection via Parent
+
+`:has()` enables a form of "sibling-before" selection that CSS never had:
+
+```css
+/* Style an element that comes BEFORE a certain sibling */
+/* "Select any li that has a following sibling li.active" */
+li:has(~ li.active) {
+    opacity: 0.6;
+}
+```
+
+This was previously impossible without JavaScript.
+
+## Quantity Queries
+
+Count children and style accordingly:
+
+```css
+/* Grid with 1 item — full width */
+.grid:has(:nth-child(1):last-child) {
+    grid-template-columns: 1fr;
+}
+
+/* Grid with 2 items — two columns */
+.grid:has(:nth-child(2):last-child) {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Grid with 3+ items — three columns */
+.grid:has(:nth-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+}
+```
+
+## Navigation Highlighting
+
+```css
+/* Style the nav differently when a dropdown is open */
+nav:has(.dropdown[open]) {
+    background-color: oklch(0.1 0 0 / 0.9);
+}
+
+/* Overlay when modal is open — no JavaScript class toggling */
+body:has(dialog[open]) {
+    overflow: hidden;
+}
+
+body:has(dialog[open])::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: oklch(0 0 0 / 0.5);
+}
+```
+
+The `body:has(dialog[open])` pattern is a clean replacement for the common `document.body.classList.add("modal-open")` pattern.
+
+## Performance Considerations
+
+`:has()` with complex selectors can be expensive. Guidelines:
+
+- Avoid `:has(*)` on large lists (checks every child).
+- Prefer `:has(> child)` (direct child) over `:has(descendant)` when possible.
+- Avoid using `:has()` on the `:root` or `html` element with complex selectors — it recalculates on every DOM change.
+
+## Browser Support
+
+`:has()` is fully supported in all modern browsers:
+- **Chrome 105+** (August 2022)
+- **Safari 15.4+** (March 2022 — shipped first!)
+- **Firefox 121+** (December 2023)
+- **Edge 105+** (August 2022)
+
+---
+
+`:has()` is already changing how CSS is written. Start replacing JavaScript-driven class toggling with `:has()` — the result is leaner, more declarative, and more maintainable.

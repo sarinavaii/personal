@@ -1,0 +1,131 @@
+---
+title: "TypeScript Decorators Are Finally Standard: What Changed"
+description: "The TC39 standard decorators are in TypeScript 5.0+ — here's how they differ from the legacy experimentalDecorators and what you can do with them."
+date: "2025-04-22"
+published: true
+tags:
+    - typescript
+    - tutorial
+    - intermediate
+---
+
+# TypeScript Decorators Are Finally Standard: What Changed
+
+TypeScript has had decorator support for years via `experimentalDecorators`. Those were based on an early, unstable TC39 proposal. TypeScript 5.0 introduced **standard decorators** — based on the finalized Stage 3 spec. They work differently.
+
+## Legacy vs Standard Decorators
+
+| Feature | `experimentalDecorators` | Standard (TS 5+) |
+|--------|--------------------------|-------------------|
+| TC39 stage | Old Stage 2 proposal | Stage 3 (finalized) |
+| Return value from decorator | Replaces class member | Must return void or same type |
+| Access to `this` | Yes (via descriptor) | No (no runtime `this`) |
+| Metadata | `emitDecoratorMetadata` needed | Built-in `DecoratorContext` |
+| Class decorator receives | Constructor function | Constructor function |
+| Method decorator receives | Descriptor | The method itself |
+
+**You cannot mix both.** The `experimentalDecorators` compiler option disables standard decorator support.
+
+## Basic Syntax: Method Decorator
+
+```ts
+function log(target: Function, context: ClassMethodDecoratorContext) {
+    const methodName = String(context.name);
+    return function (this: unknown, ...args: unknown[]) {
+        console.log(`[${methodName}] called with`, args);
+        return (target as Function).apply(this, args);
+    };
+}
+
+class UserService {
+    @log
+    getUser(id: string) {
+        return { id, name: "Alice" };
+    }
+}
+
+const svc = new UserService();
+svc.getUser("42"); // [getUser] called with ["42"]
+```
+
+The decorator factory receives the original method and a `ClassMethodDecoratorContext` object instead of a property descriptor.
+
+## Class Decorator
+
+```ts
+function singleton<T extends { new (...args: unknown[]): object }>(Base: T) {
+    let instance: InstanceType<T>;
+    return class extends Base {
+        constructor(...args: unknown[]) {
+            if (instance) return instance;
+            super(...args);
+            instance = this as InstanceType<T>;
+        }
+    };
+}
+
+@singleton
+class Config {
+    value = Math.random();
+}
+
+const a = new Config();
+const b = new Config();
+console.log(a === b); // true
+```
+
+## Accessor Decorator
+
+Standard decorators introduce a new `accessor` keyword that creates a getter/setter pair, which can then be decorated:
+
+```ts
+function clamp(min: number, max: number) {
+    return function (_: unknown, context: ClassAccessorDecoratorContext) {
+        return {
+            get(this: Record<string, number>) {
+                return this[context.name as string];
+            },
+            set(this: Record<string, number>, value: number) {
+                this[context.name as string] = Math.min(max, Math.max(min, value));
+            },
+        };
+    };
+}
+
+class Temperature {
+    @clamp(0, 100)
+    accessor celsius = 20;
+}
+
+const t = new Temperature();
+t.celsius = 150;
+console.log(t.celsius); // 100
+```
+
+## `context.addInitializer`
+
+Decorators can run code at class initialization time:
+
+```ts
+function register(target: Function, context: ClassDecoratorContext) {
+    context.addInitializer(function (this: unknown) {
+        console.log(`${context.name} instance created`);
+    });
+}
+
+@register
+class Widget {}
+
+new Widget(); // "Widget instance created"
+```
+
+## Migrating From `experimentalDecorators`
+
+1. Remove `"experimentalDecorators": true` from `tsconfig.json`.
+2. Remove `"emitDecoratorMetadata": true` if present.
+3. Update decorator signatures from descriptor-based to context-based.
+4. Test class libraries (NestJS, TypeORM) — many are migrating but check compatibility first.
+
+---
+
+Standard decorators are more predictable and composable than the legacy version. If you're starting a new TypeScript project, use them from day one.

@@ -1,0 +1,128 @@
+---
+title: "CSS @property: Typed Custom Properties That Actually Animate"
+description: "How @property unlocks animated gradients, typed CSS variables, and smarter design tokens."
+date: "2025-03-11"
+published: true
+tags:
+    - css
+    - tutorial
+    - intermediate
+    - animation
+---
+
+# CSS `@property`: Typed Custom Properties That Actually Animate
+
+CSS custom properties (`--my-var`) are powerful but have one fundamental limitation: the browser treats their values as **opaque strings**. That means you can't animate them, and you get no type safety. `@property` solves both.
+
+## What Is `@property`?
+
+`@property` lets you register a custom property with a **type**, an **initial value**, and an **inheritance rule**. The browser then understands what the value represents, enabling interpolation (animation) and better cascade behavior.
+
+```css
+@property --hue {
+    syntax: "<number>";
+    initial-value: 0;
+    inherits: false;
+}
+```
+
+## Animating Gradients (The Killer Use Case)
+
+Without `@property`, this doesn't animate smoothly — the browser can't interpolate between two gradient strings:
+
+```css
+/* ❌ This just snaps — no animation */
+.box {
+    --color-stop: 0%;
+    background: linear-gradient(to right, red var(--color-stop), blue);
+    transition: --color-stop 1s;
+}
+.box:hover {
+    --color-stop: 100%;
+}
+```
+
+With `@property`, the browser knows `--color-stop` is a `<percentage>` and interpolates it correctly:
+
+```css
+/* ✅ Smooth animation */
+@property --color-stop {
+    syntax: "<percentage>";
+    initial-value: 0%;
+    inherits: false;
+}
+
+.box {
+    background: linear-gradient(to right, red var(--color-stop), blue);
+    transition: --color-stop 1s ease;
+}
+.box:hover {
+    --color-stop: 100%;
+}
+```
+
+## Supported Syntax Types
+
+`@property` supports a range of CSS value types via the `syntax` descriptor:
+
+| Syntax           | Example value     |
+|------------------|-------------------|
+| `<number>`       | `42`              |
+| `<integer>`      | `3`               |
+| `<length>`       | `16px`, `1rem`    |
+| `<percentage>`   | `50%`             |
+| `<color>`        | `#ff0`, `oklch()` |
+| `<angle>`        | `90deg`           |
+| `<length-percentage>` | `calc(50% + 8px)` |
+| `<transform-function>` | `rotate(45deg)` |
+| `*`              | Any value         |
+
+## Typed Design Tokens
+
+`@property` makes design tokens safer. Instead of a raw string that could be anything:
+
+```css
+/* Before: no validation */
+:root { --spacing-md: 16px; }
+```
+
+You get a typed, validated property:
+
+```css
+@property --spacing-md {
+    syntax: "<length>";
+    initial-value: 16px;
+    inherits: true;
+}
+```
+
+If you accidentally write `--spacing-md: red`, the browser falls back to `initial-value` instead of using the invalid value silently.
+
+## Real Example: Animated Hue Rotation
+
+```css
+@property --hue {
+    syntax: "<number>";
+    initial-value: 0;
+    inherits: false;
+}
+
+@keyframes spin-hue {
+    to { --hue: 360; }
+}
+
+.badge {
+    background: oklch(70% 0.2 var(--hue));
+    animation: spin-hue 4s linear infinite;
+}
+```
+
+This cycles the badge through all hues continuously — not achievable with a plain custom property.
+
+## Browser Support
+
+`@property` is supported in **all modern browsers** as of 2025 (Chrome 85+, Edge 85+, Firefox 128+, Safari 16.4+). You can use it in production with confidence.
+
+---
+
+`@property` is one of the most underused CSS features available. Typed tokens and animatable gradients alone make it worth adding to your baseline.

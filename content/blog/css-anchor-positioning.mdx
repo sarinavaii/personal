@@ -1,0 +1,100 @@
+---
+title: "CSS Anchor Positioning: No More JavaScript Tooltips"
+description: "How the new CSS Anchor Positioning API lets you attach elements to each other natively — no JS needed."
+date: "2025-01-14"
+published: true
+tags:
+    - css
+    - layout
+    - tutorial
+    - intermediate
+---
+
+# CSS Anchor Positioning: No More JavaScript Tooltips
+
+For years, positioning tooltips, dropdowns, and popovers required JavaScript libraries like Floating UI or Popper.js. CSS Anchor Positioning — now shipping in stable browsers — changes that completely.
+
+## What Is Anchor Positioning?
+
+Anchor Positioning lets you **tether one element's position to another element** using pure CSS. You declare an anchor, then position a target relative to it.
+
+```css
+/* Step 1: Name the anchor */
+.button {
+    anchor-name: --my-button;
+}
+
+/* Step 2: Position the tooltip relative to it */
+.tooltip {
+    position: absolute;
+    position-anchor: --my-button;
+    bottom: anchor(top);
+    left: anchor(center);
+    translate: -50% 0;
+}
+```
+
+No JavaScript. No `getBoundingClientRect()`. No resize listeners.
+
+## Why Does This Matter?
+
+- **Zero JS dependency** for common UI patterns (tooltips, dropdowns, context menus).
+- **Scroll-aware by default**: the browser tracks the anchor through scrolling automatically.
+- **Works with `position-try`**: define fallback positions when there's no space in the preferred direction.
+
+## The `position-try` Fallback System
+
+This is where it gets powerful. You can define multiple fallback positions and the browser picks the first one that fits in the viewport:
+
+```css
+@position-try --flip-above {
+    bottom: anchor(top);
+    top: unset;
+}
+
+.tooltip {
+    position: absolute;
+    position-anchor: --my-button;
+    top: anchor(bottom);
+    position-try-fallbacks: --flip-above;
+}
+```
+
+If the tooltip would overflow below the screen, it automatically flips above the button.
+
+## Real-World Use Cases
+
+- **Tooltips and popovers** — the canonical example.
+- **Select dropdowns** — native-feeling custom selects.
+- **Context menus** — right-click menus anchored to the cursor position.
+- **Floating labels** — labels that follow their input fields.
+
+### Minimal Working Example
+
+```html
+<button class="trigger">Hover me</button>
+<div class="tooltip" popover>I am anchored!</div>
+```
+
+```css
+.trigger {
+    anchor-name: --trigger;
+}
+
+.tooltip {
+    position: fixed;
+    position-anchor: --trigger;
+    top: anchor(bottom);
+    left: anchor(center);
+    translate: -50% 8px;
+    margin: 0;
+}
+```
+
+## Browser Support
+
+As of early 2025, Anchor Positioning is available in **Chrome 125+** and **Edge 125+**. Firefox and Safari are actively implementing it. Use `@supports (anchor-name: --x)` to gate usage safely.
+
+---
+
+CSS Anchor Positioning is one of the most impactful additions to CSS in years. Start replacing your JS-powered float layers today.

@@ -1,12 +1,6 @@
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPosts } from "@lib/posts";
+import { getAdjacentPosts, getPostBySlug } from "@lib/posts";
 import BlogDetailsTemplate from "@templates/BlogDetailsTemplate/BlogDetailsTemplate";
-
-export async function generateStaticParams() {
-    return getPosts().map((post) => ({
-        slug: post.slug,
-    }));
-}
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -16,5 +10,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         notFound();
     }
 
-    return <BlogDetailsTemplate post={post} />;
+    const { prevPost, nextPost } = getAdjacentPosts(slug);
+
+    return <BlogDetailsTemplate post={post} nextPost={nextPost} prevPost={prevPost} />;
 }

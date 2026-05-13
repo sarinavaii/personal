@@ -1,11 +1,29 @@
 import { defineConfig, s } from "velite";
+import rehypePrettyCode from "rehype-pretty-code";
+import { transformerCopyButton } from "@rehype-pretty/transformers";
 
 export default defineConfig({
     root: "content",
     output: {
         data: "velite",
     },
-
+    markdown: {
+        rehypePlugins: [
+            [
+                rehypePrettyCode,
+                {
+                    theme: "vitesse-black",
+                    keepBackground: true,
+                    transformers: [
+                        transformerCopyButton({
+                            visibility: "hover",
+                            feedbackDuration: 2000,
+                        }),
+                    ],
+                },
+            ],
+        ],
+    },
     collections: {
         posts: {
             name: "Post",

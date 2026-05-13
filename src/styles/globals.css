@@ -1,4 +1,5 @@
 @layer theme, base, components, utilities;
+
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css";
@@ -32,11 +33,20 @@
         }
 
         pre:has(code) {
-            @apply p-2 my-4 rounded bg-woodsmoke-100 dark:bg-woodsmoke-700 text-sm font-mono text-woodsmoke-700 dark:text-woodsmoke-200;
+            @apply overflow-y-auto p-2 my-4 rounded bg-woodsmoke-100 dark:bg-woodsmoke-700 text-sm font-mono text-woodsmoke-700 dark:text-woodsmoke-200;
         }
 
         ul {
             @apply list-disc pl-6 mb-2;
+
+            li {
+                @apply mb-1 last:mb-0;
+            }
+        }
+
+        ol {
+            @apply list-decimal pl-6 mb-2;
+
             li {
                 @apply mb-1 last:mb-0;
             }
@@ -44,6 +54,26 @@
 
         hr {
             @apply border-t border-woodsmoke-200 dark:border-woodsmoke-700 my-6;
+        }
+
+        table {
+            @apply w-full border-collapse overflow-auto my-4 text-sm;
+        }
+
+        thead {
+            @apply bg-woodsmoke-100 dark:bg-woodsmoke-800;
+        }
+
+        th {
+            @apply text-left font-semibold px-4 py-3 border border-woodsmoke-200 dark:border-woodsmoke-700;
+        }
+
+        td {
+            @apply px-4 py-3 border border-woodsmoke-200 dark:border-woodsmoke-700;
+        }
+
+        tbody tr:nth-child(even) {
+            @apply bg-woodsmoke-50 dark:bg-woodsmoke-800;
         }
     }
 }

@@ -68,7 +68,7 @@ const About = () => {
                                 />
                                 OverC
                             </span>
-                            <span className="text-sm">Remote | Jan 2026 – Present</span>
+                            <span className="text-sm">Part-time - Remote | Jan 2026 – Present</span>
                         </div>
                     </XSection>
                     <XSection transparent>
@@ -96,7 +96,7 @@ const About = () => {
                                 />
                                 Dornica
                             </span>
-                            <span className="text-sm">Full-time | June 2021 – Jan 2026</span>
+                            <span className="text-sm">Full-time - On-site | June 2021 – Jan 2026</span>
                         </div>
                     </XSection>
                     <XSection transparent>
@@ -140,7 +140,7 @@ const About = () => {
                                 />
                                 Platin Agency
                             </span>
-                            <span className="text-sm">Remote | Dec 2023 – Dec 2025</span>
+                            <span className="text-sm">Part-time - Remote | Dec 2023 – Dec 2025</span>
                         </div>
                     </XSection>
                     <XSection transparent>

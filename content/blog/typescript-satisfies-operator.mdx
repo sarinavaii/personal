@@ -1,0 +1,127 @@
+---
+title: "TypeScript's `satisfies` Operator: Type Safety Without Losing Inference"
+description: "How `satisfies` lets you validate a value against a type while keeping the most precise inferred type — and when to prefer it over type annotation."
+date: "2025-07-15"
+published: true
+tags:
+    - typescript
+    - tutorial
+    - intermediate
+---
+
+# TypeScript's `satisfies` Operator: Type Safety Without Losing Inference
+
+TypeScript 4.9 introduced the `satisfies` operator. It's now a standard tool in the TS toolkit, but many developers still reach for type annotation when `satisfies` would be more precise. Here's when and why to use it.
+
+## The Problem With Type Annotation
+
+When you annotate a variable with a type, TypeScript widens the inferred type to match the annotation. You get safety, but lose specificity.
+
+```ts
+type Color = "red" | "green" | "blue";
+type Palette = Record<string, Color | Color[]>;
+
+// Type annotation — loses specific key info
+const palette: Palette = {
+    primary: "red",
+    secondary: ["green", "blue"],
+};
+
+palette.primary.toUpperCase(); // ❌ Error: Property 'toUpperCase' does not exist on 'Color | Color[]'
+// TypeScript forgets that `primary` is a string, not an array
+```
+
+## The `satisfies` Fix
+
+`satisfies` validates that the value matches the type, but **preserves the inferred type**:
+
+```ts
+const palette = {
+    primary: "red",
+    secondary: ["green", "blue"],
+} satisfies Palette;
+
+palette.primary.toUpperCase(); // ✅ Works — TypeScript knows it's a string
+palette.secondary.join(", "); // ✅ Works — TypeScript knows it's an array
+```
+
+The value still validates against `Palette`, but the inferred type is the precise literal shape of the object.
+
+## Validation Without Widening
+
+This is the core use case: **enforce a constraint while keeping the specific type**.
+
+```ts
+type Route = {
+    path: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+};
+
+const routes = [
+    { path: "/users", method: "GET" },
+    { path: "/users", method: "POST" },
+    { path: "/users/:id", method: "INVALID" }, // ❌ Caught by satisfies
+] satisfies Route[];
+```
+
+With `: Route[]`, the elements would be typed as `Route` (losing the literal `method` values). With `satisfies`, you get both validation and the precise literal types.
+
+## Config Objects
+
+A common pattern — config objects that need to match a schema but also need autocomplete on their specific keys:
+
+```ts
+type FeatureFlags = Partial<Record<string, boolean>>;
+
+const flags = {
+    darkMode: true,
+    betaFeatures: false,
+    analytics: true,
+} satisfies FeatureFlags;
+
+// Type is: { darkMode: boolean; betaFeatures: boolean; analytics: boolean }
+// Not: Partial<Record<string, boolean>>
+```
+
+## Catching Excess Properties
+
+`satisfies` catches excess properties the same way annotation does, but the excess check is stricter:
+
+```ts
+type Config = { port: number; host: string };
+
+const config = {
+    port: 3000,
+    host: "localhost",
+    debug: true, // ❌ Error: 'debug' does not exist in type 'Config'
+} satisfies Config;
+```
+
+## When to Use `satisfies` vs Annotation
+
+| Use case | Prefer |
+|----------|--------|
+| You need downstream code to see the precise type | `satisfies` |
+| You want to discard the inferred type entirely (widen) | annotation |
+| Config/option objects | `satisfies` |
+| Function parameters | annotation |
+| Return types | annotation |
+| Object literals passed to functions | `satisfies` or `as const` |
+
+## Combining With `as const`
+
+```ts
+const config = {
+    env: "production",
+    port: 3000,
+} satisfies { env: string; port: number } as const;
+
+// Type: { readonly env: "production"; readonly port: 3000 }
+// Also validated against the constraint
+```
+
+`as const` makes values readonly literals. `satisfies` validates the shape. Together they're powerful for configuration objects that are used as discriminated union members.
+
+---
+
+Default to `satisfies` for object literals where you want both safety and precise types. Reserve explicit annotation for cases where you explicitly want to widen or discard inference.

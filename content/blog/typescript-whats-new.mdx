@@ -1,0 +1,89 @@
+---
+title: "TypeScript 5.4: What's New and Why It Matters"
+description: "A practical look at the most important changes in TypeScript 5.4 — NoInfer, preserved narrowing in closures, and more."
+date: "2025-02-03"
+published: true
+tags:
+    - typescript
+    - tutorial
+    - intermediate
+---
+
+# TypeScript 5.4: What's New and Why It Matters
+
+TypeScript 5.4 shipped with a handful of changes that directly improve everyday code. Here are the ones worth knowing.
+
+## `NoInfer<T>`: Take Control of Type Inference
+
+Before 5.4, TypeScript would infer a generic type parameter from **all** its call sites simultaneously, which sometimes led to overly broad or incorrect inferences.
+
+`NoInfer<T>` tells TypeScript: "Use this position for the type, but **don't infer from it**."
+
+```ts
+// Before 5.4 — T is inferred as "red" | "blue" | "green", but default is wrong
+function createSelect<T extends string>(options: T[], defaultValue: T): T {
+    return defaultValue;
+}
+
+createSelect(["red", "blue"], "green"); // No error — but "green" is wrong!
+```
+
+```ts
+// After 5.4 — NoInfer prevents the default from widening T
+function createSelect<T extends string>(options: T[], defaultValue: NoInfer<T>): T {
+    return defaultValue;
+}
+
+createSelect(["red", "blue"], "green"); // ✅ Error: "green" not in ["red", "blue"]
+```
+
+This is particularly valuable for **configuration functions**, **event systems**, and **factory patterns** where defaults must match the declared options.
+
+## Improved Narrowing in Closures
+
+TypeScript 5.4 now preserves narrowing from the **last assignment before a closure** is created. This was a common source of false positives.
+
+```ts
+function process(value: string | null) {
+    if (value === null) return;
+
+    // value is narrowed to string here
+    const handler = () => {
+        console.log(value.toUpperCase()); // ✅ No error in 5.4 — was an error before
+    };
+
+    handler();
+}
+```
+
+Previously, TypeScript assumed the closure might run in a context where `value` had changed. Now it's smarter about when that's actually possible.
+
+## `Object.groupBy` and `Map.groupBy` Types
+
+TypeScript 5.4 added proper type definitions for the Stage 4 `Object.groupBy` and `Map.groupBy` methods:
+
+```ts
+const items = [
+    { name: "apple", type: "fruit" },
+    { name: "carrot", type: "vegetable" },
+    { name: "banana", type: "fruit" },
+];
+
+const grouped = Object.groupBy(items, (item) => item.type);
+// Type: Partial<Record<string, { name: string; type: string }[]>>
+```
+
+Note the return type is `Partial<Record<...>>` — keys are not guaranteed to be present, which is correct.
+
+## Supported `require()` of ES Modules (Node Interop)
+
+TypeScript 5.4 introduces the `--module nodenext` improvement to handle the new Node.js 22 behavior of allowing `require()` of `.mjs` files in some cases. The `moduleResolution` logic is updated accordingly.
+
+## Breaking Changes to Be Aware Of
+
+- **`lib.d.ts` updates**: Some DOM types were refined. If you use `EventTarget` or `AbortSignal` extensively, check for new errors.
+- **Stricter `infer` in template literals**: Some previously accepted patterns in `infer` inside template literal types now correctly error.
+
+---
+
+Upgrade path from 5.3 is smooth. Run `npx tsc --noEmit` after upgrading to catch any new diagnostics before they hit CI.

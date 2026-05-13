@@ -1,11 +1,11 @@
 import XSection from "@atoms/XSection";
 import { Link } from "@i18n/navigation";
-import { getPosts } from "@lib/posts";
+import { getLatestPosts } from "@lib/posts";
 import { useTranslations } from "next-intl";
 
 const Blogs = () => {
     const t = useTranslations("home.blogs");
-    const posts = getPosts();
+    const posts = getLatestPosts(4);
 
     return (
         <XSection transparent withPadding={false}>

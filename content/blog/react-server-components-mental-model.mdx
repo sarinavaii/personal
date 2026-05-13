@@ -1,0 +1,144 @@
+---
+title: "React Server Components: The Mental Model That Makes It Click"
+description: "Stop fighting Server Components and start using them effectively. Here's the mental model that makes RSC architecture make sense."
+date: "2025-05-06"
+published: true
+tags:
+    - react
+    - nextjs
+    - tutorial
+    - intermediate
+---
+
+# React Server Components: The Mental Model That Makes It Click
+
+React Server Components (RSC) have been production-ready in Next.js since v13, but many developers still find them confusing. The root of the confusion is usually a broken mental model. Here's the one that works.
+
+## The Core Mental Model
+
+Think of your component tree as having **two rendering environments**:
+
+- **Server**: Has access to databases, file system, secrets. Renders once per request. Sends HTML + a serializable component tree to the client.
+- **Client**: Has access to browser APIs, event handlers, state. Receives the server's output and hydrates interactive parts.
+
+The boundary between them is `"use client"`. Everything above a `"use client"` boundary (toward the root) is a Server Component by default.
+
+## What Server Components Can and Cannot Do
+
+**Can:**
+- `async/await` directly — no `useEffect` for data fetching
+- Access environment variables without exposing them to the client
+- Import Node.js modules (`fs`, `crypto`, database drivers)
+- Render other server components
+
+**Cannot:**
+- Use `useState`, `useEffect`, or any React hooks
+- Attach event handlers (`onClick`, `onChange`)
+- Access browser APIs (`window`, `document`, `localStorage`)
+
+## The Right Way to Fetch Data
+
+```tsx
+// app/posts/page.tsx — Server Component (default)
+async function getPosts() {
+    const res = await fetch("https://api.example.com/posts", {
+        next: { revalidate: 60 },
+    });
+    return res.json();
+}
+
+export default async function PostsPage() {
+    const posts = await getPosts(); // Direct async call — no useEffect
+
+    return (
+        <ul>
+            {posts.map((post) => (
+                <li key={post.id}>{post.title}</li>
+            ))}
+        </ul>
+    );
+}
+```
+
+No API route needed. No client-side fetch. The data never touches the browser until it's rendered HTML.
+
+## Passing Server Data to Client Components
+
+Server Components can import and render Client Components, passing data as props. The data must be **serializable** (no functions, no class instances).
+
+```tsx
+// components/LikeButton.tsx
+"use client";
+
+import { useState } from "react";
+
+export function LikeButton({ initialCount }: { initialCount: number }) {
+    const [count, setCount] = useState(initialCount);
+    return <button onClick={() => setCount(c => c + 1)}>❤️ {count}</button>;
+}
+```
+
+```tsx
+// app/posts/[id]/page.tsx — Server Component
+import { LikeButton } from "@/components/LikeButton";
+
+export default async function PostPage({ params }) {
+    const { id } = await params;
+    const post = await db.post.findUnique({ where: { id } });
+
+    return (
+        <article>
+            <h1>{post.title}</h1>
+            <LikeButton initialCount={post.likes} />
+        </article>
+    );
+}
+```
+
+## The "Client Boundary" Rule
+
+`"use client"` marks a boundary, not a single component. Everything **imported by** a Client Component is also treated as client code, even if it doesn't use the directive.
+
+```
+ServerPage (server)
+└── ClientWrapper "use client" (client)
+    └── SomeComponent (also client — even without "use client")
+```
+
+This is why you want `"use client"` as **low in the tree as possible** — keep data fetching and heavy logic on the server.
+
+## Server Actions: Mutations From the Server
+
+Server Actions let you define server-side functions that can be called from Client Components:
+
+```tsx
+// app/actions.ts
+"use server";
+
+export async function createPost(formData: FormData) {
+    const title = formData.get("title") as string;
+    await db.post.create({ data: { title } });
+    revalidatePath("/posts");
+}
+```
+
+```tsx
+// Client Component
+"use client";
+import { createPost } from "@/app/actions";
+
+export function NewPostForm() {
+    return (
+        <form action={createPost}>
+            <input name="title" />
+            <button type="submit">Create</button>
+        </form>
+    );
+}
+```
+
+This works without an API route and progressively enhances — the form works even without JavaScript.
+
+---
+
+The RSC mental model: server renders data into markup, client adds interactivity. Move `"use client"` as far down the tree as possible and let the server handle the rest.

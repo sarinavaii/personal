@@ -1,0 +1,203 @@
+---
+title: "React 19 Hooks You Should Be Using in Next.js"
+description: "useOptimistic, use(), useFormStatus, and the new Actions model — practical patterns for React 19 in a Next.js 15 codebase."
+date: "2025-11-11"
+published: true
+tags:
+    - react
+    - nextjs
+    - tutorial
+    - intermediate
+---
+
+# React 19 Hooks You Should Be Using in Next.js
+
+React 19 shipped with a set of hooks designed around the Server Actions model. Here are the ones that matter for Next.js development and how to use them correctly.
+
+## `useOptimistic`: Instant UI Updates
+
+`useOptimistic` shows a temporary UI state while an async operation (like a Server Action) is in flight. When the operation settles, the real state takes over.
+
+```tsx
+"use client";
+import { useOptimistic } from "react";
+import { toggleLike } from "@/app/actions";
+
+export function LikeButton({ postId, initialLikes, initialLiked }) {
+    const [optimisticLiked, setOptimisticLiked] = useOptimistic(initialLiked);
+
+    async function handleClick() {
+        // Immediately update the UI
+        setOptimisticLiked(!optimisticLiked);
+        // Then perform the real action
+        await toggleLike(postId);
+    }
+
+    return (
+        <button onClick={handleClick}>
+            {optimisticLiked ? "❤️" : "🤍"} {initialLikes + (optimisticLiked ? 1 : 0)}
+        </button>
+    );
+}
+```
+
+The UI shows the new state instantly. If the server action fails, React reverts to `initialLiked`.
+
+## `use()`: Consume Promises and Context
+
+`use()` is a new primitive that unwraps a Promise or Context value inside a component — including inside conditions and loops (unlike hooks).
+
+### Resolving a Promise
+
+```tsx
+"use client";
+import { use, Suspense } from "react";
+
+function UserName({ userPromise }: { userPromise: Promise<User> }) {
+    const user = use(userPromise); // Suspends until resolved
+    return <span>{user.name}</span>;
+}
+
+// The promise is created in a Server Component and passed down
+export default function Page() {
+    const userPromise = fetchUser(); // Returns Promise<User>
+    return (
+        <Suspense fallback="Loading...">
+            <UserName userPromise={userPromise} />
+        </Suspense>
+    );
+}
+```
+
+### Reading Context
+
+```tsx
+import { use } from "react";
+import { ThemeContext } from "@/context/theme";
+
+function ThemedButton({ children }) {
+    const theme = use(ThemeContext); // Works inside conditionals
+    return (
+        <button style={{ background: theme.primary }}>
+            {children}
+        </button>
+    );
+}
+```
+
+## `useFormStatus`: Access Parent Form State
+
+`useFormStatus` returns the pending state of a parent `<form>` — no prop drilling needed.
+
+```tsx
+"use client";
+import { useFormStatus } from "react-dom";
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <button type="submit" disabled={pending}>
+            {pending ? "Submitting..." : "Submit"}
+        </button>
+    );
+}
+
+// Use it anywhere inside a form — no props needed
+function ContactForm() {
+    return (
+        <form action={submitContact}>
+            <input name="email" type="email" />
+            <input name="message" />
+            <SubmitButton /> {/* Knows about parent form's pending state */}
+        </form>
+    );
+}
+```
+
+## `useActionState`: Form Actions With State
+
+`useActionState` (previously `useFormState`) manages the state returned from a Server Action across submissions:
+
+```tsx
+"use client";
+import { useActionState } from "react";
+import { createPost } from "@/app/actions";
+
+type State = { error?: string; success?: boolean };
+
+export function NewPostForm() {
+    const [state, formAction, isPending] = useActionState<State, FormData>(
+        createPost,
+        {}
+    );
+
+    return (
+        <form action={formAction}>
+            <input name="title" required />
+            {state.error && <p className="error">{state.error}</p>}
+            {state.success && <p className="success">Post created!</p>}
+            <button disabled={isPending}>
+                {isPending ? "Creating..." : "Create Post"}
+            </button>
+        </form>
+    );
+}
+```
+
+The Server Action returns `State`:
+
+```ts
+// app/actions.ts
+"use server";
+export async function createPost(prevState: State, formData: FormData): Promise<State> {
+    const title = formData.get("title") as string;
+    if (!title) return { error: "Title is required" };
+
+    await db.post.create({ data: { title } });
+    revalidatePath("/posts");
+    return { success: true };
+}
+```
+
+## `useTransition`: Non-Blocking State Updates
+
+`useTransition` marks state updates as non-urgent, keeping the UI responsive during async work. In React 19, it works with async functions directly:
+
+```tsx
+"use client";
+import { useTransition } from "react";
+
+export function SearchInput() {
+    const [isPending, startTransition] = useTransition();
+    const [results, setResults] = useState([]);
+
+    function handleSearch(query: string) {
+        startTransition(async () => {
+            const data = await searchPosts(query);
+            setResults(data); // Non-blocking — input stays responsive
+        });
+    }
+
+    return (
+        <div>
+            <input onChange={e => handleSearch(e.target.value)} />
+            {isPending && <Spinner />}
+            <ResultList items={results} />
+        </div>
+    );
+}
+```
+
+## When to Use Which
+
+| Hook | Use case |
+|------|----------|
+| `useOptimistic` | Show immediate feedback before server confirms |
+| `use()` | Unwrap promises passed from server; read context conditionally |
+| `useFormStatus` | Disable/style submit buttons based on form pending state |
+| `useActionState` | Manage form submission state and error/success messages |
+| `useTransition` | Keep UI responsive during expensive updates |
+
+---
+
+These hooks are designed to work together with Server Actions and the RSC model. Adopt them incrementally — start with `useOptimistic` and `useFormStatus` for the most immediate impact.

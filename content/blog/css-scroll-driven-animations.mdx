@@ -1,0 +1,130 @@
+---
+title: "CSS Scroll-Driven Animations: No JavaScript Required"
+description: "Build scroll-linked animations purely in CSS using the Animation Timeline API — progress bars, reveal effects, and parallax."
+date: "2025-04-08"
+published: true
+tags:
+    - css
+    - animation
+    - tutorial
+    - intermediate
+---
+
+# CSS Scroll-Driven Animations: No JavaScript Required
+
+Scroll-linked animations have historically required `IntersectionObserver` or scroll event listeners. The **CSS Scroll-Driven Animations** spec — now supported in all modern browsers — moves this entirely into CSS.
+
+## Two Types of Scroll Timelines
+
+There are two timeline types:
+
+1. **`scroll()`** — links animation progress to scroll position within a scroll container.
+2. **`view()`** — links animation progress to an element's visibility within a scroller.
+
+## Progress Bar With `scroll()`
+
+A reading progress bar that fills as the user scrolls the page:
+
+```css
+@keyframes grow {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: oklch(60% 0.2 260);
+
+    animation: grow linear;
+    animation-timeline: scroll(root block);
+    animation-fill-mode: both;
+}
+```
+
+`scroll(root block)` — root is the scroll container (the document), block is the scroll axis (vertical). No JavaScript. No event listeners.
+
+## Reveal on Scroll With `view()`
+
+Fade elements in as they enter the viewport:
+
+```css
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        translate: 0 40px;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+
+.card {
+    animation: fade-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+}
+```
+
+`animation-range: entry 0% entry 40%` means the animation plays from when the element first enters the viewport to when 40% of it is visible.
+
+## `animation-range` Reference
+
+The `animation-range` property controls which portion of the timeline drives the animation:
+
+| Keyword | Meaning |
+|---------|---------|
+| `entry` | Element entering the scroller |
+| `exit` | Element leaving the scroller |
+| `contain` | While element is fully contained |
+| `cover` | From first pixel entering to last pixel leaving |
+
+```css
+/* Play animation only while element is entering */
+animation-range: entry 0% entry 100%;
+
+/* Play while element covers the center of viewport */
+animation-range: cover 25% cover 75%;
+```
+
+## Named Timelines for Complex Layouts
+
+If the scroll container isn't an ancestor of the animated element, use a named timeline:
+
+```css
+.scroller {
+    overflow-y: scroll;
+    scroll-timeline-name: --my-scroll;
+    scroll-timeline-axis: block;
+}
+
+.indicator {
+    animation-timeline: --my-scroll;
+}
+```
+
+## Parallax Effect
+
+```css
+@keyframes parallax-shift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100px); }
+}
+
+.hero-image {
+    animation: parallax-shift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0% 50%;
+}
+```
+
+## Browser Support
+
+Scroll-driven animations are in **Chrome 115+**, **Edge 115+**, and **Safari 18+** (shipped fall 2024). Firefox support arrived in **Firefox 132**. Use `@supports (animation-timeline: scroll())` for safe progressive enhancement.
+
+---
+
+Scroll-driven animations reduce JavaScript bundle size and move animation logic where it belongs — in CSS. Replace your IntersectionObserver reveal patterns today.

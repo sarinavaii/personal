@@ -1,0 +1,134 @@
+---
+title: "Next.js Partial Pre-Rendering: The Best of Static and Dynamic"
+description: "PPR lets you statically render most of a page and stream dynamic parts — without choosing one rendering model for the whole route."
+date: "2025-08-05"
+published: true
+tags:
+    - nextjs
+    - tutorial
+    - intermediate
+    - performance
+---
+
+# Next.js Partial Pre-Rendering: The Best of Static and Dynamic
+
+Before Partial Pre-Rendering (PPR), every Next.js route was either fully static or fully dynamic. A single `cookies()` call anywhere in the tree forced the entire route into dynamic rendering. PPR eliminates this binary.
+
+## What PPR Does
+
+With PPR enabled, Next.js generates a **static shell** of the page at build time, then **streams dynamic content** into designated suspense boundaries at request time.
+
+The static shell is served instantly from the CDN edge — no server round-trip. Dynamic parts arrive as soon as they resolve, progressively filling in the page.
+
+```
+Static shell ──────── served at edge (instant)
+   └── <Suspense> ─── streamed from server (fast)
+```
+
+## Enabling PPR
+
+PPR is opt-in in Next.js 15 via the `experimental` config:
+
+```js
+// next.config.js
+module.exports = {
+    experimental: {
+        ppr: "incremental", // Enable per-route, not globally
+    },
+};
+```
+
+Then opt individual routes in with the `experimental_ppr` export:
+
+```ts
+// app/product/[id]/page.tsx
+export const experimental_ppr = true;
+```
+
+## Using Suspense to Define Dynamic Boundaries
+
+The key to PPR is wrapping dynamic content in `<Suspense>`. The static part renders at build time; anything inside a `<Suspense>` boundary is dynamically streamed:
+
+```tsx
+import { Suspense } from "react";
+import { ProductInfo } from "@/components/ProductInfo";
+import { RecommendedProducts } from "@/components/RecommendedProducts";
+import { CartSummary } from "@/components/CartSummary";
+
+// This page has experimental_ppr = true
+
+export default function ProductPage({ params }) {
+    return (
+        <main>
+            {/* Static — rendered at build time */}
+            <ProductInfo productId={params.id} />
+
+            {/* Dynamic — streamed per request (uses cookies/session) */}
+            <Suspense fallback={<CartSkeleton />}>
+                <CartSummary />
+            </Suspense>
+
+            {/* Dynamic — streamed per request (personalized) */}
+            <Suspense fallback={<RecommendedSkeleton />}>
+                <RecommendedProducts userId={params.id} />
+            </Suspense>
+        </main>
+    );
+}
+```
+
+## What Triggers Dynamic Rendering
+
+Components that opt into dynamic rendering (and therefore must be inside `<Suspense>`):
+
+- `cookies()` — reads request cookies
+- `headers()` — reads request headers
+- `searchParams` — reads URL query string
+- Any `fetch()` with `cache: "no-store"` or `no-cache`
+- Database queries without caching
+
+Components that stay static:
+
+- Data fetched with `cache: "force-cache"` or `next: { revalidate: n }`
+- Markup that doesn't depend on request-time data
+
+## Performance Impact
+
+A typical product page before PPR:
+
+```
+Dynamic route → Server renders full page → 800ms TTFB
+```
+
+With PPR:
+
+```
+Static shell from CDN → 20ms
+Dynamic sections stream in → 200-400ms
+```
+
+The user sees content immediately. The shell includes layout, navigation, and static product info. Dynamic sections (cart, recommendations) arrive shortly after.
+
+## Combining With Server Actions
+
+PPR works with Server Actions. The static shell can contain forms that submit to server actions — those work even before dynamic content arrives:
+
+```tsx
+// In the static shell
+<SearchForm /> {/* Contains a form with a server action */}
+
+// Dynamic — streams in after
+<Suspense fallback={<ResultsSkeleton />}>
+    <PersonalizedResults />
+</Suspense>
+```
+
+## Current Limitations
+
+- PPR is still marked `experimental` — the API may change before stable release.
+- Not all Next.js features are fully compatible with PPR (check the docs for your specific version).
+- CDN cache invalidation for PPR static shells uses the same revalidation mechanisms as ISR.
+
+---
+
+PPR is the clearest signal yet that the future of web rendering is granular — not a single strategy per page, but per-component decisions about when content is generated.
