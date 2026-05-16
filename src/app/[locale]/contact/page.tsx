@@ -1,7 +1,7 @@
-import React from "react";
+import ContactTemplate from "@templates/ContactTemplate/ContactTemplate";
 
 const page = () => {
-    return <div>contact</div>;
+    return <ContactTemplate />;
 };
 
 export default page;

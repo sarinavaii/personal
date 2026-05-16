@@ -37,7 +37,7 @@ export async function generateMetadata() {
     return {
         title: baseTitle,
         description: baseDescription,
-        authors: [{ name: t("common.site-name"), url: "https://yourdomain.com" }],
+        authors: [{ name: t("common.site-name"), url: "https://sarinavaii.ir" }],
         keywords: t("metadata.keywords").split(","),
         creator: t("common.site-name"),
         publisher: t("common.site-name"),
@@ -45,7 +45,7 @@ export async function generateMetadata() {
             type: "website",
             locale: locale,
             alternateLocale: locale === "fa" ? "en" : "fa",
-            url: "https://yourdomain.com",
+            url: "https://sarinavaii.ir",
             title: baseTitle,
             description: baseDescription,
             siteName: `${t("common.site-name")} ${personalWebsite}`,
@@ -114,7 +114,7 @@ export default async function LocaleLayout({ children }: PropsWithChildren) {
                 <ColorSchemeScript />
             </head>
             <body
-                className={cn("bg-woodsmoke-200 text-woodsmoke-900 dark:bg-woodsmoke-950 dark:text-woodsmoke-100", {
+                className={cn("bg-woodsmoke-100 text-woodsmoke-900 dark:bg-black dark:text-woodsmoke-100", {
                     "font-peyda": locale === "fa",
                     "font-space-grotesk leading-snug": locale === "en",
                 })}

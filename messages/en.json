@@ -6,7 +6,6 @@
         "home": "home",
         "about": "about",
         "contact": "contact",
-        "experience": "experience",
         "projects": "projects"
     },
     "home": {
@@ -26,8 +25,8 @@
         }
     },
     "metadata": {
-        "profession": "Web Developer",
-        "description": "Experienced frontend developer creating user-friendly and modern websites",
+        "profession": "Senior Front-end Web Developer",
+        "description": "Senior frontend developer creating user-friendly and modern websites",
         "personal-website": "Personal Website",
         "keywords": "frontend developer,web development,React,Next.js,JavaScript,TypeScript"
     },
