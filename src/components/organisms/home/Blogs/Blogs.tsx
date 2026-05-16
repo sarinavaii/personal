@@ -1,6 +1,7 @@
 import XSection from "@atoms/XSection";
 import { Link } from "@i18n/navigation";
 import { getLatestPosts } from "@lib/posts";
+import { IconArrowRight } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 const Blogs = () => {
@@ -11,7 +12,10 @@ const Blogs = () => {
         <XSection transparent withPadding={false}>
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">{t("title")}</h2>
-                <Link href="/blog">{t("view-all")}</Link>
+                <Link className="flex gap-1 items-center" href="/blog">
+                    {t("view-all")}
+                    <IconArrowRight size={24} />
+                </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {posts.map((post) => (

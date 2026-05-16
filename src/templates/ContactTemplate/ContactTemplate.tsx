@@ -6,15 +6,12 @@ import {
     IconBrandLinkedin,
     IconBrandTelegram,
     IconBrandGithub,
-    IconMap,
+    IconBrandYoutube,
+    IconMailOpened,
+    IconMailOpenedFilled,
 } from "@tabler/icons-react";
 
 const contacts = [
-    {
-        icon: IconMap,
-        label: "Location",
-        value: "Sari, Iran",
-    },
     {
         icon: IconMail,
         label: "Email",
@@ -45,19 +42,25 @@ const contacts = [
         value: "sarinavaii",
         href: "https://github.com/sarinavaii",
     },
+    {
+        icon: IconBrandYoutube,
+        label: "YouTube",
+        value: "@sarinavaii",
+        href: "https://www.youtube.com/@sarinavaii",
+    },
 ];
 
 const ContactTemplate = () => {
     return (
         <XSection transparent withPadding={false}>
-            <div className="text-center mb-10">
-                <h1 className="text-3xl font-bold mb-1">Salar Sari Navaii</h1>
-                <p className="text-sm text-woodsmoke-500 dark:text-woodsmoke-300 mb-4">Senior Frontend Web Developer</p>
-                <p className="text-sm text-woodsmoke-600 dark:text-woodsmoke-300 leading-relaxed">
-                    5 years of experience building production-ready web applications with Next.js and React. Tech lead
-                    with a strong background in architecture, performance optimization, and mentoring. Open to remote
-                    work and freelance projects.
-                </p>
+            <div className="flex items-center justify-center mb-6 mt-6">
+                <IconMailOpenedFilled size={48} />
+            </div>
+            <div className="max-w-3xl mx-auto text-center mb-10 text-base text-woodsmoke-700 dark:text-woodsmoke-200">
+                <b>Interested in collaborating or have a project in mind?</b> <br /> Whether you want to discuss
+                frontend web development, need advice on building scalable React/Next.js applications, or simply want to
+                say hello, feel free to reach out through any of the contact methods below. I look forward to connecting
+                with you!
             </div>
 
             <XSection>

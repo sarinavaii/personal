@@ -120,9 +120,9 @@ export default async function LocaleLayout({ children }: PropsWithChildren) {
                 })}
             >
                 <Providers>
-                    <div className="p-4">
+                    <div className="p-4 min-h-dvh flex flex-col">
                         <Header />
-                        {children}
+                        <div className="grow">{children}</div>
                         <Footer />
                     </div>
                 </Providers>

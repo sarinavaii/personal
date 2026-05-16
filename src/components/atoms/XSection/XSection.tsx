@@ -18,7 +18,8 @@ const XSection = ({
             className={cn(
                 "container py-4 rounded-xl not-last:mb-4",
                 {
-                    "bg-woodsmoke-50  dark:bg-woodsmoke-900": !transparent,
+                    "bg-woodsmoke-50 dark:bg-woodsmoke-950 border border-woodsmoke-200 dark:border-woodsmoke-900":
+                        !transparent,
                     "p-4": withPadding,
                 },
                 containerClassname,

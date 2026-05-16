@@ -46,9 +46,13 @@ const Header = () => {
 
             <Drawer
                 classNames={{
-                    content: "dark:bg-woodsmoke-900 bg-white",
-                    header: "dark:bg-woodsmoke-900 bg-white",
+                    content:
+                        "bg-white dark:bg-woodsmoke-950 border border-woodsmoke-200 dark:border-woodsmoke-900 h-fit pb-2",
+                    header: "dark:bg-woodsmoke-950 bg-white",
+                    overlay: "backdrop-blur-[2px]",
                 }}
+                radius={12}
+                offset={16}
                 opened={opened}
                 onClose={close}
                 position="right"

@@ -16,12 +16,14 @@ const About = () => {
                 <div className="flex flex-col gap-4">
                     <h2 className="text-2xl font-bold text-center">{t("title")}</h2>
                     <XSegmentedControl
+                        transitionDuration={500}
                         fullWidth
                         value={segmentValue}
                         onChange={setSegmentValue}
                         color="woodsmoke"
                         classNames={{
-                            root: "max-w-sm w-full mx-auto",
+                            root: "max-w-[300px] w-full mx-auto border border-woodsmoke-200 dark:border-woodsmoke-900",
+                            innerLabel: "text-sm",
                         }}
                         data={[
                             {
@@ -33,8 +35,8 @@ const About = () => {
                                 value: "education",
                             },
                         ]}
-                        size="md"
-                        radius="md"
+                        size="lg"
+                        radius="12"
                     />
                 </div>
             </XSection>
@@ -57,7 +59,7 @@ const About = () => {
             {segmentValue === "experience" && (
                 <>
                     <XSection>
-                        <div className="flex items-center justify-between">
+                        <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
                             <span className="flex items-center gap-2 font-bold">
                                 <Image
                                     src="/images/overc.jpg"
@@ -68,7 +70,7 @@ const About = () => {
                                 />
                                 OverC
                             </span>
-                            <span className="text-sm">Part-time - Remote | Jan 2026 – Present</span>
+                            <span className="text-sm max-sm:text-end">Part-time - Remote | Jan 2026 – Present</span>
                         </div>
                     </XSection>
                     <XSection transparent>
@@ -85,7 +87,7 @@ const About = () => {
                         </ul>
                     </XSection>
                     <XSection>
-                        <div className="flex items-center justify-between">
+                        <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
                             <span className="flex items-center gap-2 font-bold">
                                 <Image
                                     src="/images/dornica.jpg"
@@ -96,7 +98,7 @@ const About = () => {
                                 />
                                 Dornica
                             </span>
-                            <span className="text-sm">Full-time - On-site | June 2021 – Jan 2026</span>
+                            <span className="text-sm max-sm:text-end">Full-time - On-site | June 2021 – Jan 2026</span>
                         </div>
                     </XSection>
                     <XSection transparent>
@@ -129,7 +131,7 @@ const About = () => {
                         </ul>
                     </XSection>
                     <XSection>
-                        <div className="flex items-center justify-between">
+                        <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
                             <span className="flex items-center gap-2 font-bold">
                                 <Image
                                     src="/images/platin.jpg"
@@ -140,7 +142,7 @@ const About = () => {
                                 />
                                 Platin Agency
                             </span>
-                            <span className="text-sm">Part-time - Remote | Dec 2023 – Dec 2025</span>
+                            <span className="text-sm max-sm:text-end">Part-time - Remote | Dec 2023 – Dec 2025</span>
                         </div>
                     </XSection>
                     <XSection transparent>

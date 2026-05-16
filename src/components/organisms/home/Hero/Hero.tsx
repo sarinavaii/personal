@@ -1,7 +1,6 @@
 import XSection from "@atoms/XSection";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React from "react";
 
 const Hero = () => {
     const t = useTranslations();

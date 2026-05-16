@@ -14,7 +14,7 @@
     }
 
     .content-formatter {
-        @apply my-4 bg-white dark:bg-woodsmoke-900 p-6 rounded-xl;
+        @apply my-4 bg-woodsmoke-50 dark:bg-woodsmoke-950 border border-woodsmoke-200 dark:border-woodsmoke-900 p-6 rounded-xl;
 
         h1 {
             @apply font-black text-2xl mb-4;
