@@ -7,7 +7,6 @@ import {
     IconBrandTelegram,
     IconBrandGithub,
     IconBrandYoutube,
-    IconMailOpened,
     IconMailOpenedFilled,
 } from "@tabler/icons-react";
 

@@ -5,7 +5,7 @@ import { IconHome, IconArticle, IconFolder, IconMail } from "@tabler/icons-react
 const links = [
     { href: "/", label: "Home", icon: IconHome },
     { href: "/blog", label: "Blog", icon: IconArticle },
-    { href: "/projects", label: "Projects", icon: IconFolder },
+    // { href: "/projects", label: "Projects", icon: IconFolder },
     { href: "/contact", label: "Contact", icon: IconMail },
 ];
 
