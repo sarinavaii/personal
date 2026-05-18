@@ -32,7 +32,9 @@ const Providers = ({ children }: PropsWithChildren) => {
     return (
         <NextIntlClientProvider>
             <DirectionProvider initialDirection={locale === "fa" ? "rtl" : "ltr"}>
-                <MantineProvider theme={theme}>{children}</MantineProvider>
+                <MantineProvider theme={theme} defaultColorScheme="dark">
+                    {children}
+                </MantineProvider>
             </DirectionProvider>
         </NextIntlClientProvider>
     );

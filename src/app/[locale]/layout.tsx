@@ -113,7 +113,7 @@ export default async function LocaleLayout({ children }: PropsWithChildren) {
     return (
         <html lang={locale} dir={locale === "en" ? "ltr" : "rtl"} {...mantineHtmlProps}>
             <head>
-                <ColorSchemeScript />
+                <ColorSchemeScript defaultColorScheme="dark" />
             </head>
             <body
                 className={cn("bg-woodsmoke-100 text-woodsmoke-900 dark:bg-black dark:text-woodsmoke-100", {
