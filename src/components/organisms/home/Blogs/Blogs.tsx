@@ -20,7 +20,7 @@ const Blogs = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {posts.map((post) => (
                     <Link href={`/blog/${post.slug}`} key={post.slug}>
-                        <XSection containerClassname="h-full">
+                        <XSection containerClassname="h-full transition-all hover:shadow-xl dark:hover:shadow-woodsmoke-900/40 hover:shadow-woodsmoke-300/30 hover:scale-[1.03] duration-300">
                             <h3 className="leading-tight font-bold text-lg mb-2">{post.title}</h3>
                             <div className="text-sm text-woodsmoke-600 dark:text-woodsmoke-300">{post.description}</div>
                         </XSection>

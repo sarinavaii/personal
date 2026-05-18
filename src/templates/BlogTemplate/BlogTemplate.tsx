@@ -29,7 +29,10 @@ const BlogTemplate = () => {
             </XSection>
 
             {posts.map((post) => (
-                <XSection key={post.slug}>
+                <XSection
+                    key={post.slug}
+                    containerClassname="transition-all hover:shadow-xl dark:hover:shadow-woodsmoke-900/40 hover:shadow-woodsmoke-300/30 hover:scale-[1.03] duration-300"
+                >
                     <Link href={`/blog/${post.slug}`}>
                         <div className="text-xs text-woodsmoke-500 dark:text-woodsmoke-300">
                             {new Date(post.date).toLocaleDateString("en-US", {

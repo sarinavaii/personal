@@ -15,6 +15,7 @@ import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import { getLocale, getTranslations } from "next-intl/server";
 import { PropsWithChildren } from "react";
 import Blob from "@partials/Blob";
+import XMouseFollower from "@atoms/XMouseFollower/XMouseFollower";
 
 // Base metadata that will be used for all locales
 export const viewport: Viewport = {
@@ -121,6 +122,7 @@ export default async function LocaleLayout({ children }: PropsWithChildren) {
                 })}
             >
                 <Providers>
+                    <XMouseFollower />
                     <Blob />
                     <div className="p-4 min-h-dvh flex flex-col">
                         <Header />
