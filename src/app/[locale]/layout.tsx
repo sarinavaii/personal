@@ -14,6 +14,7 @@ import "@styles/globals.css";
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import { getLocale, getTranslations } from "next-intl/server";
 import { PropsWithChildren } from "react";
+import Blob from "@partials/Blob";
 
 // Base metadata that will be used for all locales
 export const viewport: Viewport = {
@@ -120,6 +121,7 @@ export default async function LocaleLayout({ children }: PropsWithChildren) {
                 })}
             >
                 <Providers>
+                    <Blob />
                     <div className="p-4 min-h-dvh flex flex-col">
                         <Header />
                         <div className="grow">{children}</div>

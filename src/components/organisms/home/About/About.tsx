@@ -77,12 +77,18 @@ const About = () => {
                         <XBadge size="lg">Senior Front-End Developer</XBadge>
                         <ul className="list-disc px-6 mt-4">
                             <li>
-                                Designed and delivered high-performance dashboards for global and local clients,
-                                managing complex data flows and multi-source integrations.
+                                Designed and delivered high-performance, multi-source BI dashboards for global and local
+                                clients using Next.js, Recharts, and Highcharts, supporting complex real-time data flows
+                                across 5+ integrated sources.
                             </li>
                             <li>
-                                Architected scalable frontend solutions with Next.js and React, optimizing performance
-                                through efficient data fetching, caching, and rendering strategies.
+                                Architected frontend solutions with SSR, TanStack Query caching, and lazy loading
+                                strategies, targeting sub-2s load times and measurable Core Web Vitals improvements
+                                across all client deliverables.
+                            </li>
+                            <li>
+                                Implemented i18next-based internationalization with full RTL support, enabling product
+                                delivery to both Persian and English-speaking markets from a single codebase.
                             </li>
                         </ul>
                     </XSection>
@@ -98,28 +104,34 @@ const About = () => {
                                 />
                                 Dornica
                             </span>
-                            <span className="text-sm max-sm:text-end">Full-time - On-site | June 2021 – Jan 2026</span>
+                            <span className="text-sm max-sm:text-end">Full-time - On-site | Jun 2021 – Jan 2026</span>
                         </div>
                     </XSection>
                     <XSection transparent>
                         <XBadge size="lg">Front-End Tech Lead | Oct 2021 – Jan 2026</XBadge>
                         <ul className="list-disc px-6 my-4">
                             <li>
-                                Defined organization-wide frontend standards (ESLint configs, Git workflows, component
-                                patterns) adopted across all projects.
+                                Defined and enforced organization-wide frontend standards — including ESLint configs,
+                                Prettier, Husky Git hooks, branching workflows, and component patterns — adopted across
+                                all projects and CI/CD pipelines.
                             </li>
                             <li>
-                                Architected and delivered Rasad System, a national-scale BI dashboard, achieving less
-                                than 2s initial load time through Next.js SSR, React Query caching, and progressive
-                                chart rendering for multi-source executive analytics.
+                                Architected a national-scale executive BI dashboard integrating multiple REST APIs —
+                                featuring KPI cards, geo maps, filterable tables, and Recharts visualizations; achieved
+                                &lt;2s load time via Next.js SSR and TanStack Query caching.
                             </li>
                             <li>
-                                Established component library with +10 reusable modules, cutting development time for
-                                new dashboards.
+                                Established a component library with 10+ reusable modules built with Mantine and React,
+                                reducing estimated development time for new dashboards by ~30%.
                             </li>
                             <li>
-                                Onboarded and mentored 10+ junior developers and interns through structured training
-                                program, with 5+ promoted to mid-level roles.
+                                Migrated UI styling approach from Bootstrap to Tailwind CSS across new projects,
+                                standardizing design tokens and reducing custom CSS overhead.
+                            </li>
+                            <li>
+                                Onboarded and mentored 10+ junior developers and interns through a structured 3-month
+                                training program covering HTML, CSS, SCSS, Bootstrap, JavaScript, and jQuery, with 5+
+                                promoted to mid-level roles.
                             </li>
                         </ul>
                         <XBadge size="lg">UI Designer & Front-End Developer | Jun 2021 – Oct 2021 </XBadge>
@@ -150,13 +162,16 @@ const About = () => {
 
                         <ul className="list-disc px-6 mt-4">
                             <li>
-                                Sole frontend developer responsible for end-to-end implementation and delivery of client
-                                web properties.
+                                Independently led frontend development for end-to-end implementation and successful
+                                delivery of diverse client web solutions.
                             </li>
-                            <li>Architected and deployed the main agency website with SEO optimization.</li>
                             <li>
-                                Delivered multiple campaign websites for Nazari Cake, ensuring brand consistency and
-                                mobile responsiveness
+                                Designed and launched the agency&apos;s flagship website, prioritizing SEO best
+                                practices and performance optimization.
+                            </li>
+                            <li>
+                                Developed and shipped multiple campaign microsites for Nazari Cake, maintaining cohesive
+                                brand identity and seamless mobile experiences.
                             </li>
                         </ul>
                     </XSection>

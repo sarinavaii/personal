@@ -1,7 +1,7 @@
-import React from "react";
+import ProjectsTemplate from "@templates/ProjectsTemplate/ProjectsTemplate";
 
 const page = () => {
-    return <div>projects</div>;
+    return <ProjectsTemplate />;
 };
 
 export default page;
