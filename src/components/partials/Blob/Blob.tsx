@@ -84,7 +84,7 @@ export default function BlobScene() {
                 <motion.div
                     key={i}
                     ref={blobs[i].ref}
-                    className="absolute w-[50vw] h-[50vh] blur-[110px] will-change-transform"
+                    className="absolute w-[50vw] h-[50vh] blur-[110px] will-change-transform opacity-50 dark:opacity-100"
                     style={{
                         background: config.background,
                         borderRadius: RADII[0],

@@ -1,11 +1,11 @@
 import { Link } from "@i18n/navigation";
-import { IconHome, IconArticle, IconMail } from "@tabler/icons-react";
+import { IconHome, IconArticle, IconMail, IconFolder } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 const links = [
     { href: "/", labelKey: "home", icon: IconHome },
     { href: "/blog", labelKey: "blog", icon: IconArticle },
-    // { href: "/projects", labelKey: "projects", icon: IconFolder },
+    { href: "/projects", labelKey: "projects", icon: IconFolder },
     { href: "/contact", labelKey: "contact", icon: IconMail },
 ] as const;
 
