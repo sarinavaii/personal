@@ -3,10 +3,11 @@
         "site-name": "Salar Sari Navaii"
     },
     "pages": {
-        "home": "home",
-        "about": "about",
-        "contact": "contact",
-        "projects": "projects"
+        "home": "Home",
+        "blog": "Blog",
+        "about": "About",
+        "contact": "Contact",
+        "projects": "Projects"
     },
     "home": {
         "hero": {
@@ -18,11 +19,216 @@
             "title": "Articles",
             "view-all": "View All"
         },
+        "techStack": {
+            "title": "Technical Skills",
+            "categories": [
+                {
+                    "id": "languages",
+                    "title": "Languages",
+                    "items": [
+                        { "id": "javascript", "label": "JavaScript (ES6+)" },
+                        { "id": "typescript", "label": "TypeScript" },
+                        { "id": "html5", "label": "HTML5" },
+                        { "id": "css3", "label": "CSS3" },
+                        { "id": "scss", "label": "SCSS" }
+                    ]
+                },
+                {
+                    "id": "frameworks",
+                    "title": "Frameworks & Libraries",
+                    "items": [
+                        { "id": "react", "label": "React" },
+                        { "id": "nextjs", "label": "Next.js" },
+                        { "id": "tailwind", "label": "Tailwind" },
+                        { "id": "mantine", "label": "Mantine" },
+                        { "id": "tanstack-query", "label": "TanStack Query" },
+                        { "id": "zustand", "label": "Zustand" },
+                        { "id": "react-hook-form", "label": "React Hook Form" },
+                        { "id": "zod", "label": "Zod" }
+                    ]
+                },
+                {
+                    "id": "data-viz",
+                    "title": "Data Visualization",
+                    "items": [
+                        { "id": "recharts", "label": "Recharts" },
+                        { "id": "highcharts", "label": "Highcharts" },
+                        { "id": "multi-source-charts", "label": "Multi-source charts" },
+                        { "id": "realtime-rendering", "label": "Real-time rendering" }
+                    ]
+                },
+                {
+                    "id": "tools",
+                    "title": "Tools & Platforms",
+                    "items": [
+                        { "id": "git", "label": "Git" },
+                        { "id": "eslint", "label": "ESLint" },
+                        { "id": "husky", "label": "Husky" },
+                        { "id": "prettier", "label": "Prettier" },
+                        { "id": "rest-apis", "label": "REST APIs" },
+                        { "id": "graphql", "label": "GraphQL" },
+                        { "id": "cicd", "label": "CI/CD" },
+                        { "id": "agile-scrum", "label": "Agile / Scrum" }
+                    ]
+                },
+                {
+                    "id": "testing",
+                    "title": "Testing & Quality",
+                    "items": [
+                        { "id": "jest", "label": "Jest" },
+                        { "id": "cypress", "label": "Cypress" },
+                        { "id": "react-testing-library", "label": "React Testing Library" },
+                        { "id": "cross-browser", "label": "Cross-browser compatibility" }
+                    ]
+                },
+                {
+                    "id": "performance",
+                    "title": "Performance",
+                    "items": [
+                        { "id": "ssr-ssg", "label": "SSR / SSG" },
+                        { "id": "code-splitting", "label": "Code splitting" },
+                        { "id": "lazy-loading", "label": "Lazy loading" },
+                        { "id": "performance-budgets", "label": "Performance budgets" },
+                        { "id": "core-web-vitals", "label": "Core Web Vitals" }
+                    ]
+                },
+                {
+                    "id": "i18n",
+                    "title": "Internationalization",
+                    "items": [
+                        { "id": "next-intl", "label": "next-intl" },
+                        { "id": "i18next", "label": "i18next" },
+                        { "id": "rtl-support", "label": "RTL support" },
+                        { "id": "multi-locale", "label": "Multi-locale content" }
+                    ]
+                },
+                {
+                    "id": "design",
+                    "title": "Design & Accessibility",
+                    "items": [
+                        { "id": "wcag", "label": "WCAG" },
+                        { "id": "component-driven-design", "label": "Component-driven design" },
+                        { "id": "figma", "label": "Figma" },
+                        { "id": "ui-ux", "label": "UI/UX principles" }
+                    ]
+                },
+                {
+                    "id": "legacy",
+                    "title": "Legacy",
+                    "items": [
+                        { "id": "bootstrap", "label": "Bootstrap" },
+                        { "id": "jquery", "label": "jQuery" }
+                    ]
+                }
+            ]
+        },
         "about": {
             "title": "About Me",
             "experience": "Experience",
-            "education": "Education"
+            "education": "Education",
+            "educationItems": [
+                {
+                    "degree": "BS | Computer Engineering",
+                    "institution": "University of Mazandaran | 2014 - 2019"
+                },
+                {
+                    "degree": "MS | Information Technology",
+                    "institution": "Urmia University of Technology | 2019 - 2023"
+                }
+            ],
+            "overc": {
+                "company": "OverC",
+                "period": "Part-time - Remote | Jan 2026 – Present",
+                "positions": [
+                    {
+                        "title": "Senior Front-End Developer",
+                        "highlights": [
+                            "Designed and delivered high-performance, multi-source BI dashboards for global and local clients using Next.js, Recharts, and Highcharts, supporting complex real-time data flows across 5+ integrated sources.",
+                            "Architected frontend solutions with SSR, TanStack Query caching, and lazy loading strategies, targeting sub-2s load times and measurable Core Web Vitals improvements across all client deliverables.",
+                            "Implemented i18next-based internationalization with full RTL support, enabling product delivery to both Persian and English-speaking markets from a single codebase."
+                        ]
+                    }
+                ]
+            },
+            "dornica": {
+                "company": "Dornica",
+                "period": "Full-time - On-site | Jun 2021 – Jan 2026",
+                "positions": [
+                    {
+                        "title": "Front-End Tech Lead | Oct 2021 – Jan 2026",
+                        "highlights": [
+                            "Defined and enforced organization-wide frontend standards — including ESLint configs, Prettier, Husky Git hooks, branching workflows, and component patterns — adopted across all projects and CI/CD pipelines.",
+                            "Architected a national-scale executive BI dashboard integrating multiple REST APIs — featuring KPI cards, geo maps, filterable tables, and Recharts visualizations; achieved <2s load time via Next.js SSR and TanStack Query caching.",
+                            "Established a component library with 10+ reusable modules built with Mantine and React, reducing estimated development time for new dashboards by ~30%.",
+                            "Migrated UI styling approach from Bootstrap to Tailwind CSS across new projects, standardizing design tokens and reducing custom CSS overhead.",
+                            "Onboarded and mentored 10+ junior developers and interns through a structured 3-month training program covering HTML, CSS, SCSS, Bootstrap, JavaScript, and jQuery, with 5+ promoted to mid-level roles."
+                        ]
+                    },
+                    {
+                        "title": "UI Designer & Front-End Developer | Jun 2021 – Oct 2021",
+                        "highlights": [
+                            "Built 20+ responsive interfaces from design mockups using Bootstrap and JavaScript for CMS platforms, internal dashboards, and specialized client websites."
+                        ]
+                    }
+                ]
+            },
+            "platin": {
+                "company": "Platin Agency",
+                "period": "Part-time - Remote | Dec 2023 – Dec 2025",
+                "positions": [
+                    {
+                        "title": "Front-End Developer",
+                        "highlights": [
+                            "Independently led frontend development for end-to-end implementation and successful delivery of diverse client web solutions.",
+                            "Designed and launched the agency's flagship website, prioritizing SEO best practices and performance optimization.",
+                            "Developed and shipped multiple campaign microsites for Nazari Cake, maintaining cohesive brand identity and seamless mobile experiences."
+                        ]
+                    }
+                ]
+            }
         }
+    },
+    "contact": {
+        "intro-heading": "Interested in collaborating or have a project in mind?",
+        "intro-description": "Whether you want to discuss frontend web development, need advice on building scalable React/Next.js applications, or simply want to say hello, feel free to reach out through any of the contact methods below. I look forward to connecting with you!",
+        "items": [
+            {
+                "id": "email",
+                "label": "Email",
+                "value": "salarsarinavaii@gmail.com",
+                "href": "mailto:salarsarinavaii@gmail.com"
+            },
+            {
+                "id": "phone",
+                "label": "Phone",
+                "value": "+98 921 134 2004",
+                "href": "tel:+989211342004"
+            },
+            {
+                "id": "linkedin",
+                "label": "LinkedIn",
+                "value": "salarsarinavaii",
+                "href": "https://www.linkedin.com/in/salarsarinavaii/"
+            },
+            {
+                "id": "telegram",
+                "label": "Telegram",
+                "value": "@sarinavaii",
+                "href": "https://t.me/sarinavaii"
+            },
+            {
+                "id": "github",
+                "label": "GitHub",
+                "value": "sarinavaii",
+                "href": "https://github.com/sarinavaii"
+            },
+            {
+                "id": "youtube",
+                "label": "YouTube",
+                "value": "@sarinavaii",
+                "href": "https://www.youtube.com/@sarinavaii"
+            }
+        ]
     },
     "metadata": {
         "profession": "Senior Front-end Web Developer",

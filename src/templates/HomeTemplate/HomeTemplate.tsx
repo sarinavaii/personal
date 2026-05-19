@@ -1,10 +1,10 @@
-import { About, Blogs, Hero } from "@organisms/home";
-import React from "react";
+import { About, Blogs, Hero, TechStack } from "@organisms/home";
 
 const HomeTemplate = () => {
     return (
         <>
             <Hero />
+            <TechStack />
             <Blogs />
             <About />
         </>

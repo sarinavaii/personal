@@ -7,9 +7,34 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 
+type EducationItem = {
+    degree: string;
+    institution: string;
+};
+
+type Position = {
+    title: string;
+    highlights: string[];
+};
+
+type ExperienceEntry = {
+    company: string;
+    period: string;
+    positions: Position[];
+};
+
+const EXPERIENCE_KEYS = ["overc", "dornica", "platin"] as const;
+const EXPERIENCE_IMAGES: Record<(typeof EXPERIENCE_KEYS)[number], { src: string; alt: string }> = {
+    overc: { src: "/images/overc.jpg", alt: "overc" },
+    dornica: { src: "/images/dornica.jpg", alt: "dornica" },
+    platin: { src: "/images/platin.jpg", alt: "platin" },
+};
+
 const About = () => {
     const t = useTranslations("home.about");
     const [segmentValue, setSegmentValue] = useState("experience");
+    const educationItems = t.raw("educationItems") as EducationItem[];
+
     return (
         <>
             <XSection transparent>
@@ -40,143 +65,59 @@ const About = () => {
                     />
                 </div>
             </XSection>
-            {segmentValue === "education" && (
-                <>
-                    <XSection>
+            {segmentValue === "education" &&
+                educationItems.map((item) => (
+                    <XSection key={item.degree}>
                         <div className="flex items-center justify-between">
-                            <span className="font-bold">BS | Computer Engineering</span>
-                            <span className="text-sm">University of Mazandaran | 2014 - 2019</span>
+                            <span className="font-bold">{item.degree}</span>
+                            <span className="text-sm">{item.institution}</span>
                         </div>
                     </XSection>
-                    <XSection>
-                        <div className="flex items-center justify-between">
-                            <span className="font-bold">MS | Information Technology</span>
-                            <span className="text-sm">Urmia University of Technology | 2019 - 2023</span>
-                        </div>
-                    </XSection>
-                </>
-            )}
-            {segmentValue === "experience" && (
-                <>
-                    <XSection>
-                        <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
-                            <span className="flex items-center gap-2 font-bold">
-                                <Image
-                                    src="/images/overc.jpg"
-                                    className="size-10 rounded-full"
-                                    width={40}
-                                    height={40}
-                                    alt="overc"
-                                />
-                                OverC
-                            </span>
-                            <span className="text-sm max-sm:text-end">Part-time - Remote | Jan 2026 – Present</span>
-                        </div>
-                    </XSection>
-                    <XSection transparent>
-                        <XBadge size="lg">Senior Front-End Developer</XBadge>
-                        <ul className="list-disc px-6 mt-4">
-                            <li>
-                                Designed and delivered high-performance, multi-source BI dashboards for global and local
-                                clients using Next.js, Recharts, and Highcharts, supporting complex real-time data flows
-                                across 5+ integrated sources.
-                            </li>
-                            <li>
-                                Architected frontend solutions with SSR, TanStack Query caching, and lazy loading
-                                strategies, targeting sub-2s load times and measurable Core Web Vitals improvements
-                                across all client deliverables.
-                            </li>
-                            <li>
-                                Implemented i18next-based internationalization with full RTL support, enabling product
-                                delivery to both Persian and English-speaking markets from a single codebase.
-                            </li>
-                        </ul>
-                    </XSection>
-                    <XSection>
-                        <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
-                            <span className="flex items-center gap-2 font-bold">
-                                <Image
-                                    src="/images/dornica.jpg"
-                                    className="size-10 rounded-full"
-                                    width={40}
-                                    height={40}
-                                    alt="dornica"
-                                />
-                                Dornica
-                            </span>
-                            <span className="text-sm max-sm:text-end">Full-time - On-site | Jun 2021 – Jan 2026</span>
-                        </div>
-                    </XSection>
-                    <XSection transparent>
-                        <XBadge size="lg">Front-End Tech Lead | Oct 2021 – Jan 2026</XBadge>
-                        <ul className="list-disc px-6 my-4">
-                            <li>
-                                Defined and enforced organization-wide frontend standards — including ESLint configs,
-                                Prettier, Husky Git hooks, branching workflows, and component patterns — adopted across
-                                all projects and CI/CD pipelines.
-                            </li>
-                            <li>
-                                Architected a national-scale executive BI dashboard integrating multiple REST APIs —
-                                featuring KPI cards, geo maps, filterable tables, and Recharts visualizations; achieved
-                                &lt;2s load time via Next.js SSR and TanStack Query caching.
-                            </li>
-                            <li>
-                                Established a component library with 10+ reusable modules built with Mantine and React,
-                                reducing estimated development time for new dashboards by ~30%.
-                            </li>
-                            <li>
-                                Migrated UI styling approach from Bootstrap to Tailwind CSS across new projects,
-                                standardizing design tokens and reducing custom CSS overhead.
-                            </li>
-                            <li>
-                                Onboarded and mentored 10+ junior developers and interns through a structured 3-month
-                                training program covering HTML, CSS, SCSS, Bootstrap, JavaScript, and jQuery, with 5+
-                                promoted to mid-level roles.
-                            </li>
-                        </ul>
-                        <XBadge size="lg">UI Designer & Front-End Developer | Jun 2021 – Oct 2021 </XBadge>
-                        <ul className="list-disc px-6 mt-4">
-                            <li>
-                                Built 20+ responsive interfaces from design mockups using Bootstrap and JavaScript for
-                                CMS platforms, internal dashboards, and specialized client websites.
-                            </li>
-                        </ul>
-                    </XSection>
-                    <XSection>
-                        <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
-                            <span className="flex items-center gap-2 font-bold">
-                                <Image
-                                    src="/images/platin.jpg"
-                                    className="size-10 rounded-full"
-                                    width={40}
-                                    height={40}
-                                    alt="platin"
-                                />
-                                Platin Agency
-                            </span>
-                            <span className="text-sm max-sm:text-end">Part-time - Remote | Dec 2023 – Dec 2025</span>
-                        </div>
-                    </XSection>
-                    <XSection transparent>
-                        <XBadge size="lg">Front-End Developer</XBadge>
+                ))}
+            {segmentValue === "experience" &&
+                EXPERIENCE_KEYS.map((key) => {
+                    const entry = t.raw(key) as ExperienceEntry;
+                    const image = EXPERIENCE_IMAGES[key];
+                    const hasMultiplePositions = entry.positions.length > 1;
 
-                        <ul className="list-disc px-6 mt-4">
-                            <li>
-                                Independently led frontend development for end-to-end implementation and successful
-                                delivery of diverse client web solutions.
-                            </li>
-                            <li>
-                                Designed and launched the agency&apos;s flagship website, prioritizing SEO best
-                                practices and performance optimization.
-                            </li>
-                            <li>
-                                Developed and shipped multiple campaign microsites for Nazari Cake, maintaining cohesive
-                                brand identity and seamless mobile experiences.
-                            </li>
-                        </ul>
-                    </XSection>
-                </>
-            )}
+                    return (
+                        <div key={key}>
+                            <XSection>
+                                <div className="flex gap-1 sm:items-center justify-between max-sm:flex-col">
+                                    <span className="flex items-center gap-2 font-bold">
+                                        <Image
+                                            src={image.src}
+                                            className="size-10 rounded-full"
+                                            width={40}
+                                            height={40}
+                                            alt={image.alt}
+                                        />
+                                        {entry.company}
+                                    </span>
+                                    <span className="text-sm max-sm:text-end">{entry.period}</span>
+                                </div>
+                            </XSection>
+                            <XSection transparent>
+                                {entry.positions.map((position, positionIndex) => (
+                                    <div key={position.title}>
+                                        <XBadge size="lg">{position.title}</XBadge>
+                                        <ul
+                                            className={
+                                                hasMultiplePositions && positionIndex === 0
+                                                    ? "list-disc px-6 my-4"
+                                                    : "list-disc px-6 mt-4"
+                                            }
+                                        >
+                                            {position.highlights.map((highlight) => (
+                                                <li key={highlight}>{highlight}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </XSection>
+                        </div>
+                    );
+                })}
         </>
     );
 };

@@ -1,15 +1,17 @@
-import React from "react";
 import { Link } from "@i18n/navigation";
-import { IconHome, IconArticle, IconFolder, IconMail } from "@tabler/icons-react";
+import { IconHome, IconArticle, IconMail } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
 const links = [
-    { href: "/", label: "Home", icon: IconHome },
-    { href: "/blog", label: "Blog", icon: IconArticle },
-    // { href: "/projects", label: "Projects", icon: IconFolder },
-    { href: "/contact", label: "Contact", icon: IconMail },
-];
+    { href: "/", labelKey: "home", icon: IconHome },
+    { href: "/blog", labelKey: "blog", icon: IconArticle },
+    // { href: "/projects", labelKey: "projects", icon: IconFolder },
+    { href: "/contact", labelKey: "contact", icon: IconMail },
+] as const;
 
 const Sidebar = () => {
+    const t = useTranslations("pages");
+
     return (
         <nav className="flex flex-col gap-4">
             {links.map((link) => {
@@ -22,7 +24,7 @@ const Sidebar = () => {
                     >
                         <Icon size={20} />
                         <span className="inline-block relative">
-                            {link.label}
+                            {t(link.labelKey)}
                             <span
                                 className="absolute left-0 bottom-0 w-0 group-hover:w-full h-0.5 bg-woodsmoke-900 dark:bg-woodsmoke-50 transition-all duration-300"
                                 aria-hidden="true"

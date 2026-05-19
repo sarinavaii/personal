@@ -6,7 +6,8 @@ import Image from "next/image";
 const ProjectsTemplate = () => {
     return (
         <>
-            <XSection>
+            <XSection transparent>
+                <h1 className="text-3xl text-center font-bold mb-6">My Projects</h1>
                 <div className="text-base text-woodsmoke-700 dark:text-woodsmoke-200">
                     <p>
                         Over the years, I have had the <b>privilege</b> of contributing to a{" "}
@@ -42,9 +43,7 @@ const ProjectsTemplate = () => {
                     </p>
                 </div>
             </XSection>
-            <XSection transparent>
-                <h1 className="text-3xl text-center font-bold">My Projects</h1>
-            </XSection>
+
             <div className="flex flex-col gap-4">
                 <XSection>
                     <div className="flex items-center gap-4">

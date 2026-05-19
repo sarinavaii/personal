@@ -1,0 +1,242 @@
+{
+    "common": {
+        "site-name": "سالار ساری نوایی"
+    },
+    "pages": {
+        "home": "خانه",
+        "blog": "وبلاگ",
+        "about": "درباره",
+        "contact": "ارتباط",
+        "projects": "پروژه‌ها"
+    },
+    "home": {
+        "hero": {
+            "tagline-1": "کدنویسی",
+            "tagline-2": "با چاشنی تجربه!",
+            "description": "سلام، من سالارم — توسعه‌دهنده ارشد فرانت‌اند. قدیماً خودم کد می‌زدم؛ الان بیشتر به کلود می‌گویم چه بنویسد و کارش را بررسی می‌کنم — صبورانه منتظر روزی هستم که حتی برای این کار هم به من نیازی نداشته باشد."
+        },
+        "blogs": {
+            "title": "مقاله‌ها",
+            "view-all": "نمایش همه"
+        },
+        "techStack": {
+            "title": "مهارت‌های فنی",
+            "categories": [
+                {
+                    "id": "languages",
+                    "title": "زبان‌ها",
+                    "items": [
+                        { "id": "javascript", "label": "JavaScript (ES6+)" },
+                        { "id": "typescript", "label": "TypeScript" },
+                        { "id": "html5", "label": "HTML5" },
+                        { "id": "css3", "label": "CSS3" },
+                        { "id": "scss", "label": "SCSS" }
+                    ]
+                },
+                {
+                    "id": "frameworks",
+                    "title": "فریم‌ورک‌ها و کتابخانه‌ها",
+                    "items": [
+                        { "id": "react", "label": "React" },
+                        { "id": "nextjs", "label": "Next.js" },
+                        { "id": "tailwind", "label": "Tailwind" },
+                        { "id": "mantine", "label": "Mantine" },
+                        { "id": "tanstack-query", "label": "TanStack Query" },
+                        { "id": "zustand", "label": "Zustand" },
+                        { "id": "react-hook-form", "label": "React Hook Form" },
+                        { "id": "zod", "label": "Zod" }
+                    ]
+                },
+                {
+                    "id": "data-viz",
+                    "title": "تجسم داده",
+                    "items": [
+                        { "id": "recharts", "label": "Recharts" },
+                        { "id": "highcharts", "label": "Highcharts" },
+                        { "id": "multi-source-charts", "label": "نمودار چندمنبعی" },
+                        { "id": "realtime-rendering", "label": "رندر بلادرنگ" }
+                    ]
+                },
+                {
+                    "id": "tools",
+                    "title": "ابزارها و پلتفرم‌ها",
+                    "items": [
+                        { "id": "git", "label": "Git" },
+                        { "id": "eslint", "label": "ESLint" },
+                        { "id": "husky", "label": "Husky" },
+                        { "id": "prettier", "label": "Prettier" },
+                        { "id": "rest-apis", "label": "REST API" },
+                        { "id": "graphql", "label": "GraphQL" },
+                        { "id": "cicd", "label": "CI/CD" },
+                        { "id": "agile-scrum", "label": "Agile / Scrum" }
+                    ]
+                },
+                {
+                    "id": "testing",
+                    "title": "تست و کیفیت",
+                    "items": [
+                        { "id": "jest", "label": "Jest" },
+                        { "id": "cypress", "label": "Cypress" },
+                        { "id": "react-testing-library", "label": "React Testing Library" },
+                        { "id": "cross-browser", "label": "سازگاری چندمرورگری" }
+                    ]
+                },
+                {
+                    "id": "performance",
+                    "title": "عملکرد",
+                    "items": [
+                        { "id": "ssr-ssg", "label": "SSR / SSG" },
+                        { "id": "code-splitting", "label": "تقسیم کد" },
+                        { "id": "lazy-loading", "label": "بارگذاری تنبل" },
+                        { "id": "performance-budgets", "label": "بودجه عملکرد" },
+                        { "id": "core-web-vitals", "label": "Core Web Vitals" }
+                    ]
+                },
+                {
+                    "id": "i18n",
+                    "title": "بین‌المللی‌سازی",
+                    "items": [
+                        { "id": "i18next", "label": "i18next" },
+                        { "id": "react-i18next", "label": "react-i18next" },
+                        { "id": "rtl-support", "label": "پشتیبانی RTL" },
+                        { "id": "multi-locale", "label": "مدیریت چندزبانه" }
+                    ]
+                },
+                {
+                    "id": "design",
+                    "title": "طراحی و دسترس‌پذیری",
+                    "items": [
+                        { "id": "wcag", "label": "WCAG" },
+                        { "id": "component-driven-design", "label": "طراحی مبتنی بر کامپوننت" },
+                        { "id": "figma", "label": "Figma" },
+                        { "id": "ui-ux", "label": "اصول UI/UX" }
+                    ]
+                },
+                {
+                    "id": "legacy",
+                    "title": "قدیمی",
+                    "items": [
+                        { "id": "bootstrap", "label": "Bootstrap" },
+                        { "id": "jquery", "label": "jQuery" }
+                    ]
+                }
+            ]
+        },
+        "about": {
+            "title": "درباره من",
+            "experience": "تجربه",
+            "education": "تحصیلات",
+            "educationItems": [
+                {
+                    "degree": "کارشناسی | مهندسی کامپیوتر",
+                    "institution": "دانشگاه مازندران | ۱۳۹۳ – ۱۳۹۸"
+                },
+                {
+                    "degree": "کارشناسی ارشد | فناوری اطلاعات",
+                    "institution": "دانشگاه صنعتی ارومیه | ۱۳۹۸ – ۱۴۰۲"
+                }
+            ],
+            "overc": {
+                "company": "OverC",
+                "period": "پاره‌وقت - دورکاری | دی ۱۴۰۴ – اکنون",
+                "positions": [
+                    {
+                        "title": "توسعه‌دهنده ارشد فرانت‌اند",
+                        "highlights": [
+                            "طراحی و تحویل داشبوردهای BI پرفورمنس بالا و چندمنبعی برای مشتریان داخلی و بین‌المللی با Next.js، Recharts و Highcharts، با پشتیبانی از جریان‌های داده بلادرنگ پیچیده از بیش از ۵ منبع یکپارچه.",
+                            "معماری راهکارهای فرانت‌اند با SSR، کش TanStack Query و استراتژی‌های lazy loading، با هدف زمان بارگذاری زیر ۲ ثانیه و بهبود قابل‌اندازه‌گیری Core Web Vitals در تمام تحویل‌های مشتری.",
+                            "پیاده‌سازی چندزبانه‌سازی مبتنی بر i18next با پشتیبانی کامل RTL، امکان ارائه محصول به بازارهای فارسی‌زبان و انگلیسی‌زبان از یک کدبیس واحد."
+                        ]
+                    }
+                ]
+            },
+            "dornica": {
+                "company": "Dornica",
+                "period": "تمام‌وقت - حضوری | خرداد ۱۴۰۰ – دی ۱۴۰۴",
+                "positions": [
+                    {
+                        "title": "رهبر فنی فرانت‌اند | مهر ۱۴۰۰ – دی ۱۴۰۴",
+                        "highlights": [
+                            "تعریف و اجرای استانداردهای سازمانی فرانت‌اند — شامل پیکربندی ESLint، Prettier، هوک‌های Git با Husky، گردش‌کار شاخه‌بندی و الگوهای کامپوننت — که در تمام پروژه‌ها و خطوط CI/CD پذیرفته شد.",
+                            "معماری داشبورد BI اجرایی در مقیاس ملی با یکپارچه‌سازی چندین REST API — شامل کارت‌های KPI، نقشه‌های جغرافیایی، جداول فیلترپذیر و نمودارهای Recharts؛ دستیابی به زمان بارگذاری کمتر از ۲ ثانیه با SSR در Next.js و کش TanStack Query.",
+                            "ایجاد کتابخانه کامپوننت با بیش از ۱۰ ماژول قابل‌استفاده مجدد با Mantine و React، کاهش زمان توسعه تخمینی داشبوردهای جدید حدود ۳۰٪.",
+                            "مهاجرت رویکرد استایل UI از Bootstrap به Tailwind CSS در پروژه‌های جدید، استانداردسازی design tokenها و کاهش CSS سفارشی.",
+                            "آموزش و منتورینگ بیش از ۱۰ توسعه‌دهنده تازه‌کار و کارآموز در برنامه آموزشی ۳ماهه ساختاریافته شامل HTML، CSS، SCSS، Bootstrap، JavaScript و jQuery، با ارتقای بیش از ۵ نفر به سطح میانی."
+                        ]
+                    },
+                    {
+                        "title": "طراح UI و توسعه‌دهنده فرانت‌اند | خرداد ۱۴۰۰ – مهر ۱۴۰۰",
+                        "highlights": [
+                            "ساخت بیش از ۲۰ رابط واکنش‌گرا از موکاپ‌های طراحی با Bootstrap و JavaScript برای پلتفرم‌های CMS، داشبوردهای داخلی و وب‌سایت‌های تخصصی مشتری."
+                        ]
+                    }
+                ]
+            },
+            "platin": {
+                "company": "Platin Agency",
+                "period": "پاره‌وقت - دورکاری | آذر ۱۴۰۲ – آذر ۱۴۰۴",
+                "positions": [
+                    {
+                        "title": "توسعه‌دهنده فرانت‌اند",
+                        "highlights": [
+                            "رهبری مستقل توسعه فرانت‌اند برای پیاده‌سازی end-to-end و تحویل موفق راهکارهای وب متنوع برای مشتریان.",
+                            "طراحی و راه‌اندازی وب‌سایت اصلی آژانس با اولویت بهترین شیوه‌های SEO و بهینه‌سازی عملکرد.",
+                            "توسعه و انتشار چندین میکروسایت کمپین برای Nazari Cake، با حفظ هویت برند یکپارچه و تجربه موبایل روان."
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "contact": {
+        "intro-heading": "علاقه‌مند به همکاری یا پروژه‌ای در ذهن دارید؟",
+        "intro-description": "چه بخواهید درباره توسعه وب فرانت‌اند گفتگو کنید، مشاوره برای ساخت اپلیکیشن‌های مقیاس‌پذیر React/Next.js بگیرید، یا فقط سلامی بگویید — از هر یک از راه‌های ارتباطی زیر با خیال راحت پیام بدهید. مشتاق ارتباط با شما هستم!",
+        "items": [
+            {
+                "id": "email",
+                "label": "ایمیل",
+                "value": "salarsarinavaii@gmail.com",
+                "href": "mailto:salarsarinavaii@gmail.com"
+            },
+            {
+                "id": "phone",
+                "label": "تلفن",
+                "value": "+98 921 134 2004",
+                "href": "tel:+989211342004"
+            },
+            {
+                "id": "linkedin",
+                "label": "لینکدین",
+                "value": "salarsarinavaii",
+                "href": "https://www.linkedin.com/in/salarsarinavaii/"
+            },
+            {
+                "id": "telegram",
+                "label": "تلگرام",
+                "value": "@sarinavaii",
+                "href": "https://t.me/sarinavaii"
+            },
+            {
+                "id": "github",
+                "label": "گیت‌هاب",
+                "value": "sarinavaii",
+                "href": "https://github.com/sarinavaii"
+            },
+            {
+                "id": "youtube",
+                "label": "یوتیوب",
+                "value": "@sarinavaii",
+                "href": "https://www.youtube.com/@sarinavaii"
+            }
+        ]
+    },
+    "metadata": {
+        "profession": "توسعه‌دهنده ارشد فرانت‌اند",
+        "description": "توسعه‌دهنده فرانت‌اند با تجربه در ساخت وب‌سایت‌های کاربرپسند و مدرن",
+        "personal-website": "وب‌سایت شخصی",
+        "keywords": "توسعه دهنده فرانت‌اند,توسعه وب,ری‌اکت,نکست جی‌اس,جاوا اسکریپت,تایپ اسکریپت"
+    },
+    "footer": {
+        "copyright": "© ۲۰۲۶ سالار ساری نوایی. تمامی حقوق محفوظ است."
+    }
+}

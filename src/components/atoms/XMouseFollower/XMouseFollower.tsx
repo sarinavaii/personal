@@ -51,7 +51,7 @@ const XMouseFollower = () => {
                     animate={{
                         x: mousePosition.x - (isHovering ? 0 : 16),
                         y: mousePosition.y - (isHovering ? 0 : 16),
-                        scale: isHovering ? 1.5 : 1,
+                        scale: isHovering ? 0.75 : 1,
                     }}
                     transition={{
                         type: "spring",
@@ -73,7 +73,6 @@ const XMouseFollower = () => {
                     animate={{
                         x: mousePosition.x - (isHovering ? 8 : 24),
                         y: mousePosition.y - (isHovering ? 8 : 24),
-                        scale: isHovering ? 1.5 : 1,
                     }}
                     transition={{
                         type: "spring",
