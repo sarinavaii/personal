@@ -20,10 +20,8 @@ const TechStackItemCard = ({ id, label }: TechStackItem) => {
     return (
         <li
             className={cn(
-                "flex flex-col items-center justify-center gap-2 rounded-xl border border-woodsmoke-200 dark:border-woodsmoke-900",
+                "flex shrink-0 w-[112px] flex-col items-center justify-center gap-2 rounded-xl border border-woodsmoke-200 dark:border-woodsmoke-900",
                 "bg-woodsmoke-50 dark:bg-woodsmoke-950 p-3 min-h-[88px]",
-                "transition-all duration-300 hover:scale-[1.03] hover:shadow-lg",
-                "hover:shadow-woodsmoke-300/30 dark:hover:shadow-woodsmoke-900/40",
             )}
         >
             {config ? (
@@ -40,29 +38,38 @@ const TechStackItemCard = ({ id, label }: TechStackItem) => {
     );
 };
 
+const TechStackMarquee = ({ items, direction }: { items: TechStackItem[]; direction: "ltr" | "rtl" }) => {
+    const trackItems = [...items, ...items];
+
+    return (
+        <div className="tech-marquee-mask overflow-hidden">
+            <ul
+                className={cn(
+                    "flex w-max gap-3",
+                    direction === "ltr" ? "animate-tech-marquee-ltr" : "animate-tech-marquee-rtl",
+                )}
+            >
+                {trackItems.map((item, index) => (
+                    <TechStackItemCard key={`${item.id}-${index}`} {...item} />
+                ))}
+            </ul>
+        </div>
+    );
+};
+
 const TechStack = () => {
     const t = useTranslations("home.techStack");
     const categories = t.raw("categories") as TechStackCategory[];
+    const allItems = categories.flatMap((category) => category.items);
+    const midpoint = Math.ceil(allItems.length / 2);
+    const topRow = allItems.slice(0, midpoint);
+    const bottomRow = allItems.slice(midpoint);
 
     return (
         <XSection transparent withPadding={false}>
-            <h2 className="text-2xl font-bold text-center mb-6">{t("title")}</h2>
-            <div className="flex flex-col gap-8">
-                {categories.map((category) => (
-                    <section key={category.id} aria-labelledby={`tech-stack-${category.id}`}>
-                        <h3
-                            id={`tech-stack-${category.id}`}
-                            className="text-sm font-semibold uppercase tracking-wide text-woodsmoke-500 dark:text-woodsmoke-400 mb-3"
-                        >
-                            {category.title}
-                        </h3>
-                        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                            {category.items.map((item) => (
-                                <TechStackItemCard key={item.id} {...item} />
-                            ))}
-                        </ul>
-                    </section>
-                ))}
+            <div className="flex flex-col gap-4">
+                <TechStackMarquee items={topRow} direction="ltr" />
+                <TechStackMarquee items={bottomRow} direction="rtl" />
             </div>
         </XSection>
     );
