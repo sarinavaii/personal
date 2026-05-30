@@ -22,7 +22,7 @@ const iconVariants = {
 
 const ProjectsCTA = () => {
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center my-10">
             <Link href="/projects">
                 <motion.span
                     className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl md:text-lg font-medium

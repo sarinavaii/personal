@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, animate } from "framer-motion";
+import { gsap } from "gsap";
 
 const RADII = [
     "60% 40% 55% 45% / 50% 60% 40% 55%",
@@ -32,39 +32,47 @@ const BLOBS = [
 ];
 
 function useBlob() {
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement | null>(null);
     const running = useRef(true);
+    const tween = useRef<gsap.core.Tween | null>(null);
+
+    function getRandomProps() {
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+        const x = Math.random() * (W - W * 0.5);
+        const y = Math.random() * (H - H * 0.5);
+        const borderRadius = RADII[Math.floor(Math.random() * RADII.length)];
+        return { x, y, borderRadius };
+    }
 
     function start(speedMin: number, speedMax: number) {
         running.current = true;
         const el = ref.current;
         if (!el) return;
 
-        async function loop() {
-            while (running.current) {
-                const W = window.innerWidth;
-                const H = window.innerHeight;
-                const x = Math.random() * (W - W * 0.5);
-                const y = Math.random() * (H - H * 0.5);
-                const borderRadius = RADII[Math.floor(Math.random() * RADII.length)];
-                const duration = speedMin + Math.random() * (speedMax - speedMin);
+        function animateBlob() {
+            if (!running.current) return;
+            const { x, y, borderRadius } = getRandomProps();
+            const duration = speedMin + Math.random() * (speedMax - speedMin);
 
-                await animate(
-                    el,
-                    { x, y, borderRadius },
-                    {
-                        duration,
-                        ease: [0.25, 0.1, 0.25, 1],
-                    },
-                );
-            }
+            tween.current = gsap.to(el, {
+                x,
+                y,
+                borderRadius,
+                duration,
+                ease: "power1.inOut",
+                onComplete: animateBlob,
+            });
         }
-
-        loop();
+        animateBlob();
     }
 
     function stop() {
         running.current = false;
+        if (tween.current) {
+            tween.current.kill();
+            tween.current = null;
+        }
     }
 
     return { ref, start, stop };
@@ -76,12 +84,13 @@ export default function BlobScene() {
     useEffect(() => {
         blobs.forEach((blob, i) => blob.start(BLOBS[i].speedMin, BLOBS[i].speedMax));
         return () => blobs.forEach((blob) => blob.stop());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <div className="fixed z-[-1] inset-0 overflow-hidden">
             {BLOBS.map((config, i) => (
-                <motion.div
+                <div
                     key={i}
                     ref={blobs[i].ref}
                     className="absolute w-[50vw] h-[50vh] blur-[110px] will-change-transform opacity-50 dark:opacity-100"
