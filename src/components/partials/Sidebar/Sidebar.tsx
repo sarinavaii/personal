@@ -1,6 +1,6 @@
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import { IconHome, IconArticle, IconMail, IconFolder } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 
 const links = [
     { href: "/", labelKey: "home", icon: IconHome },
@@ -10,7 +10,7 @@ const links = [
 ] as const;
 
 const Sidebar = () => {
-    const t = useTranslations("pages");
+    const translate = t("pages");
 
     return (
         <nav className="flex flex-col gap-4">
@@ -24,7 +24,7 @@ const Sidebar = () => {
                     >
                         <Icon size={20} />
                         <span className="inline-block relative">
-                            {t(link.labelKey)}
+                            {translate(link.labelKey)}
                             <span
                                 className="absolute left-0 bottom-0 w-0 group-hover:w-full h-0.5 bg-woodsmoke-900 dark:bg-woodsmoke-50 transition-all duration-300"
                                 aria-hidden="true"

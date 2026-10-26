@@ -2,18 +2,18 @@
 
 import XButton from "@atoms/XButton";
 import XSection from "@atoms/XSection";
-import { Link } from "@i18n/navigation";
+import { t } from "@lib/i18n";
+import Link from "next/link";
 import { Drawer } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Sidebar from "@partials/Sidebar";
 import { IconMenu, IconX } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 const Header = () => {
     const [opened, { open, close }] = useDisclosure(false);
-    const t = useTranslations();
+    const translate = t();
     const pathname = usePathname();
 
     useEffect(() => {
@@ -25,7 +25,7 @@ const Header = () => {
         <>
             <XSection className="flex items-center justify-between">
                 <Link href={"/"} className="uppercase">
-                    {t("common.site-name")}
+                    {translate("common.site-name")}
                 </Link>
                 <XButton
                     variant="transparent"
@@ -39,9 +39,6 @@ const Header = () => {
                 >
                     <IconMenu size={20} />
                 </XButton>
-                {/* <div className="flex gap-1 text-sm">
-                    <Link href="en">EN</Link>|<Link href="fa">FA</Link>
-                </div> */}
             </XSection>
 
             <Drawer

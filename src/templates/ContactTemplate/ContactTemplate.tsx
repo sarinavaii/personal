@@ -1,5 +1,5 @@
 import XSection from "@atoms/XSection";
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import {
     IconMail,
     IconPhone,
@@ -9,7 +9,7 @@ import {
     IconBrandYoutube,
     IconMailOpenedFilled,
 } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 import type { TablerIcon } from "@tabler/icons-react";
 
 type ContactItem = {
@@ -29,8 +29,8 @@ const CONTACT_ICONS: Record<string, TablerIcon> = {
 };
 
 const ContactTemplate = () => {
-    const t = useTranslations("contact");
-    const items = t.raw("items") as ContactItem[];
+    const translate = t("contact");
+    const items = translate.raw("items") as ContactItem[];
 
     return (
         <XSection transparent withPadding={false}>
@@ -38,7 +38,7 @@ const ContactTemplate = () => {
                 <IconMailOpenedFilled size={48} />
             </div>
             <div className="max-w-3xl mx-auto text-center mb-10 text-base text-woodsmoke-700 dark:text-woodsmoke-200">
-                <b>{t("intro-heading")}</b> <br /> {t("intro-description")}
+                <b>{translate("intro-heading")}</b> <br /> {translate("intro-description")}
             </div>
 
             <XSection>

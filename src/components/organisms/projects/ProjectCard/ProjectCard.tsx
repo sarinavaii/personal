@@ -1,9 +1,9 @@
 "use client";
 
 import XSection from "@atoms/XSection";
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import { IconPhoto, IconWorld } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -13,7 +13,7 @@ import type { Project } from "@core/data/PROJECTS";
 const ProjectGallery = dynamic(() => import("@molecules/ProjectGallery/ProjectGallery"), { ssr: false });
 
 const ProjectCard = ({ project }: { project: Project }) => {
-    const t = useTranslations("project-card");
+    const translate = t("project-card");
     const [opened, setOpened] = useState(false);
     const [index, setIndex] = useState(0);
 
@@ -36,10 +36,10 @@ const ProjectCard = ({ project }: { project: Project }) => {
                                 type="button"
                                 onClick={() => openGallery()}
                                 className="inline-flex items-center text-xs text-woodsmoke-700 hover:text-blue-600 dark:text-woodsmoke-200 dark:hover:text-blue-400 transition cursor-pointer"
-                                title={t("view-gallery")}
+                                title={translate("view-gallery")}
                             >
                                 <IconPhoto size={20} className="mr-1" />
-                                {t("gallery")} ({project.gallery.length})
+                                {translate("gallery")} ({project.gallery.length})
                             </button>
                         )}
                         <Link
@@ -47,10 +47,10 @@ const ProjectCard = ({ project }: { project: Project }) => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center text-xs text-woodsmoke-700 hover:text-blue-600 dark:text-woodsmoke-200 dark:hover:text-blue-400 transition"
-                            title={t("open-website")}
+                            title={translate("open-website")}
                         >
                             <IconWorld size={20} className="mr-1" />
-                            {t("live-website")}
+                            {translate("live-website")}
                         </Link>
                     </div>
                 </div>

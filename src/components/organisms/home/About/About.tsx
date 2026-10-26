@@ -3,7 +3,7 @@
 import XBadge from "@atoms/XBadge";
 import XSection from "@atoms/XSection";
 import XSegmentedControl from "@atoms/XSegmentedControl";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -31,15 +31,15 @@ const EXPERIENCE_IMAGES: Record<(typeof EXPERIENCE_KEYS)[number], { src: string;
 };
 
 const About = () => {
-    const t = useTranslations("home.about");
+    const translate = t("home.about");
     const [segmentValue, setSegmentValue] = useState("experience");
-    const educationItems = t.raw("educationItems") as EducationItem[];
+    const educationItems = translate.raw("educationItems") as EducationItem[];
 
     return (
         <>
             <XSection transparent>
                 <div className="flex flex-col gap-4">
-                    <h2 className="text-2xl font-bold text-center">{t("title")}</h2>
+                    <h2 className="text-2xl font-bold text-center">{translate("title")}</h2>
                     <XSegmentedControl
                         transitionDuration={500}
                         fullWidth
@@ -52,11 +52,11 @@ const About = () => {
                         }}
                         data={[
                             {
-                                label: t("experience"),
+                                label: translate("experience"),
                                 value: "experience",
                             },
                             {
-                                label: t("education"),
+                                label: translate("education"),
                                 value: "education",
                             },
                         ]}
@@ -76,7 +76,7 @@ const About = () => {
                 ))}
             {segmentValue === "experience" &&
                 EXPERIENCE_KEYS.map((key) => {
-                    const entry = t.raw(key) as ExperienceEntry;
+                    const entry = translate.raw(key) as ExperienceEntry;
                     const image = EXPERIENCE_IMAGES[key];
                     const hasMultiplePositions = entry.positions.length > 1;
 

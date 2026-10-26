@@ -1,8 +1,8 @@
 import XBadge from "@atoms/XBadge";
 import XSection from "@atoms/XSection";
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import ContentFormatter from "@molecules/ContentFormatter/ContentFormatter";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { formatDate, t } from "@lib/i18n";
 
 type BlogPost = {
     slug: string;
@@ -20,16 +20,15 @@ type Props = {
     nextPost: BlogPost | null;
 };
 
-const BlogDetailsTemplate = async ({ post, prevPost, nextPost }: Props) => {
-    const t = await getTranslations("home.blogs");
-    const format = await getFormatter();
+const BlogDetailsTemplate = ({ post, prevPost, nextPost }: Props) => {
+    const translate = t("home.blogs");
 
     return (
         <XSection transparent withPadding={false} containerClassname="!mb-0">
             <article>
                 <h1 className="text-2xl font-bold text-center">{post.title}</h1>
                 <div className="text-sm text-woodsmoke-500 text-center">
-                    {format.dateTime(new Date(post.date), {
+                    {formatDate(post.date, {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -52,7 +51,7 @@ const BlogDetailsTemplate = async ({ post, prevPost, nextPost }: Props) => {
                         <Link href={`/blog/${prevPost.slug}`}>
                             <XSection className="group flex flex-col gap-1">
                                 <span className="text-xs text-woodsmoke-400 uppercase tracking-wide">
-                                    <span className="inline-block rtl:rotate-180">←</span> {t("newer")}
+                                    <span className="inline-block">←</span> {translate("newer")}
                                 </span>
                                 <span className="text-sm font-semibold">{prevPost.title}</span>
                             </XSection>
@@ -64,7 +63,7 @@ const BlogDetailsTemplate = async ({ post, prevPost, nextPost }: Props) => {
                         <Link href={`/blog/${nextPost.slug}`}>
                             <XSection className="group flex flex-col gap-1 justify-end text-end">
                                 <span className="text-xs text-woodsmoke-400 uppercase tracking-wide">
-                                    {t("older")} <span className="inline-block rtl:rotate-180">→</span>
+                                    {translate("older")} <span className="inline-block">→</span>
                                 </span>
                                 <span className="text-sm font-semibold">{nextPost.title}</span>
                             </XSection>
@@ -75,7 +74,7 @@ const BlogDetailsTemplate = async ({ post, prevPost, nextPost }: Props) => {
 
             <div className="text-center mt-8">
                 <Link className="text-xl font-bold" href="/blog">
-                    {t("back")}
+                    {translate("back")}
                 </Link>
             </div>
         </XSection>

@@ -1,6 +1,6 @@
 import XSection from "@atoms/XSection";
 import { cn } from "@core/utils";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 import { TECH_STACK_ICONS } from "./techStack.icons";
 
 type TechStackItem = {
@@ -58,8 +58,8 @@ const TechStackMarquee = ({ items, direction }: { items: TechStackItem[]; direct
 };
 
 const TechStack = () => {
-    const t = useTranslations("home.techStack");
-    const categories = t.raw("categories") as TechStackCategory[];
+    const translate = t("home.techStack");
+    const categories = translate.raw("categories") as TechStackCategory[];
     const allItems = categories.flatMap((category) => category.items);
     const midpoint = Math.ceil(allItems.length / 2);
     const topRow = allItems.slice(0, midpoint);

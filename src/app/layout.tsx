@@ -1,6 +1,3 @@
-import { routing } from "@i18n/routing";
-import { hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
 import { cn } from "@core/utils";
 import { Viewport } from "next/types";
 import type { Metadata } from "next";
@@ -13,15 +10,12 @@ import "@mantine/core/styles.css";
 import "@styles/globals.css";
 
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
-import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PropsWithChildren } from "react";
 import Blob from "@partials/Blob";
 import DotBackground from "@partials/Background/DotBackground";
-import { SITE_URL, absoluteUrl, languageAlternates } from "@lib/site";
+import { t } from "@lib/i18n";
+import { SITE_URL, absoluteUrl } from "@lib/site";
 
-type Props = PropsWithChildren<{ params: Promise<{ locale: string }> }>;
-
-// Base metadata that will be used for all locales
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
@@ -29,22 +23,12 @@ export const viewport: Viewport = {
     themeColor: "#111313",
 };
 
-// Pre-render both locales instead of rendering every request on demand.
-export function generateStaticParams() {
-    return routing.locales.map((locale) => ({ locale }));
-}
+export function generateMetadata(): Metadata {
+    const translate = t();
 
-// Generate metadata based on locale
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { locale } = await params;
-
-    // Get translations from the appropriate JSON file
-    const t = await getTranslations({ locale });
-
-    const siteName = t("common.site-name");
-    const baseTitle = `${siteName} | ${t("metadata.profession")}`;
-    const description = t("metadata.description");
-    const homePath = locale === routing.defaultLocale ? "/" : `/${locale}`;
+    const siteName = translate("common.site-name");
+    const baseTitle = `${siteName} | ${translate("metadata.profession")}`;
+    const description = translate("metadata.description");
 
     return {
         metadataBase: new URL(SITE_URL),
@@ -53,22 +37,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             template: `%s | ${siteName}`,
         },
         description,
-        keywords: t("metadata.keywords").split(","),
+        keywords: translate("metadata.keywords").split(","),
         authors: [{ name: siteName, url: SITE_URL }],
         creator: siteName,
         publisher: siteName,
         alternates: {
-            canonical: absoluteUrl(homePath),
-            languages: languageAlternates(""),
+            canonical: absoluteUrl("/"),
         },
         openGraph: {
             type: "website",
-            locale: locale === "fa" ? "fa_IR" : "en_US",
-            alternateLocale: locale === "fa" ? "en_US" : "fa_IR",
-            url: homePath,
+            locale: "en_US",
+            url: "/",
             title: baseTitle,
             description,
-            siteName: `${siteName} ${t("metadata.personal-website")}`,
+            siteName: `${siteName} ${translate("metadata.personal-website")}`,
             images: [
                 {
                     url: "/images/profile.jpg",
@@ -108,30 +90,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
-export default async function LocaleLayout({ children, params }: Props) {
-    const { locale } = await params;
-    if (!hasLocale(routing.locales, locale)) {
-        notFound();
-    }
-
-    // Opts every nested page into static rendering for this locale.
-    setRequestLocale(locale);
-
+export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html
-            lang={locale}
-            dir={locale === "en" ? "ltr" : "rtl"}
-            {...mantineHtmlProps}
-            data-mantine-color-scheme="dark"
-        >
+        <html lang="en" dir="ltr" {...mantineHtmlProps} data-mantine-color-scheme="dark">
             <head>
                 <ColorSchemeScript defaultColorScheme="dark" />
             </head>
             <body
-                className={cn("bg-woodsmoke-100 text-woodsmoke-900 dark:bg-black dark:text-woodsmoke-100", {
-                    "font-peyda": locale === "fa",
-                    "font-space-grotesk leading-snug": locale === "en",
-                })}
+                className={cn(
+                    "bg-woodsmoke-100 text-woodsmoke-900 dark:bg-black dark:text-woodsmoke-100",
+                    "font-space-grotesk leading-snug",
+                )}
             >
                 <Providers>
                     {/* <XMouseFollower /> */}

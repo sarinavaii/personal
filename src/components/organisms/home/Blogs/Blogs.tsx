@@ -1,19 +1,19 @@
 import XSection from "@atoms/XSection";
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import { getLatestPosts } from "@lib/posts";
 import { IconArrowRight } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 
 const Blogs = () => {
-    const t = useTranslations("home.blogs");
+    const translate = t("home.blogs");
     const posts = getLatestPosts(4);
 
     return (
         <XSection transparent withPadding={false}>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">{t("title")}</h2>
+                <h2 className="text-2xl font-bold">{translate("title")}</h2>
                 <Link className="flex gap-1 items-center" href="/blog">
-                    {t("view-all")}
+                    {translate("view-all")}
                     <IconArrowRight size={24} />
                 </Link>
             </div>

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import { absoluteUrl, languageAlternates, localePath } from "@lib/site";
+import { t } from "@lib/i18n";
+import { absoluteUrl } from "@lib/site";
 
 type PageMetadataInput = {
-    locale: string;
-    /** Route path without the locale prefix, e.g. "/blog". Empty for home. */
+    /** Route path, e.g. "/blog". Empty for home. */
     path?: string;
     /** Page title without the site suffix. Omit to inherit the layout default. */
     title?: string;
@@ -21,22 +20,21 @@ type PageMetadataInput = {
  * defines them, so every page that wants a correct `og:url` has to provide the
  * full object instead of just the url.
  */
-export async function pageMetadata({
-    locale,
+export function pageMetadata({
     path = "",
     title,
     description,
     type = "website",
     publishedTime,
     tags,
-}: PageMetadataInput): Promise<Metadata> {
-    const t = await getTranslations({ locale });
+}: PageMetadataInput): Metadata {
+    const translate = t();
 
-    const siteName = t("common.site-name");
-    const siteTitle = `${siteName} | ${t("metadata.profession")}`;
-    const url = absoluteUrl(localePath(locale, path));
+    const siteName = translate("common.site-name");
+    const siteTitle = `${siteName} | ${translate("metadata.profession")}`;
+    const url = absoluteUrl(path);
     const resolvedTitle = title ? `${title} | ${siteName}` : siteTitle;
-    const resolvedDescription = description ?? t("metadata.description");
+    const resolvedDescription = description ?? translate("metadata.description");
     const images = [{ url: "/images/profile.jpg", width: 1024, height: 1024, alt: siteName }];
 
     return {
@@ -46,16 +44,14 @@ export async function pageMetadata({
         description: resolvedDescription,
         alternates: {
             canonical: url,
-            languages: languageAlternates(path),
         },
         openGraph: {
             type,
             url,
             title: resolvedTitle,
             description: resolvedDescription,
-            siteName: `${siteName} ${t("metadata.personal-website")}`,
-            locale: locale === "fa" ? "fa_IR" : "en_US",
-            alternateLocale: locale === "fa" ? "en_US" : "fa_IR",
+            siteName: `${siteName} ${translate("metadata.personal-website")}`,
+            locale: "en_US",
             images,
             ...(publishedTime ? { publishedTime } : {}),
             ...(tags ? { tags } : {}),

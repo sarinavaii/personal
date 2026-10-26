@@ -5,11 +5,11 @@ import XSwitch from "@atoms/XSwitch";
 import HydrationBoundary from "@core/boundaries/HydrationBoundary";
 import { useMantineColorScheme } from "@mantine/core";
 import { IconMoonStars, IconSun } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { t } from "@lib/i18n";
 import React from "react";
 
 const Footer = () => {
-    const t = useTranslations();
+    const translate = t();
     const { colorScheme, setColorScheme } = useMantineColorScheme();
     return (
         <XSection transparent className="flex flex-col gap-4 items-center">
@@ -24,7 +24,7 @@ const Footer = () => {
                     onChange={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
                 />
             </HydrationBoundary>
-            <div className="text-center text-sm">{t("footer.copyright")}</div>
+            <div className="text-center text-sm">{translate("footer.copyright")}</div>
         </XSection>
     );
 };

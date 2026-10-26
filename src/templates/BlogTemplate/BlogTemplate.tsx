@@ -1,17 +1,16 @@
 import XSection from "@atoms/XSection";
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import { getPosts } from "@lib/posts";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { formatDate, t } from "@lib/i18n";
 
-const BlogTemplate = async () => {
-    const t = await getTranslations("home.blogs");
-    const format = await getFormatter();
+const BlogTemplate = () => {
+    const translate = t("home.blogs");
     const posts = getPosts();
 
     return (
         <>
             <XSection transparent>
-                <h1 className="text-3xl text-center font-bold">{t("title")}</h1>
+                <h1 className="text-3xl text-center font-bold">{translate("title")}</h1>
             </XSection>
 
             {posts.map((post) => (
@@ -21,7 +20,7 @@ const BlogTemplate = async () => {
                 >
                     <Link href={`/blog/${post.slug}`}>
                         <div className="text-xs text-woodsmoke-500 dark:text-woodsmoke-300">
-                            {format.dateTime(new Date(post.date), {
+                            {formatDate(post.date, {
                                 year: "numeric",
                                 month: "long",
                                 day: "2-digit",

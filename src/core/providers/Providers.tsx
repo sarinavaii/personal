@@ -1,5 +1,4 @@
 import { createTheme, DirectionProvider, MantineProvider } from "@mantine/core";
-import { NextIntlClientProvider, useLocale } from "next-intl";
 import { PropsWithChildren } from "react";
 
 const Providers = ({ children }: PropsWithChildren) => {
@@ -27,16 +26,12 @@ const Providers = ({ children }: PropsWithChildren) => {
         },
     });
 
-    const locale = useLocale();
-
     return (
-        <NextIntlClientProvider>
-            <DirectionProvider initialDirection={locale === "fa" ? "rtl" : "ltr"}>
-                <MantineProvider theme={theme} defaultColorScheme="dark">
-                    {children}
-                </MantineProvider>
-            </DirectionProvider>
-        </NextIntlClientProvider>
+        <DirectionProvider initialDirection="ltr">
+            <MantineProvider theme={theme} defaultColorScheme="dark">
+                {children}
+            </MantineProvider>
+        </DirectionProvider>
     );
 };
 

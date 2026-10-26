@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@i18n/navigation";
+import Link from "next/link";
 import { IconLayoutGrid, IconArrowRight } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 

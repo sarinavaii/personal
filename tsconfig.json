@@ -20,7 +20,6 @@
         ],
         "paths": {
             "@styles/*": ["./src/styles/*"],
-            "@i18n/*": ["./src/i18n/*"],
             "@templates/*": ["./src/templates/*"],
             "@core/*": ["./src/core/*"],
             "@lib/*": ["./src/lib/*"],

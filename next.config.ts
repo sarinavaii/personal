@@ -1,6 +1,5 @@
 import path from "node:path";
 import { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
     turbopack: {
@@ -11,7 +10,16 @@ const nextConfig: NextConfig = {
     images: {
         formats: ["image/avif", "image/webp"],
     },
+    async redirects() {
+        // The site used to be bilingual (/ and /fa, plus /en aliases).
+        // Keep the old URLs working instead of 404ing indexed pages.
+        return [
+            { source: "/en", destination: "/", permanent: true },
+            { source: "/en/:path*", destination: "/:path*", permanent: true },
+            { source: "/fa", destination: "/", permanent: true },
+            { source: "/fa/:path*", destination: "/:path*", permanent: true },
+        ];
+    },
 };
 
-const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
+export default nextConfig;
