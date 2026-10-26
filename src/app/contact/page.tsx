@@ -5,8 +5,9 @@ import { pageMetadata } from "@lib/seo";
 
 export function generateMetadata(): Metadata {
     const translate = t("pages");
+    const metadata = t("metadata.pages");
 
-    return pageMetadata({ path: "/contact", title: translate("contact") });
+    return pageMetadata({ path: "/contact", title: translate("contact"), description: metadata("contact") });
 }
 
 export default function ContactPage() {

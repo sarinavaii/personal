@@ -1,102 +1,97 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+type Waypoint = {
+    /** translate in % of the blob's own size (the blobs are 50vw x 50vh) */
+    x: number;
+    y: number;
+    /** index into RADII */
+    radius: number;
+};
+
+type BlobConfig = {
+    background: string;
+    /** full loop duration in seconds */
+    duration: number;
+    /** negative delay so the three blobs never move in lockstep */
+    delay: number;
+    stops: readonly [Waypoint, Waypoint, Waypoint, Waypoint];
+};
 
 const RADII = [
     "60% 40% 55% 45% / 50% 60% 40% 55%",
     "40% 60% 45% 55% / 60% 40% 55% 45%",
     "55% 45% 60% 40% / 45% 55% 50% 50%",
     "50% 50% 40% 60% / 55% 45% 60% 40%",
-];
+] as const;
 
-const BLOBS = [
+// Each blob walks four waypoints (~7-10s per leg, the tempo of the previous
+// gsap tweens) and loops back to where it started. Values are percentages of the
+// element's own size, which is exactly the old 0..0.5 * viewport range.
+const BLOBS: readonly BlobConfig[] = [
     {
         background:
             "radial-gradient(ellipse at 40% 50%, rgba(102,116,114,0.45) 0%, rgba(58,66,64,0.25) 55%, transparent 75%)",
-        speedMin: 5,
-        speedMax: 9,
+        duration: 28,
+        delay: 0,
+        stops: [
+            { x: 0, y: 0, radius: 0 },
+            { x: 58, y: 26, radius: 1 },
+            { x: 16, y: 74, radius: 2 },
+            { x: 86, y: 44, radius: 3 },
+        ],
     },
     {
         background:
             "radial-gradient(ellipse at 60% 40%, rgba(80,100,96,0.45) 0%, rgba(40,58,54,0.2) 55%, transparent 75%)",
-        speedMin: 6,
-        speedMax: 11,
+        duration: 34,
+        delay: -9,
+        stops: [
+            { x: 24, y: 8, radius: 2 },
+            { x: 8, y: 62, radius: 3 },
+            { x: 70, y: 88, radius: 0 },
+            { x: 42, y: 30, radius: 1 },
+        ],
     },
     {
         background:
             "radial-gradient(ellipse at 50% 60%, rgba(120,138,136,0.4) 0%, rgba(70,84,82,0.18) 55%, transparent 75%)",
-        speedMin: 7,
-        speedMax: 13,
+        duration: 40,
+        delay: -21,
+        stops: [
+            { x: 12, y: 36, radius: 3 },
+            { x: 78, y: 6, radius: 2 },
+            { x: 38, y: 82, radius: 1 },
+            { x: 92, y: 58, radius: 0 },
+        ],
     },
 ];
 
-function useBlob() {
-    const ref = useRef<HTMLDivElement | null>(null);
-    const running = useRef(true);
-    const tween = useRef<gsap.core.Tween | null>(null);
-
-    function getRandomProps() {
-        const W = window.innerWidth;
-        const H = window.innerHeight;
-        const x = Math.random() * (W - W * 0.5);
-        const y = Math.random() * (H - H * 0.5);
-        const borderRadius = RADII[Math.floor(Math.random() * RADII.length)];
-        return { x, y, borderRadius };
-    }
-
-    function start(speedMin: number, speedMax: number) {
-        running.current = true;
-        const el = ref.current;
-        if (!el) return;
-
-        function animateBlob() {
-            if (!running.current) return;
-            const { x, y, borderRadius } = getRandomProps();
-            const duration = speedMin + Math.random() * (speedMax - speedMin);
-
-            tween.current = gsap.to(el, {
-                x,
-                y,
-                borderRadius,
-                duration,
-                ease: "power1.inOut",
-                onComplete: animateBlob,
-            });
-        }
-        animateBlob();
-    }
-
-    function stop() {
-        running.current = false;
-        if (tween.current) {
-            tween.current.kill();
-            tween.current = null;
-        }
-    }
-
-    return { ref, start, stop };
-}
+const CSS = [
+    ...BLOBS.map((blob, index) => {
+        const frames = [
+            ...blob.stops.map((stop, stopIndex) => {
+                const position = `${stopIndex * 25}%`;
+                return `${position}{transform:translate3d(${stop.x}%,${stop.y}%,0);border-radius:${RADII[stop.radius]};}`;
+            }),
+            `100%{transform:translate3d(${blob.stops[0].x}%,${blob.stops[0].y}%,0);border-radius:${RADII[blob.stops[0].radius]};}`,
+        ].join("");
+        return `@keyframes blob-drift-${index}{${frames}}`;
+    }),
+    "@media (prefers-reduced-motion: reduce){.blob-motion{animation:none !important;}}",
+].join("");
 
 export default function BlobScene() {
-    const blobs = [useBlob(), useBlob(), useBlob()];
-
-    useEffect(() => {
-        blobs.forEach((blob, i) => blob.start(BLOBS[i].speedMin, BLOBS[i].speedMax));
-        return () => blobs.forEach((blob) => blob.stop());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     return (
         <div className="fixed z-[-1] inset-0 overflow-hidden">
-            {BLOBS.map((config, i) => (
+            <style>{CSS}</style>
+            {BLOBS.map((config, index) => (
                 <div
-                    key={i}
-                    ref={blobs[i].ref}
-                    className="absolute w-[50vw] h-[50vh] blur-[110px] will-change-transform opacity-50 dark:opacity-100"
+                    key={index}
+                    className="blob-motion absolute w-[50vw] h-[50vh] blur-[110px] will-change-transform opacity-50 dark:opacity-100"
                     style={{
                         background: config.background,
-                        borderRadius: RADII[0],
+                        borderRadius: RADII[config.stops[0].radius],
+                        animation: `blob-drift-${index} ${config.duration}s ease-in-out ${config.delay}s infinite`,
                     }}
                 />
             ))}

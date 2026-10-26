@@ -28,11 +28,13 @@ const BlogDetailsTemplate = ({ post, prevPost, nextPost }: Props) => {
             <article>
                 <h1 className="text-2xl font-bold text-center">{post.title}</h1>
                 <div className="text-sm text-woodsmoke-500 text-center">
-                    {formatDate(post.date, {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                    })}
+                    <time dateTime={post.date}>
+                        {formatDate(post.date, {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </time>
                 </div>
                 <ContentFormatter>{post.content}</ContentFormatter>
                 <div className="flex flex-wrap gap-1">

@@ -237,7 +237,12 @@
         "profession": "Senior Front-end Web Developer",
         "description": "Senior frontend developer creating user-friendly and modern websites",
         "personal-website": "Personal Website",
-        "keywords": "frontend developer,web development,React,Next.js,JavaScript,TypeScript"
+        "keywords": "frontend developer,web development,React,Next.js,JavaScript,TypeScript",
+        "pages": {
+            "blog": "Articles on React, Next.js, CSS, and front-end performance by senior front-end developer Salar Sari Navaii.",
+            "projects": "Selected front-end projects: nationwide citizen platforms, private BI dashboards, and e-commerce builds delivered in React and Next.js.",
+            "contact": "Get in touch with Salar Sari Navaii about front-end development work, React/Next.js consulting, or collaboration."
+        }
     },
     "footer": {
         "copyright": "© 2026 Salar Sari Navaii. All rights reserved."

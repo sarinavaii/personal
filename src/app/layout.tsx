@@ -11,10 +11,12 @@ import "@styles/globals.css";
 
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import { PropsWithChildren } from "react";
+import { spaceGrotesk } from "@core/fonts";
 import Blob from "@partials/Blob";
 import DotBackground from "@partials/Background/DotBackground";
 import { t } from "@lib/i18n";
 import { SITE_URL, absoluteUrl } from "@lib/site";
+import { JsonLd, graphSchema, personSchema, websiteSchema } from "@lib/schema";
 
 export const viewport: Viewport = {
     width: "device-width",
@@ -51,20 +53,11 @@ export function generateMetadata(): Metadata {
             title: baseTitle,
             description,
             siteName: `${siteName} ${translate("metadata.personal-website")}`,
-            images: [
-                {
-                    url: "/images/profile.jpg",
-                    width: 1024,
-                    height: 1024,
-                    alt: siteName,
-                },
-            ],
         },
         twitter: {
             card: "summary_large_image",
             title: baseTitle,
             description,
-            images: ["/images/profile.jpg"],
         },
         icons: {
             icon: [
@@ -92,7 +85,7 @@ export function generateMetadata(): Metadata {
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html lang="en" dir="ltr" {...mantineHtmlProps} data-mantine-color-scheme="dark">
+        <html lang="en" dir="ltr" className={spaceGrotesk.variable} {...mantineHtmlProps} data-mantine-color-scheme="dark">
             <head>
                 <ColorSchemeScript defaultColorScheme="dark" />
             </head>
@@ -102,14 +95,19 @@ export default function RootLayout({ children }: PropsWithChildren) {
                     "font-space-grotesk leading-snug",
                 )}
             >
+                <JsonLd data={graphSchema([personSchema(), websiteSchema()])} />
                 <Providers>
                     {/* <XMouseFollower /> */}
                     <DotBackground />
                     <Blob />
                     <div className="p-4 min-h-dvh flex flex-col relative z-1">
-                        <Header />
-                        <div className="grow">{children}</div>
-                        <Footer />
+                        <header>
+                            <Header />
+                        </header>
+                        <main className="grow">{children}</main>
+                        <footer>
+                            <Footer />
+                        </footer>
                     </div>
                 </Providers>
             </body>

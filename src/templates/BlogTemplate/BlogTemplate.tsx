@@ -26,7 +26,7 @@ const BlogTemplate = () => {
                                 day: "2-digit",
                             })}
                         </div>
-                        <h3 className="leading-tight font-bold text-lg mt-2 mb-1">{post.title}</h3>
+                        <h2 className="leading-tight font-bold text-lg mt-2 mb-1">{post.title}</h2>
                         <div className="text-sm text-woodsmoke-600 dark:text-woodsmoke-300">{post.description}</div>
                     </Link>
                 </XSection>

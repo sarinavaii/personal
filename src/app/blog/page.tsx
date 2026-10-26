@@ -5,8 +5,9 @@ import { pageMetadata } from "@lib/seo";
 
 export function generateMetadata(): Metadata {
     const translate = t("home.blogs");
+    const metadata = t("metadata.pages");
 
-    return pageMetadata({ path: "/blog", title: translate("title") });
+    return pageMetadata({ path: "/blog", title: translate("title"), description: metadata("blog") });
 }
 
 export default function BlogPage() {

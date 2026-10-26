@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { t } from "@lib/i18n";
-import { absoluteUrl } from "@lib/site";
+import { SITE_URL, absoluteUrl } from "@lib/site";
 
 type PageMetadataInput = {
     /** Route path, e.g. "/blog". Empty for home. */
@@ -10,8 +10,16 @@ type PageMetadataInput = {
     description?: string;
     type?: "website" | "article";
     publishedTime?: string;
+    /** Last modification time (ISO). Defaults to `publishedTime` for articles. */
+    modifiedTime?: string;
     tags?: string[];
+    /** Overrides the site-wide keywords from the message catalog. */
+    keywords?: string[];
+    /** Emit `robots: noindex, nofollow` for pages that must stay out of search. */
+    noIndex?: boolean;
 };
+
+type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
 /**
  * Builds a complete metadata object for a page.
@@ -19,6 +27,9 @@ type PageMetadataInput = {
  * `openGraph` / `twitter` are replaced wholesale by Next when a child route
  * defines them, so every page that wants a correct `og:url` has to provide the
  * full object instead of just the url.
+ *
+ * Images are intentionally omitted: the route-level `opengraph-image.tsx` file
+ * convention supplies the 1200x630 card (and Next copies it to `twitter:image`).
  */
 export function pageMetadata({
     path = "",
@@ -26,7 +37,10 @@ export function pageMetadata({
     description,
     type = "website",
     publishedTime,
+    modifiedTime,
     tags,
+    keywords,
+    noIndex = false,
 }: PageMetadataInput): Metadata {
     const translate = t();
 
@@ -35,7 +49,37 @@ export function pageMetadata({
     const url = absoluteUrl(path);
     const resolvedTitle = title ? `${title} | ${siteName}` : siteTitle;
     const resolvedDescription = description ?? translate("metadata.description");
-    const images = [{ url: "/images/profile.jpg", width: 1024, height: 1024, alt: siteName }];
+    const resolvedKeywords =
+        keywords ??
+        translate("metadata.keywords")
+            .split(",")
+            .map((keyword) => keyword.trim())
+            .filter(Boolean);
+
+    const openGraph: OpenGraph =
+        type === "article"
+            ? {
+                  type: "article",
+                  url,
+                  title: resolvedTitle,
+                  description: resolvedDescription,
+                  siteName: `${siteName} ${translate("metadata.personal-website")}`,
+                  locale: "en_US",
+                  ...(publishedTime ? { publishedTime } : {}),
+                  ...(modifiedTime ?? publishedTime
+                      ? { modifiedTime: modifiedTime ?? publishedTime }
+                      : {}),
+                  authors: [siteName],
+                  ...(tags?.length ? { tags, section: tags[0] } : {}),
+              }
+            : {
+                  type: "website",
+                  url,
+                  title: resolvedTitle,
+                  description: resolvedDescription,
+                  siteName: `${siteName} ${translate("metadata.personal-website")}`,
+                  locale: "en_US",
+              };
 
     return {
         // `title: undefined` still counts as "set" and would wipe the layout's
@@ -45,22 +89,14 @@ export function pageMetadata({
         alternates: {
             canonical: url,
         },
-        openGraph: {
-            type,
-            url,
-            title: resolvedTitle,
-            description: resolvedDescription,
-            siteName: `${siteName} ${translate("metadata.personal-website")}`,
-            locale: "en_US",
-            images,
-            ...(publishedTime ? { publishedTime } : {}),
-            ...(tags ? { tags } : {}),
-        },
+        authors: [{ name: siteName, url: SITE_URL }],
+        keywords: resolvedKeywords,
+        ...(noIndex ? { robots: { index: false, follow: false } } : {}),
+        openGraph,
         twitter: {
             card: "summary_large_image",
             title: resolvedTitle,
             description: resolvedDescription,
-            images: ["/images/profile.jpg"],
         },
     };
 }

@@ -59,7 +59,10 @@ const ProjectCard = ({ project }: { project: Project }) => {
             {opened && (
                 <ProjectGallery
                     index={index}
-                    slides={project.gallery.map((src) => ({ src }))}
+                    slides={project.gallery.map((src, galleryIndex) => ({
+                        src,
+                        alt: `${project.title} screenshot ${galleryIndex + 1}`,
+                    }))}
                     onClose={() => setOpened(false)}
                     onIndexChange={setIndex}
                 />

@@ -6,7 +6,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 
 type Props = {
-    slides: { src: string }[];
+    slides: { src: string; alt: string }[];
     index: number;
     onClose: () => void;
     onIndexChange: (index: number) => void;

@@ -16,10 +16,10 @@ const Hero = () => {
                     sizes="(min-width: 640px) 96px, 80px"
                     priority
                 />
-                <h2 className="sm:text-2xl text-lg">
+                <h1 className="sm:text-2xl text-lg">
                     <span className="text-woodsmoke-500 font-bold">{translate("home.hero.tagline-1")}</span>
                     <br /> {translate("home.hero.tagline-2")}
-                </h2>
+                </h1>
             </div>
             <p className="text-center max-w-xl mx-auto mt-6">{translate("home.hero.description")}</p>
         </XSection>

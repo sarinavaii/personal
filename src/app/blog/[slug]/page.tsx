@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getAdjacentPosts, getPostBySlug, getPosts } from "@lib/posts";
 import BlogDetailsTemplate from "@templates/BlogDetailsTemplate/BlogDetailsTemplate";
 import { pageMetadata } from "@lib/seo";
+import { JsonLd, blogPostingSchema, breadcrumbSchema } from "@lib/schema";
+import { t } from "@lib/i18n";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -38,6 +40,19 @@ export default async function PostPage({ params }: Props) {
     }
 
     const { prevPost, nextPost } = getAdjacentPosts(slug);
+    const translate = t();
 
-    return <BlogDetailsTemplate post={post} nextPost={nextPost} prevPost={prevPost} />;
+    return (
+        <>
+            <JsonLd data={blogPostingSchema(post)} />
+            <JsonLd
+                data={breadcrumbSchema([
+                    { name: translate("pages.home"), path: "/" },
+                    { name: translate("pages.blog"), path: "/blog" },
+                    { name: post.title, path: `/blog/${post.slug}` },
+                ])}
+            />
+            <BlogDetailsTemplate post={post} nextPost={nextPost} prevPost={prevPost} />
+        </>
+    );
 }
