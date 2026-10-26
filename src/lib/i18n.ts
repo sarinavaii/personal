@@ -2,7 +2,7 @@ import en from "../../messages/en.json";
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 
-const messages = en as unknown as Record<string, Json>;
+const messages: Record<string, Json> = en;
 
 function lookup(path: string): Json | undefined {
     return path.split(".").reduce<Json | undefined>((acc, part) => {
@@ -18,7 +18,6 @@ export type Translator = {
     raw<T = unknown>(key: string): T;
 };
 
-/** Drop-in replacement for next-intl's `useTranslations` / `getTranslations`. */
 export function t(namespace?: string): Translator {
     const resolve = (key: string) => lookup(namespace ? `${namespace}.${key}` : key);
 
@@ -35,7 +34,6 @@ export function t(namespace?: string): Translator {
     return translate;
 }
 
-/** Drop-in replacement for next-intl's `getFormatter().dateTime(...)`. */
 export function formatDate(value: string | Date, options: Intl.DateTimeFormatOptions) {
     return new Intl.DateTimeFormat("en-US", options).format(new Date(value));
 }

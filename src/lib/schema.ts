@@ -1,14 +1,11 @@
 import { createElement } from "react";
 import type { Post } from "@velite";
+import type { ContactItem } from "@core/data/CONTACT";
 import { t } from "@lib/i18n";
 import { SITE_URL, absoluteUrl } from "@lib/site";
 
 /**
  * Schema.org JSON-LD builders.
- *
- * Everything here is dependency-free and typed: the builders return plain
- * objects that can be serialized with `JSON.stringify` and rendered through the
- * `JsonLd` component below.
  */
 
 /** Stable node identifiers so nodes can reference each other by `@id`. */
@@ -94,8 +91,6 @@ export type JsonLdGraph = {
     "@context": "https://schema.org";
     "@graph": JsonLdNode[];
 };
-
-type ContactItem = { id: string; href: string };
 
 /** Only real `http(s)` profile links — `mailto:` / `tel:` entries are skipped. */
 function socialProfiles(): string[] {
@@ -211,14 +206,7 @@ export function graphSchema(nodes: JsonLdNode[]): JsonLdGraph {
     };
 }
 
-/**
- * Renders a JSON-LD payload. Kept JSX-free so this module stays a plain `.ts`
- * file; the output is the equivalent of:
- *
- * ```tsx
- * <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
- * ```
- */
+/** Renders a JSON-LD script without turning this module into a JSX file. */
 export function JsonLd({ data }: { data: JsonLdGraph | JsonLdNode }) {
     return createElement("script", {
         type: "application/ld+json",

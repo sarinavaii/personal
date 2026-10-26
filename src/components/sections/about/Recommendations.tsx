@@ -2,17 +2,13 @@ import Link from "next/link";
 import { IconArrowUpRight, IconBrandLinkedin } from "@tabler/icons-react";
 
 import SectionHeading from "@ui/SectionHeading";
+import type { ContactItem } from "@core/data/CONTACT";
 import { t } from "@lib/i18n";
 
 type Recommendation = {
     name: string;
     role: string;
     quote: string;
-};
-
-type ContactItem = {
-    id: string;
-    href: string;
 };
 
 function initials(name: string) {

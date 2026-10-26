@@ -1,33 +1,8 @@
 import Link from "next/link";
-import {
-    IconArrowRight,
-    IconArrowUpRight,
-    IconBrandGithub,
-    IconBrandLinkedin,
-    IconBrandTelegram,
-    IconBrandYoutube,
-    IconMail,
-    IconPhone,
-} from "@tabler/icons-react";
-import type { TablerIcon } from "@tabler/icons-react";
+import { IconArrowRight, IconArrowUpRight } from "@tabler/icons-react";
 
+import { CONTACT_ICONS, type ContactItem } from "@core/data/CONTACT";
 import { t } from "@lib/i18n";
-
-type ContactItem = {
-    id: string;
-    label: string;
-    value: string;
-    href: string;
-};
-
-const CONTACT_ICONS: Record<string, TablerIcon> = {
-    email: IconMail,
-    phone: IconPhone,
-    linkedin: IconBrandLinkedin,
-    telegram: IconBrandTelegram,
-    github: IconBrandGithub,
-    youtube: IconBrandYoutube,
-};
 
 const ContactTemplate = () => {
     const translate = t("contact");

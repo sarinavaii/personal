@@ -1,6 +1,5 @@
-import { About } from "@sections/home";
 import { AboutHero, Recommendations } from "@sections/about";
-import ContactCTA from "@sections/home/ContactCTA";
+import { About, ContactCTA } from "@sections/home";
 import { t } from "@lib/i18n";
 
 const AboutTemplate = () => {

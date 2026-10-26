@@ -1,46 +1,17 @@
 import Link from "next/link";
-import {
-    IconArrowUpRight,
-    IconBrandGithub,
-    IconBrandLinkedin,
-    IconBrandTelegram,
-    IconBrandYoutube,
-    IconMail,
-    IconRss,
-} from "@tabler/icons-react";
+import { IconArrowUpRight, IconRss } from "@tabler/icons-react";
 
 import LogoMark from "@ui/LogoMark";
+import { CONTACT_ICONS, type ContactItem } from "@core/data/CONTACT";
 import { t } from "@lib/i18n";
-
-type ContactItem = {
-    id: string;
-    label: string;
-    value: string;
-    href: string;
-};
-
-const SOCIAL_ICONS = {
-    email: IconMail,
-    linkedin: IconBrandLinkedin,
-    telegram: IconBrandTelegram,
-    github: IconBrandGithub,
-    youtube: IconBrandYoutube,
-} as const;
-
-const PAGE_LINKS = [
-    { href: "/", key: "home" },
-    { href: "/about", key: "about" },
-    { href: "/projects", key: "projects" },
-    { href: "/blog", key: "blog" },
-    { href: "/contact", key: "contact" },
-] as const;
+import { NAV_LINKS } from "./navigation";
 
 const Footer = () => {
     const translate = t();
     const pages = t("pages");
     const contact = t("contact");
     const contactItems = contact.raw<ContactItem[]>("items");
-    const socialItems = contactItems.filter((item) => item.id in SOCIAL_ICONS);
+    const socialItems = contactItems.filter(({ id }) => id !== "phone");
 
     return (
         <footer className="border-t border-border">
@@ -60,9 +31,9 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <p className="eyebrow">Pages</p>
+                        <p className="eyebrow">{translate("footer.pages")}</p>
                         <ul className="mt-4 flex flex-col gap-3">
-                            {PAGE_LINKS.map((link) => (
+                            {NAV_LINKS.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
@@ -76,10 +47,10 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <p className="eyebrow">Elsewhere</p>
+                        <p className="eyebrow">{translate("footer.elsewhere")}</p>
                         <ul className="mt-4 flex flex-col gap-3">
                             {socialItems.map(({ id, label, href }) => {
-                                const Icon = SOCIAL_ICONS[id as keyof typeof SOCIAL_ICONS];
+                                const Icon = CONTACT_ICONS[id];
 
                                 return (
                                     <li key={id}>

@@ -6,7 +6,7 @@ const ProjectsList = () => {
     const translate = t("projects");
 
     return (
-        <section aria-label="Public projects">
+        <section aria-label={translate("count-label")}>
             <div className="container-page py-14">
                 <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                     <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-faint">

@@ -43,7 +43,7 @@ import {
     IconWorld,
 } from "@tabler/icons-react";
 
-export type TechStackIconConfig = {
+type TechStackIconConfig = {
     Icon: TablerIcon;
     /** Brand-adjacent colour that stays legible on dark and light surfaces. */
     color?: string;

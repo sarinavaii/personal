@@ -1,26 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { IconArrowDown, IconBrandGithub, IconBrandLinkedin, IconMail, IconMapPin } from "@tabler/icons-react";
-import type { TablerIcon } from "@tabler/icons-react";
+import { IconArrowDown, IconMapPin } from "@tabler/icons-react";
 
 import ButtonLink from "@ui/ButtonLink";
+import { CONTACT_ICONS, type ContactItem } from "@core/data/CONTACT";
 import { t } from "@lib/i18n";
-
-type ContactItem = {
-    id: string;
-    label: string;
-    href: string;
-};
 
 type Fact = {
     value: string;
     label: string;
-};
-
-const SOCIAL_ICONS: Record<string, TablerIcon> = {
-    email: IconMail,
-    github: IconBrandGithub,
-    linkedin: IconBrandLinkedin,
 };
 
 const AboutHero = () => {
@@ -29,7 +17,7 @@ const AboutHero = () => {
     const facts = translate.raw<Fact[]>("facts");
     const socials = t("contact")
         .raw<ContactItem[]>("items")
-        .filter((item) => item.id in SOCIAL_ICONS);
+        .filter(({ id }) => id === "email" || id === "github" || id === "linkedin");
 
     return (
         <section className="border-b border-border">
@@ -69,7 +57,7 @@ const AboutHero = () => {
 
                         <div className="ml-auto flex items-center gap-1">
                             {socials.map(({ id, label, href }) => {
-                                const Icon = SOCIAL_ICONS[id];
+                                const Icon = CONTACT_ICONS[id];
 
                                 return (
                                     <Link

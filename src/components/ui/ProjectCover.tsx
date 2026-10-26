@@ -1,5 +1,4 @@
 import type { Project, ProjectId } from "@core/data/PROJECTS";
-import { cn } from "@core/utils";
 
 type MotifName = "rings" | "planks" | "diamond" | "blocks" | "bars" | "cross";
 
@@ -153,19 +152,15 @@ function Motif({ motif, accent }: { motif: MotifName; accent: string }) {
 }
 
 function domainOf(url: string) {
-    try {
-        return new URL(url).host.replace(/^www\./, "");
-    } catch {
-        return url;
-    }
+    return new URL(url).host.replace(/^www\./, "");
 }
 
-export default function ProjectCover({ project, className }: { project: Project; className?: string }) {
+export default function ProjectCover({ project }: { project: Project }) {
     const theme = THEMES[project.id];
 
     return (
         <div
-            className={cn("relative aspect-[16/10] w-full overflow-hidden border-b border-border", className)}
+            className="relative aspect-[16/10] w-full overflow-hidden border-b border-border"
             style={{ background: theme.background }}
             aria-hidden
         >

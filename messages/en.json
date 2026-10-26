@@ -351,6 +351,8 @@
     },
     "footer": {
         "copyright": "© 2026 Salar Sari Navaii. All rights reserved.",
+        "pages": "Pages",
+        "elsewhere": "Elsewhere",
         "rss": "RSS"
     },
     "project-card": {

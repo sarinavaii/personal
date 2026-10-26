@@ -1,12 +1,8 @@
 import { IconArrowRight, IconMail } from "@tabler/icons-react";
 
 import ButtonLink from "@ui/ButtonLink";
+import type { ContactItem } from "@core/data/CONTACT";
 import { t } from "@lib/i18n";
-
-type ContactItem = {
-    id: string;
-    href: string;
-};
 
 const ContactCTA = () => {
     const translate = t("home.cta");

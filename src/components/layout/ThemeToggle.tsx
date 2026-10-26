@@ -15,13 +15,25 @@ function getServerSnapshot(): Theme {
     return "dark";
 }
 
+function applyTheme(theme: Theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.style.colorScheme = theme;
+}
+
 function subscribe(onChange: () => void) {
+    const onStorage = (event: StorageEvent) => {
+        if (event.key !== "theme") return;
+
+        applyTheme(event.newValue === "light" ? "light" : "dark");
+        onChange();
+    };
+
     window.addEventListener(THEME_EVENT, onChange);
-    window.addEventListener("storage", onChange);
+    window.addEventListener("storage", onStorage);
 
     return () => {
         window.removeEventListener(THEME_EVENT, onChange);
-        window.removeEventListener("storage", onChange);
+        window.removeEventListener("storage", onStorage);
     };
 }
 
@@ -31,8 +43,7 @@ export default function ThemeToggle() {
     const toggleTheme = () => {
         const next: Theme = theme === "dark" ? "light" : "dark";
 
-        document.documentElement.setAttribute("data-theme", next);
-        document.documentElement.style.colorScheme = next;
+        applyTheme(next);
 
         try {
             localStorage.setItem("theme", next);

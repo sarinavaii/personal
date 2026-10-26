@@ -10,14 +10,7 @@ import LogoMark from "@ui/LogoMark";
 import { cn } from "@core/utils";
 import { t } from "@lib/i18n";
 import ThemeToggle from "./ThemeToggle";
-
-const NAV_LINKS = [
-    { href: "/", key: "home" },
-    { href: "/about", key: "about" },
-    { href: "/projects", key: "projects" },
-    { href: "/blog", key: "blog" },
-    { href: "/contact", key: "contact" },
-] as const;
+import { NAV_LINKS } from "./navigation";
 
 const Header = () => {
     const translate = t();
