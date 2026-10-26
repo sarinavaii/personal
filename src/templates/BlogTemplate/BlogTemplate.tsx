@@ -1,26 +1,12 @@
-"use client";
-
 import XSection from "@atoms/XSection";
+import { Link } from "@i18n/navigation";
 import { getPosts } from "@lib/posts";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { Pagination } from "@mantine/core";
-import { useState } from "react";
+import { getFormatter, getTranslations } from "next-intl/server";
 
-const PAGE_SIZE = 10;
-
-const BlogTemplate = () => {
-    const t = useTranslations("home.blogs");
-    const allPosts = getPosts();
-    const [page, setPage] = useState(1);
-
-    const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
-    const posts = allPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-    const handlePageChange = (newPage: number) => {
-        setPage(newPage);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+const BlogTemplate = async () => {
+    const t = await getTranslations("home.blogs");
+    const format = await getFormatter();
+    const posts = getPosts();
 
     return (
         <>
@@ -35,7 +21,7 @@ const BlogTemplate = () => {
                 >
                     <Link href={`/blog/${post.slug}`}>
                         <div className="text-xs text-woodsmoke-500 dark:text-woodsmoke-300">
-                            {new Date(post.date).toLocaleDateString("en-US", {
+                            {format.dateTime(new Date(post.date), {
                                 year: "numeric",
                                 month: "long",
                                 day: "2-digit",
@@ -46,12 +32,6 @@ const BlogTemplate = () => {
                     </Link>
                 </XSection>
             ))}
-
-            {totalPages > 1 && (
-                <div className="flex justify-center mt-6 mb-10">
-                    <Pagination total={totalPages} value={page} onChange={handlePageChange} />
-                </div>
-            )}
         </>
     );
 };

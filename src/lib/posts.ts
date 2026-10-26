@@ -7,7 +7,7 @@ export function getPosts() {
 }
 
 export function getPostBySlug(slug: string) {
-    return posts.find((post) => post.slug === slug);
+    return posts.find((post) => post.slug === slug && post.published);
 }
 
 export function getLatestPosts(count: number) {

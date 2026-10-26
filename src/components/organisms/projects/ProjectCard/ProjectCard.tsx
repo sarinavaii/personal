@@ -3,15 +3,17 @@
 import XSection from "@atoms/XSection";
 import { Link } from "@i18n/navigation";
 import { IconPhoto, IconWorld } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import Lightbox from "yet-another-react-lightbox";
-import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import "yet-another-react-lightbox/styles.css";
 
 import type { Project } from "@core/data/PROJECTS";
 
+// The lightbox is only needed after a click, so keep it out of the initial bundle.
+const ProjectGallery = dynamic(() => import("@molecules/ProjectGallery/ProjectGallery"), { ssr: false });
+
 const ProjectCard = ({ project }: { project: Project }) => {
+    const t = useTranslations("project-card");
     const [opened, setOpened] = useState(false);
     const [index, setIndex] = useState(0);
 
@@ -34,10 +36,10 @@ const ProjectCard = ({ project }: { project: Project }) => {
                                 type="button"
                                 onClick={() => openGallery()}
                                 className="inline-flex items-center text-xs text-woodsmoke-700 hover:text-blue-600 dark:text-woodsmoke-200 dark:hover:text-blue-400 transition cursor-pointer"
-                                title="View Gallery"
+                                title={t("view-gallery")}
                             >
                                 <IconPhoto size={20} className="mr-1" />
-                                Gallery ({project.gallery.length})
+                                {t("gallery")} ({project.gallery.length})
                             </button>
                         )}
                         <Link
@@ -45,25 +47,23 @@ const ProjectCard = ({ project }: { project: Project }) => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center text-xs text-woodsmoke-700 hover:text-blue-600 dark:text-woodsmoke-200 dark:hover:text-blue-400 transition"
-                            title="Open Live Website"
+                            title={t("open-website")}
                         >
                             <IconWorld size={20} className="mr-1" />
-                            Live Website
+                            {t("live-website")}
                         </Link>
                     </div>
                 </div>
             </XSection>
 
-            <Lightbox
-                open={opened}
-                close={() => setOpened(false)}
-                index={index}
-                slides={project.gallery.map((src) => ({ src }))}
-                plugins={[Zoom, Fullscreen]}
-                carousel={{ finite: false }}
-                controller={{ closeOnBackdropClick: true }}
-                on={{ view: ({ index: currentIndex }) => setIndex(currentIndex) }}
-            />
+            {opened && (
+                <ProjectGallery
+                    index={index}
+                    slides={project.gallery.map((src) => ({ src }))}
+                    onClose={() => setOpened(false)}
+                    onIndexChange={setIndex}
+                />
+            )}
         </>
     );
 };

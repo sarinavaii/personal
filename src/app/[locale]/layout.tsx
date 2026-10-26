@@ -3,6 +3,7 @@ import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { cn } from "@core/utils";
 import { Viewport } from "next/types";
+import type { Metadata } from "next";
 
 import Providers from "@core/providers";
 import Header from "@partials/Header";
@@ -12,85 +13,87 @@ import "@mantine/core/styles.css";
 import "@styles/globals.css";
 
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PropsWithChildren } from "react";
 import Blob from "@partials/Blob";
 import DotBackground from "@partials/Background/DotBackground";
-import XMouseFollower from "@atoms/XMouseFollower/XMouseFollower";
+import { SITE_URL, absoluteUrl, languageAlternates } from "@lib/site";
+
+type Props = PropsWithChildren<{ params: Promise<{ locale: string }> }>;
 
 // Base metadata that will be used for all locales
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
     maximumScale: 5,
+    themeColor: "#111313",
 };
 
+// Pre-render both locales instead of rendering every request on demand.
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }));
+}
+
 // Generate metadata based on locale
-export async function generateMetadata() {
-    const locale = await getLocale();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { locale } = await params;
 
     // Get translations from the appropriate JSON file
     const t = await getTranslations({ locale });
 
-    // Add these translations to your JSON files
-    const baseTitle = `${t("common.site-name")} | ${t("metadata.profession")}`;
-    const baseDescription = t("metadata.description");
-    const personalWebsite = t("metadata.personal-website");
+    const siteName = t("common.site-name");
+    const baseTitle = `${siteName} | ${t("metadata.profession")}`;
+    const description = t("metadata.description");
+    const homePath = locale === routing.defaultLocale ? "/" : `/${locale}`;
 
     return {
-        title: baseTitle,
-        description: baseDescription,
-        authors: [{ name: t("common.site-name"), url: "https://sarinavaii.ir" }],
+        metadataBase: new URL(SITE_URL),
+        title: {
+            default: baseTitle,
+            template: `%s | ${siteName}`,
+        },
+        description,
         keywords: t("metadata.keywords").split(","),
-        creator: t("common.site-name"),
-        publisher: t("common.site-name"),
+        authors: [{ name: siteName, url: SITE_URL }],
+        creator: siteName,
+        publisher: siteName,
+        alternates: {
+            canonical: absoluteUrl(homePath),
+            languages: languageAlternates(""),
+        },
         openGraph: {
             type: "website",
-            locale: locale,
-            alternateLocale: locale === "fa" ? "en" : "fa",
-            url: "https://sarinavaii.ir",
+            locale: locale === "fa" ? "fa_IR" : "en_US",
+            alternateLocale: locale === "fa" ? "en_US" : "fa_IR",
+            url: homePath,
             title: baseTitle,
-            description: baseDescription,
-            siteName: `${t("common.site-name")} ${personalWebsite}`,
+            description,
+            siteName: `${siteName} ${t("metadata.personal-website")}`,
             images: [
                 {
-                    url: "/images/profile-image.jpg",
-                    width: 1200,
-                    height: 630,
-                    alt: t("common.site-name"),
+                    url: "/images/profile.jpg",
+                    width: 1024,
+                    height: 1024,
+                    alt: siteName,
                 },
             ],
         },
         twitter: {
             card: "summary_large_image",
             title: baseTitle,
-            description: baseDescription,
-            creator: "@your_twitter_handle",
-            images: ["/images/profile-image.jpg"],
+            description,
+            images: ["/images/profile.jpg"],
         },
         icons: {
-            icon: "/favicon.ico",
-            shortcut: "/favicon-16x16.png",
-            apple: "/apple-touch-icon.png",
-            other: [
-                {
-                    rel: "icon",
-                    type: "image/png",
-                    sizes: "32x32",
-                    url: "/favicon-32x32.png",
-                },
-                {
-                    rel: "icon",
-                    type: "image/png",
-                    sizes: "16x16",
-                    url: "/favicon-16x16.png",
-                },
-                {
-                    rel: "manifest",
-                    url: "/site.webmanifest",
-                },
+            icon: [
+                { url: "/icon.svg", type: "image/svg+xml" },
+                { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+                { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
             ],
+            shortcut: "/favicon.ico",
+            apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
         },
+        manifest: "/site.webmanifest",
         robots: {
             index: true,
             follow: true,
@@ -105,14 +108,22 @@ export async function generateMetadata() {
     };
 }
 
-export default async function LocaleLayout({ children }: PropsWithChildren) {
-    const locale = await getLocale();
+export default async function LocaleLayout({ children, params }: Props) {
+    const { locale } = await params;
     if (!hasLocale(routing.locales, locale)) {
         notFound();
     }
 
+    // Opts every nested page into static rendering for this locale.
+    setRequestLocale(locale);
+
     return (
-        <html lang={locale} dir={locale === "en" ? "ltr" : "rtl"} {...mantineHtmlProps}>
+        <html
+            lang={locale}
+            dir={locale === "en" ? "ltr" : "rtl"}
+            {...mantineHtmlProps}
+            data-mantine-color-scheme="dark"
+        >
             <head>
                 <ColorSchemeScript defaultColorScheme="dark" />
             </head>

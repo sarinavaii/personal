@@ -17,7 +17,10 @@
         },
         "blogs": {
             "title": "Articles",
-            "view-all": "View All"
+            "view-all": "View All",
+            "newer": "Newer",
+            "older": "Older",
+            "back": "Back to all articles"
         },
         "techStack": {
             "title": "Technical Skills",
@@ -238,5 +241,11 @@
     },
     "footer": {
         "copyright": "© 2026 Salar Sari Navaii. All rights reserved."
+    },
+    "project-card": {
+        "view-gallery": "View gallery",
+        "open-website": "Open live website",
+        "gallery": "Gallery",
+        "live-website": "Live Website"
     }
 }

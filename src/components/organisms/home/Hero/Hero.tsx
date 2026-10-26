@@ -11,8 +11,10 @@ const Hero = () => {
                     className="rounded-full sm:w-24 w-20"
                     src="/images/profile.jpg"
                     alt={t("common.site-name")}
-                    width={400}
-                    height={400}
+                    width={192}
+                    height={192}
+                    sizes="(min-width: 640px) 96px, 80px"
+                    priority
                 />
                 <h2 className="sm:text-2xl text-lg">
                     <span className="text-woodsmoke-500 font-bold">{t("home.hero.tagline-1")}</span>
