@@ -41,6 +41,7 @@ const DotGrid = ({
     returnDuration = 1.5,
     className = "",
     style,
+    opacity = 1,
 }) => {
     const wrapperRef = useRef(null);
     const canvasRef = useRef(null);
@@ -258,7 +259,11 @@ const DotGrid = ({
     return (
         <section className={`flex items-center justify-center h-full w-full relative ${className}`} style={style}>
             <div ref={wrapperRef} className="w-full h-full relative">
-                <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-20" />
+                <canvas
+                    ref={canvasRef}
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    style={{ opacity }}
+                />
             </div>
         </section>
     );
