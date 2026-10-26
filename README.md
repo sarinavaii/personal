@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Salar Sari Navaii — Personal Website
 
-## Getting Started
+Portfolio and writing site for Salar Sari Navaii, a senior front-end developer.
+The interface follows a Vercel/Next.js-inspired design language: Geist type,
+true-black and white surfaces, hairline borders, and a restrained blue accent.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) and **React 19**
+- **Tailwind CSS 4** with CSS-variable design tokens
+- **Geist Sans** and **Geist Mono**, self-hosted through `next/font/local`
+- **Velite** for MDX articles and syntax highlighting
+- **yet-another-react-lightbox** for project galleries
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command       | Description                              |
+| ------------- | ---------------------------------------- |
+| `pnpm dev`    | Start the development server             |
+| `pnpm build`  | Build Velite content and the Next.js app |
+| `pnpm start`  | Serve the production build               |
+| `pnpm lint`   | Run ESLint                               |
+| `pnpm format` | Format the repository with Prettier      |
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+content/blog/            MDX articles (validated by velite.config.ts)
+messages/en.json         Site copy, contact details, and skill categories
+src/app/                 Routes, metadata, sitemap, robots, OG images
+src/components/layout/   Header, footer, theme script and toggle
+src/components/sections/ Home, project, blog, and contact sections
+src/components/ui/       Shared primitives (buttons, badges, prose, lightbox)
+src/core/data/PROJECTS.ts Featured project data
+src/styles/              Design tokens and global/prose styles
+src/templates/           Page composition layer
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Content
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Add an article as `content/blog/<slug>.mdx` with `title`, `description`,
+`date`, and optional `tags`. Velite regenerates the typed `posts` collection on
+`pnpm dev` and `pnpm build`.
 
-## Deploy on Vercel
+Project cards read from `src/core/data/PROJECTS.ts`. Add a `cover` path (or rely
+on the first gallery image) to control the card thumbnail.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Theme
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site ships dark by default with a light mode toggle. The theme is applied
+before first paint by an inline script and stored in `localStorage`; colors live
+in `src/styles/variables.css`. Code blocks in articles intentionally keep their
+dark Shiki theme in both modes.
+
+## Deployment
+
+Any standard Next.js host works. The blog, project pages, sitemap, and Open Graph
+images are pre-rendered at build time.

@@ -8,11 +8,6 @@ const nextConfig: NextConfig = {
         // and picks a stray lockfile in the user's home directory.
         root: path.join(__dirname),
     },
-    experimental: {
-        // @tabler/icons-react is optimized by default in this version, so it is
-        // intentionally omitted here.
-        optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
-    },
     images: {
         formats: ["image/avif", "image/webp"],
         minimumCacheTTL: 2678400, // 31 days

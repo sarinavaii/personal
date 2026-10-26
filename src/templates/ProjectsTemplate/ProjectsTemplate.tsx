@@ -1,4 +1,4 @@
-import { ProjectsIntro, ProjectsList } from "@organisms/projects";
+import { ProjectsIntro, ProjectsList } from "@sections/projects";
 
 const ProjectsTemplate = () => {
     return (

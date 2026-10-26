@@ -5,25 +5,48 @@
     "pages": {
         "home": "Home",
         "blog": "Blog",
-        "about": "About",
         "contact": "Contact",
         "projects": "Projects"
     },
     "home": {
         "hero": {
-            "tagline-1": "Crafting Code",
+            "status": "Available for select projects",
+            "tagline-1": "Crafting code",
             "tagline-2": "with a taste of experience",
-            "description": "Hi, I’m Salar — a Senior Front-End Developer. I used to write code; now I mostly tell Claude what to write and review its work — patiently waiting for the day it stops needing me to do even that."
+            "description": "Hi, I’m Salar — a Senior Front-End Developer. I used to write code; now I mostly tell Claude what to write and review its work — patiently waiting for the day it stops needing me to do even that.",
+            "location": "Remote · Senior Front-end Developer",
+            "stack": "React · Next.js · TypeScript",
+            "cta-projects": "View projects",
+            "cta-articles": "Read articles"
+        },
+        "work": {
+            "eyebrow": "Selected work",
+            "title": "Projects",
+            "description": "Nationwide platforms, private BI dashboards, and e-commerce builds — shipped with a focus on performance and clarity.",
+            "view-all": "All projects"
         },
         "blogs": {
-            "title": "Articles",
-            "view-all": "View All",
+            "eyebrow": "Writing",
+            "title": "Latest articles",
+            "page-title": "Articles",
+            "description": "Notes on React, Next.js, modern CSS, and the parts of front-end work that are easy to miss.",
+            "count-label": "articles",
+            "view-all": "All articles",
             "newer": "Newer",
             "older": "Older",
             "back": "Back to all articles"
         },
+        "cta": {
+            "eyebrow": "Contact",
+            "title": "Let’s build something that ships.",
+            "description": "Have a product, dashboard, or front-end problem worth solving? I’m open to select collaborations and consulting work.",
+            "email": "Email me",
+            "options": "All contact options"
+        },
         "techStack": {
-            "title": "Technical Skills",
+            "eyebrow": "Toolbox",
+            "title": "Technical skills",
+            "description": "The languages, frameworks, and practices I reach for when building production interfaces.",
             "categories": [
                 {
                     "id": "languages",
@@ -126,7 +149,9 @@
             ]
         },
         "about": {
-            "title": "About Me",
+            "eyebrow": "Background",
+            "title": "About me",
+            "description": "A front-end lead with a decade of experience shipping dashboards, platforms, and customer-facing products.",
             "experience": "Experience",
             "education": "Education",
             "educationItems": [
@@ -139,9 +164,22 @@
                     "institution": "Urmia University of Technology | 2019 - 2023"
                 }
             ],
+            "cyberno": {
+                "company": "Cyberno",
+                "period": "Aug 2026 – Present",
+                "positions": [
+                    {
+                        "title": "Senior Front-End Developer",
+                        "highlights": [
+                            "Building front-end interfaces for Cyberno's cybersecurity products and services.",
+                            "Collaborating with product and engineering teams to deliver responsive, accessible user experiences."
+                        ]
+                    }
+                ]
+            },
             "overc": {
                 "company": "OverC",
-                "period": "Part-time - Remote | Jan 2026 – Present",
+                "period": "Part-time - Remote | Jan 2026 – Aug 2026",
                 "positions": [
                     {
                         "title": "Senior Front-End Developer",
@@ -191,7 +229,16 @@
             }
         }
     },
+    "projects": {
+        "eyebrow": "Portfolio",
+        "title": "Selected projects",
+        "description": "Over the years I’ve helped build nationwide platforms, private BI dashboards, and public-facing products. The through-line is the same: interfaces that stay fast, legible, and reliable under real-world data.",
+        "focus": ["Nationwide platforms", "BI dashboards", "E-commerce", "Public sector"],
+        "count-label": "projects",
+        "period": "2021 — Present"
+    },
     "contact": {
+        "eyebrow": "Contact",
         "intro-heading": "Interested in collaborating or have a project in mind?",
         "intro-description": "Whether you want to discuss frontend web development, need advice on building scalable React/Next.js applications, or simply want to say hello, feel free to reach out through any of the contact methods below. I look forward to connecting with you!",
         "items": [

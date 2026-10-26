@@ -17,71 +17,68 @@ export default function Image() {
     const host = new URL(SITE_URL).host;
 
     return new ImageResponse(
-        (
-            <div
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    backgroundColor: "#111313",
-                    color: "#f4f4f5",
-                    padding: "72px 80px",
-                }}
-            >
-                <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: 68,
-                            height: 68,
-                            borderRadius: 18,
-                            backgroundColor: "#1f2222",
-                            border: "1px solid #2b2f2f",
-                            fontSize: 26,
-                            fontWeight: 700,
-                            color: "#a1a1aa",
-                        }}
-                    >
-                        SS
-                    </div>
-                    <div style={{ display: "flex", fontSize: 30, color: "#a1a1aa" }}>{siteName}</div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-                    <div
-                        style={{
-                            display: "flex",
-                            fontSize: 68,
-                            fontWeight: 700,
-                            lineHeight: 1.15,
-                            letterSpacing: "-0.02em",
-                        }}
-                    >
-                        {translate("home.hero.tagline-1")}
-                    </div>
-                    <div style={{ display: "flex", fontSize: 34, color: "#a1a1aa" }}>
-                        {translate("metadata.profession")}
-                    </div>
-                </div>
-
+        <div
+            style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                backgroundColor: "#000000",
+                color: "#ededed",
+                padding: "72px 80px",
+            }}
+        >
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                 <div
                     style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        fontSize: 26,
-                        color: "#71717a",
+                        justifyContent: "center",
+                        width: 44,
+                        height: 44,
+                        borderRadius: 8,
+                        backgroundColor: "#0a0a0a",
+                        border: "1px solid #262626",
                     }}
                 >
-                    <div style={{ display: "flex" }}>{host}</div>
-                    <div style={{ display: "flex" }}>Front-end · React · Next.js</div>
+                    <div style={{ display: "flex", fontSize: 24, fontWeight: 700, color: "#ffffff" }}>S</div>
+                </div>
+                <div style={{ display: "flex", fontSize: 28, color: "#a1a1a1" }}>{siteName}</div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        fontSize: 74,
+                        fontWeight: 700,
+                        lineHeight: 1.1,
+                        letterSpacing: "-0.04em",
+                    }}
+                >
+                    {translate("home.hero.tagline-1")} {translate("home.hero.tagline-2")}
+                </div>
+                <div style={{ display: "flex", fontSize: 32, color: "#a1a1a1" }}>
+                    {translate("metadata.profession")}
                 </div>
             </div>
-        ),
+
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderTop: "1px solid #262626",
+                    paddingTop: 28,
+                    fontSize: 24,
+                    color: "#737373",
+                }}
+            >
+                <div style={{ display: "flex" }}>{host}</div>
+                <div style={{ display: "flex", fontFamily: "monospace" }}>React · Next.js · TypeScript</div>
+            </div>
+        </div>,
         { ...size },
     );
 }

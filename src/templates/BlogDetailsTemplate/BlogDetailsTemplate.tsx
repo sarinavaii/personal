@@ -1,7 +1,8 @@
-import XBadge from "@atoms/XBadge";
-import XSection from "@atoms/XSection";
 import Link from "next/link";
-import ContentFormatter from "@molecules/ContentFormatter/ContentFormatter";
+import { IconArrowLeft, IconChevronRight } from "@tabler/icons-react";
+
+import Badge from "@ui/Badge";
+import Prose from "@ui/Prose";
 import { formatDate, t } from "@lib/i18n";
 
 type BlogPost = {
@@ -22,64 +23,97 @@ type Props = {
 
 const BlogDetailsTemplate = ({ post, prevPost, nextPost }: Props) => {
     const translate = t("home.blogs");
+    const pages = t("pages");
 
     return (
-        <XSection transparent withPadding={false} containerClassname="!mb-0">
-            <article>
-                <h1 className="text-2xl font-bold text-center">{post.title}</h1>
-                <div className="text-sm text-woodsmoke-500 text-center">
-                    <time dateTime={post.date}>
-                        {formatDate(post.date, {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </time>
-                </div>
-                <ContentFormatter>{post.content}</ContentFormatter>
-                <div className="flex flex-wrap gap-1">
-                    {post.tags.map((tag: string) => (
-                        <XBadge size="sm" key={tag}>
-                            {tag}
-                        </XBadge>
-                    ))}
-                </div>
-            </article>
+        <article className="container-page py-10 lg:py-16">
+            <div className="mx-auto max-w-3xl">
+                <nav
+                    aria-label="Breadcrumb"
+                    className="flex flex-wrap items-center gap-1.5 font-mono text-[11px] text-faint"
+                >
+                    <Link href="/" className="transition-colors hover:text-foreground">
+                        {pages("home")}
+                    </Link>
+                    <IconChevronRight size={12} aria-hidden />
+                    <Link href="/blog" className="transition-colors hover:text-foreground">
+                        {pages("blog")}
+                    </Link>
+                    <IconChevronRight size={12} aria-hidden />
+                    <span className="truncate text-muted">{post.title}</span>
+                </nav>
 
-            {/* Prev / Next navigation */}
-            <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mt-4">
-                <div>
-                    {prevPost && (
-                        <Link href={`/blog/${prevPost.slug}`}>
-                            <XSection className="group flex flex-col gap-1">
-                                <span className="text-xs text-woodsmoke-400 uppercase tracking-wide">
-                                    <span className="inline-block">←</span> {translate("newer")}
-                                </span>
-                                <span className="text-sm font-semibold">{prevPost.title}</span>
-                            </XSection>
-                        </Link>
-                    )}
+                <header className="mt-6 border-b border-border pb-8">
+                    <h1 className="text-3xl font-semibold leading-tight tracking-[-0.04em] text-strong sm:text-4xl">
+                        {post.title}
+                    </h1>
+                    <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">{post.description}</p>
+
+                    <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+                        <time
+                            dateTime={post.date}
+                            className="font-mono text-[11px] uppercase tracking-[0.12em] text-faint"
+                        >
+                            {formatDate(post.date, { year: "numeric", month: "long", day: "numeric" })}
+                        </time>
+                        {post.tags.length > 0 ? (
+                            <>
+                                <span className="h-3 w-px bg-border" aria-hidden />
+                                <div className="flex flex-wrap gap-2">
+                                    {post.tags.map((tag) => (
+                                        <Badge key={tag}>{tag}</Badge>
+                                    ))}
+                                </div>
+                            </>
+                        ) : null}
+                    </div>
+                </header>
+
+                <div className="mt-10">
+                    <Prose>{post.content}</Prose>
                 </div>
-                <div>
-                    {nextPost && (
-                        <Link href={`/blog/${nextPost.slug}`}>
-                            <XSection className="group flex flex-col gap-1 justify-end text-end">
-                                <span className="text-xs text-woodsmoke-400 uppercase tracking-wide">
-                                    {translate("older")} <span className="inline-block">→</span>
-                                </span>
-                                <span className="text-sm font-semibold">{nextPost.title}</span>
-                            </XSection>
+
+                <nav className="mt-14 grid gap-4 border-t border-border pt-8 sm:grid-cols-2" aria-label="More articles">
+                    {prevPost ? (
+                        <Link
+                            href={`/blog/${prevPost.slug}`}
+                            className="group rounded-xl border border-border bg-surface p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong"
+                        >
+                            <span className="eyebrow">← {translate("newer")}</span>
+                            <span className="mt-2 block text-sm font-medium text-foreground transition-colors group-hover:text-strong">
+                                {prevPost.title}
+                            </span>
                         </Link>
-                    )}
+                    ) : null}
+
+                    {nextPost ? (
+                        <Link
+                            href={`/blog/${nextPost.slug}`}
+                            className="group rounded-xl border border-border bg-surface p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong sm:text-right"
+                        >
+                            <span className="eyebrow">{translate("older")} →</span>
+                            <span className="mt-2 block text-sm font-medium text-foreground transition-colors group-hover:text-strong">
+                                {nextPost.title}
+                            </span>
+                        </Link>
+                    ) : null}
+                </nav>
+
+                <div className="mt-8">
+                    <Link
+                        href="/blog"
+                        className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+                    >
+                        <IconArrowLeft
+                            size={14}
+                            className="transition-transform duration-300 group-hover:-translate-x-0.5"
+                            aria-hidden
+                        />
+                        {translate("back")}
+                    </Link>
                 </div>
             </div>
-
-            <div className="text-center mt-8">
-                <Link className="text-xl font-bold" href="/blog">
-                    {translate("back")}
-                </Link>
-            </div>
-        </XSection>
+        </article>
     );
 };
 

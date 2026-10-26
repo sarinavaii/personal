@@ -1,28 +1,38 @@
 import localFont from "next/font/local";
 
 /**
- * Space Grotesk, self-hosted.
+ * Geist Sans and Geist Mono, self-hosted from the official variable builds.
  *
- * The upstream Google Fonts build is a variable font, so one 22 KB `latin`
- * woff2 covers every weight the UI uses (300–700) instead of four ~86 KB TTFs.
- * next/font emits `font-display: swap`, a size-adjusted Arial fallback and a
- * single preload tag, replacing the render-blocking @font-face blocks that used
- * to live in src/styles/fonts.css.
- *
- * Apply `spaceGrotesk.variable` to <html> so `--font-space-grotesk` resolves to
- * the generated family stack (the `font-space-grotesk` utility reads it).
+ * A single woff2 per family covers the full weight range, so the site ships
+ * two small font files instead of a render-blocking Google Fonts request.
+ * Apply the `.variable` class names to <html>; the values feed the
+ * `--font-sans` / `--font-mono` tokens in `variables.css`.
  */
-export const spaceGrotesk = localFont({
+export const geistSans = localFont({
     src: [
         {
-            path: "../../public/fonts/SpaceGrotesk-latin.woff2",
-            weight: "300 700",
+            path: "../../public/fonts/Geist-Variable.woff2",
+            weight: "100 900",
             style: "normal",
         },
     ],
-    variable: "--font-space-grotesk",
+    variable: "--font-geist-sans",
     display: "swap",
     preload: true,
-    fallback: ["system-ui", "arial"],
+    fallback: ["ui-sans-serif", "system-ui", "Arial"],
     adjustFontFallback: "Arial",
+});
+
+export const geistMono = localFont({
+    src: [
+        {
+            path: "../../public/fonts/GeistMono-Variable.woff2",
+            weight: "100 900",
+            style: "normal",
+        },
+    ],
+    variable: "--font-geist-mono",
+    display: "swap",
+    preload: true,
+    fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
 });

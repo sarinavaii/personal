@@ -30,7 +30,7 @@ export function t(namespace?: string): Translator {
         return value;
     }) as Translator;
 
-    translate.raw = <T,>(key: string) => resolve(key) as T;
+    translate.raw = <T>(key: string) => resolve(key) as T;
 
     return translate;
 }

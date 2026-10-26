@@ -23,10 +23,9 @@
             "@templates/*": ["./src/templates/*"],
             "@core/*": ["./src/core/*"],
             "@lib/*": ["./src/lib/*"],
-            "@atoms/*": ["./src/components/atoms/*"],
-            "@molecules/*": ["./src/components/molecules/*"],
-            "@organisms/*": ["./src/components/organisms/*"],
-            "@partials/*": ["./src/components/partials/*"],
+            "@layout/*": ["./src/components/layout/*"],
+            "@ui/*": ["./src/components/ui/*"],
+            "@sections/*": ["./src/components/sections/*"],
             "@public/*": ["./public/*"],
             "@velite": ["./velite"]
         }

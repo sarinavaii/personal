@@ -1,13 +1,14 @@
-import { About, Blogs, Hero, ProjectsCTA, TechStack } from "@organisms/home";
+import { About, ContactCTA, FeaturedWork, Hero, LatestPosts, TechStack } from "@sections/home";
 
 const HomeTemplate = () => {
     return (
         <>
             <Hero />
+            <FeaturedWork />
             <TechStack />
-            <ProjectsCTA />
-            <Blogs />
+            <LatestPosts />
             <About />
+            <ContactCTA />
         </>
     );
 };

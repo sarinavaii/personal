@@ -1,15 +1,56 @@
-@theme {
-    --color-woodsmoke-50: #f5f6f6;
-    --color-woodsmoke-100: #e5e8e7;
-    --color-woodsmoke-200: #cdd4d3;
-    --color-woodsmoke-300: #abb5b3;
-    --color-woodsmoke-400: #818f8d;
-    --color-woodsmoke-500: #667472;
-    --color-woodsmoke-600: #576362;
-    --color-woodsmoke-700: #4a5453;
-    --color-woodsmoke-800: #424847;
-    --color-woodsmoke-900: #3a3f3f;
-    --color-woodsmoke-950: #111313;
+/* Vercel-inspired design tokens. Dark is the default theme. */
+:root,
+[data-theme="dark"] {
+    color-scheme: dark;
 
-    --font-space-grotesk: SpaceGrotesk;
+    --background: #000000;
+    --surface: #0a0a0a;
+    --surface-hover: #111111;
+    --foreground: #ededed;
+    --strong: #ffffff;
+    --muted: #a1a1a1;
+    --faint: #737373;
+    --border: #262626;
+    --border-strong: #404040;
+    --accent: #3291ff;
+    --accent-soft: rgba(50, 145, 255, 0.12);
+    --grid-line: rgba(255, 255, 255, 0.055);
+    --glow: rgba(50, 145, 255, 0.16);
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+
+    --background: #ffffff;
+    --surface: #fafafa;
+    --surface-hover: #f5f5f5;
+    --foreground: #171717;
+    --strong: #000000;
+    --muted: #525252;
+    --faint: #737373;
+    --border: #e5e5e5;
+    --border-strong: #d4d4d4;
+    --accent: #0060df;
+    --accent-soft: rgba(0, 96, 223, 0.08);
+    --grid-line: rgba(0, 0, 0, 0.05);
+    --glow: rgba(0, 112, 245, 0.1);
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-surface: var(--surface);
+    --color-surface-hover: var(--surface-hover);
+    --color-foreground: var(--foreground);
+    --color-strong: var(--strong);
+    --color-muted: var(--muted);
+    --color-faint: var(--faint);
+    --color-border: var(--border);
+    --color-border-strong: var(--border-strong);
+    --color-accent: var(--accent);
+    --color-accent-soft: var(--accent-soft);
+
+    --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+    --radius-card: 12px;
 }

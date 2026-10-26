@@ -1,16 +1,17 @@
-import XSection from "@atoms/XSection";
 import Link from "next/link";
 import {
-    IconMail,
-    IconPhone,
+    IconArrowRight,
+    IconArrowUpRight,
+    IconBrandGithub,
     IconBrandLinkedin,
     IconBrandTelegram,
-    IconBrandGithub,
     IconBrandYoutube,
-    IconMailOpenedFilled,
+    IconMail,
+    IconPhone,
 } from "@tabler/icons-react";
-import { t } from "@lib/i18n";
 import type { TablerIcon } from "@tabler/icons-react";
+
+import { t } from "@lib/i18n";
 
 type ContactItem = {
     id: string;
@@ -30,43 +31,59 @@ const CONTACT_ICONS: Record<string, TablerIcon> = {
 
 const ContactTemplate = () => {
     const translate = t("contact");
-    const items = translate.raw("items") as ContactItem[];
+    const items = translate.raw<ContactItem[]>("items");
 
     return (
-        <XSection transparent withPadding={false}>
-            <div className="flex items-center justify-center mb-6 mt-6">
-                <IconMailOpenedFilled size={48} />
-            </div>
-            <div className="max-w-3xl mx-auto text-center mb-10 text-base text-woodsmoke-700 dark:text-woodsmoke-200">
-                <b>{translate("intro-heading")}</b> <br /> {translate("intro-description")}
-            </div>
+        <>
+            <section className="border-b border-border">
+                <div className="container-page py-16 lg:py-24">
+                    <p className="eyebrow">{translate("eyebrow")}</p>
+                    <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-strong sm:text-5xl">
+                        {translate("intro-heading")}
+                    </h1>
+                    <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
+                        {translate("intro-description")}
+                    </p>
+                </div>
+            </section>
 
-            <XSection>
-                <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            <section className="container-page py-14" aria-label="Contact methods">
+                <div className="grid gap-4 sm:grid-cols-2">
                     {items.map(({ id, label, value, href }) => {
                         const Icon = CONTACT_ICONS[id];
+                        const isExternal = href.startsWith("http");
+                        const ArrowIcon = isExternal ? IconArrowUpRight : IconArrowRight;
 
                         return (
                             <Link
                                 key={id}
-                                href={href ?? "#"}
-                                target={href?.startsWith("http") ? "_blank" : undefined}
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-4 group"
+                                href={href}
+                                target={isExternal ? "_blank" : undefined}
+                                rel={isExternal ? "noopener noreferrer" : undefined}
+                                className="group flex items-start justify-between gap-4 rounded-xl border border-border bg-surface p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong"
                             >
-                                <div className="p-2 rounded-lg bg-woodsmoke-100 dark:bg-woodsmoke-700 group-hover:bg-woodsmoke-200 dark:group-hover:bg-woodsmoke-800 transition-colors">
-                                    {Icon && <Icon size={18} />}
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-woodsmoke-400 dark:text-woodsmoke-500">{label}</span>
-                                    <span className="text-sm font-medium">{value}</span>
-                                </div>
+                                <span className="flex items-start gap-3.5">
+                                    <span className="grid size-9 shrink-0 place-items-center rounded-md border border-border bg-background text-muted transition-colors group-hover:text-foreground">
+                                        {Icon ? <Icon size={16} aria-hidden /> : null}
+                                    </span>
+                                    <span>
+                                        <span className="eyebrow block">{label}</span>
+                                        <span className="mt-2 block break-all text-sm font-medium text-foreground">
+                                            {value}
+                                        </span>
+                                    </span>
+                                </span>
+                                <ArrowIcon
+                                    size={15}
+                                    className="mt-1 shrink-0 text-faint transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+                                    aria-hidden
+                                />
                             </Link>
                         );
                     })}
                 </div>
-            </XSection>
-        </XSection>
+            </section>
+        </>
     );
 };
 

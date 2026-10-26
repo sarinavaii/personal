@@ -1,28 +1,27 @@
-import { cn } from "@core/utils";
-import { Viewport } from "next/types";
 import type { Metadata } from "next";
+import type { Viewport } from "next/types";
+import type { PropsWithChildren } from "react";
 
-import Providers from "@core/providers";
-import Header from "@partials/Header";
-import Footer from "@partials/Footer";
-
-import "@mantine/core/styles.css";
-import "@styles/globals.css";
-
-import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
-import { PropsWithChildren } from "react";
-import { spaceGrotesk } from "@core/fonts";
-import Blob from "@partials/Blob";
-import DotBackground from "@partials/Background/DotBackground";
+import Header from "@layout/Header";
+import Footer from "@layout/Footer";
+import ThemeScript from "@layout/ThemeScript";
+import CursorTracker from "@layout/CursorTracker";
+import { geistMono, geistSans } from "@core/fonts";
+import { cn } from "@core/utils";
 import { t } from "@lib/i18n";
 import { SITE_URL, absoluteUrl } from "@lib/site";
 import { JsonLd, graphSchema, personSchema, websiteSchema } from "@lib/schema";
+
+import "@styles/globals.css";
 
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
     maximumScale: 5,
-    themeColor: "#111313",
+    themeColor: [
+        { media: "(prefers-color-scheme: dark)", color: "#000000" },
+        { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    ],
 };
 
 export function generateMetadata(): Metadata {
@@ -85,31 +84,31 @@ export function generateMetadata(): Metadata {
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html lang="en" dir="ltr" className={spaceGrotesk.variable} {...mantineHtmlProps} data-mantine-color-scheme="dark">
+        <html
+            lang="en"
+            dir="ltr"
+            data-theme="dark"
+            suppressHydrationWarning
+            className={cn(geistSans.variable, geistMono.variable)}
+        >
             <head>
-                <ColorSchemeScript defaultColorScheme="dark" />
+                <ThemeScript />
             </head>
-            <body
-                className={cn(
-                    "bg-woodsmoke-100 text-woodsmoke-900 dark:bg-black dark:text-woodsmoke-100",
-                    "font-space-grotesk leading-snug",
-                )}
-            >
+            <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
                 <JsonLd data={graphSchema([personSchema(), websiteSchema()])} />
-                <Providers>
-                    {/* <XMouseFollower /> */}
-                    <DotBackground />
-                    <Blob />
-                    <div className="p-4 min-h-dvh flex flex-col relative z-1">
-                        <header>
-                            <Header />
-                        </header>
-                        <main className="grow">{children}</main>
-                        <footer>
-                            <Footer />
-                        </footer>
-                    </div>
-                </Providers>
+                <a href="#main" className="skip-link">
+                    Skip to content
+                </a>
+                <div className="site-grid" aria-hidden />
+                <div className="site-glow" aria-hidden />
+                <CursorTracker />
+                <div className="relative z-10 flex min-h-dvh flex-col">
+                    <Header />
+                    <main id="main" className="flex-1">
+                        {children}
+                    </main>
+                    <Footer />
+                </div>
             </body>
         </html>
     );

@@ -66,9 +66,7 @@ export function pageMetadata({
                   siteName: `${siteName} ${translate("metadata.personal-website")}`,
                   locale: "en_US",
                   ...(publishedTime ? { publishedTime } : {}),
-                  ...(modifiedTime ?? publishedTime
-                      ? { modifiedTime: modifiedTime ?? publishedTime }
-                      : {}),
+                  ...((modifiedTime ?? publishedTime) ? { modifiedTime: modifiedTime ?? publishedTime } : {}),
                   authors: [siteName],
                   ...(tags?.length ? { tags, section: tags[0] } : {}),
               }

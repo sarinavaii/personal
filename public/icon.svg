@@ -1,18 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Salar Sari Navaii">
-<rect width="32" height="32" rx="7" fill="#111313"/>
-<rect x="12" y="6" width="3" height="3" fill="#f5f6f6"/>
-<rect x="15" y="6" width="3" height="3" fill="#f5f6f6"/>
-<rect x="18" y="6" width="3" height="3" fill="#f5f6f6"/>
-<rect x="9" y="9" width="3" height="3" fill="#f5f6f6"/>
-<rect x="21" y="9" width="3" height="3" fill="#f5f6f6"/>
-<rect x="9" y="12" width="3" height="3" fill="#f5f6f6"/>
-<rect x="12" y="15" width="3" height="3" fill="#f5f6f6"/>
-<rect x="15" y="15" width="3" height="3" fill="#f5f6f6"/>
-<rect x="18" y="15" width="3" height="3" fill="#f5f6f6"/>
-<rect x="21" y="18" width="3" height="3" fill="#f5f6f6"/>
-<rect x="9" y="21" width="3" height="3" fill="#f5f6f6"/>
-<rect x="21" y="21" width="3" height="3" fill="#f5f6f6"/>
-<rect x="12" y="24" width="3" height="3" fill="#f5f6f6"/>
-<rect x="15" y="24" width="3" height="3" fill="#f5f6f6"/>
-<rect x="18" y="24" width="3" height="3" fill="#f5f6f6"/>
+    <rect width="32" height="32" rx="7" fill="#000000" />
+    <text
+        x="16"
+        y="24"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="20"
+        font-weight="700"
+        fill="#ffffff"
+    >S</text>
 </svg>
