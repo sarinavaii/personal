@@ -4,9 +4,65 @@
     },
     "pages": {
         "home": "Home",
+        "about": "About",
         "blog": "Blog",
         "contact": "Contact",
         "projects": "Projects"
+    },
+    "about": {
+        "meta-description": "About Salar Sari Navaii — a senior front-end developer in Sari, Iran, with 40+ projects delivered across nationwide platforms, BI dashboards, and e-commerce products.",
+        "meta-keywords": [
+            "Salar Sari Navaii",
+            "senior front-end developer",
+            "front-end developer Iran",
+            "React developer",
+            "Next.js developer",
+            "TypeScript",
+            "BI dashboards",
+            "front-end architecture"
+        ],
+        "hero": {
+            "availability": "Available for select projects",
+            "title": "Front-end systems for products that can’t afford to feel slow.",
+            "intro-1": "I’m Salar, a senior front-end developer based in Sari, Iran. Over the past five years I’ve shipped 40+ projects, moving from marketing sites to leading front-end work on nationwide platforms, executive BI dashboards, and e-commerce products.",
+            "intro-2": "My work sits where design, data, and performance meet: turning dense requirements into interfaces that feel simple, stay responsive under real data, and hold up in production. I care about design systems, accessibility, and the last 10% that makes a product feel finished.",
+            "location": "Sari, Iran",
+            "role": "Senior Front-End Developer at Cyberno",
+            "cta-experience": "See experience",
+            "cta-contact": "Get in touch",
+            "facts": [
+                { "value": "40+", "label": "Projects shipped" },
+                { "value": "4", "label": "Companies shipped with" },
+                { "value": "3", "label": "Product areas" }
+            ],
+            "facts-note": "Includes private client work and projects under NDA.",
+            "based": "Based in",
+            "based-value": "Sari, Iran · Working globally"
+        },
+        "career": {
+            "eyebrow": "Career",
+            "title": "Experience & education",
+            "description": "40+ projects across cybersecurity, BI, e-commerce, and public-sector platforms."
+        },
+        "recommendations": {
+            "eyebrow": "LinkedIn",
+            "title": "Recommendations",
+            "description": "Words from people I’ve worked closely with.",
+            "linkedin": "Read on LinkedIn",
+            "note": "Excerpts from recommendations on LinkedIn.",
+            "items": [
+                {
+                    "name": "Hamed Roshani",
+                    "role": "Senior Mobile Developer",
+                    "quote": "I’ve had the pleasure of working with Salar on the Infrastructure Team, and he’s one of the people I trust the most when it comes to front-end work. Collaborating with him always feels smooth because he brings a mix of solid technical judgment and calm, steady problem-solving."
+                },
+                {
+                    "name": "Arsham Jafarian",
+                    "role": "Lead Product Designer",
+                    "quote": "Besides his extraordinary talents and skills, both in the management and front-end, Salar is just the SWEETEST guy ever, who can fit very well even in the worst teams, but put him in a great environment and he will nail every impossible task that you can think about."
+                }
+            ]
+        }
     },
     "home": {
         "hero": {
@@ -22,7 +78,7 @@
         "work": {
             "eyebrow": "Selected work",
             "title": "Projects",
-            "description": "Nationwide platforms, private BI dashboards, and e-commerce builds — shipped with a focus on performance and clarity.",
+            "description": "A selection of public work from 40+ shipped projects — nationwide platforms, private BI dashboards, and e-commerce builds.",
             "view-all": "All projects"
         },
         "blogs": {
@@ -151,7 +207,8 @@
         "about": {
             "eyebrow": "Background",
             "title": "About me",
-            "description": "A front-end lead with a decade of experience shipping dashboards, platforms, and customer-facing products.",
+            "description": "A front-end lead with 40+ shipped projects across dashboards, platforms, and customer-facing products.",
+            "more": "More about me",
             "experience": "Experience",
             "education": "Education",
             "educationItems": [
@@ -232,9 +289,10 @@
     "projects": {
         "eyebrow": "Portfolio",
         "title": "Selected projects",
-        "description": "Over the years I’ve helped build nationwide platforms, private BI dashboards, and public-facing products. The through-line is the same: interfaces that stay fast, legible, and reliable under real-world data.",
+        "description": "Over the years I’ve helped build 40+ projects — nationwide platforms, private BI dashboards, and public-facing products. The selection below is public; the rest are private or under NDA.",
         "focus": ["Nationwide platforms", "BI dashboards", "E-commerce", "Public sector"],
-        "count-label": "projects",
+        "count-label": "public projects",
+        "private-note": "Additional work is private or under NDA and can be discussed on request.",
         "period": "2021 — Present"
     },
     "contact": {
@@ -282,17 +340,18 @@
     },
     "metadata": {
         "profession": "Senior Front-end Web Developer",
-        "description": "Senior frontend developer creating user-friendly and modern websites",
+        "description": "Senior front-end developer shipping fast, accessible web products — 40+ projects delivered.",
         "personal-website": "Personal Website",
         "keywords": "frontend developer,web development,React,Next.js,JavaScript,TypeScript",
         "pages": {
             "blog": "Articles on React, Next.js, CSS, and front-end performance by senior front-end developer Salar Sari Navaii.",
-            "projects": "Selected front-end projects: nationwide citizen platforms, private BI dashboards, and e-commerce builds delivered in React and Next.js.",
+            "projects": "40+ front-end projects delivered, including nationwide citizen platforms, private BI dashboards, and e-commerce builds. Six public case studies.",
             "contact": "Get in touch with Salar Sari Navaii about front-end development work, React/Next.js consulting, or collaboration."
         }
     },
     "footer": {
-        "copyright": "© 2026 Salar Sari Navaii. All rights reserved."
+        "copyright": "© 2026 Salar Sari Navaii. All rights reserved.",
+        "rss": "RSS"
     },
     "project-card": {
         "view-gallery": "View gallery",

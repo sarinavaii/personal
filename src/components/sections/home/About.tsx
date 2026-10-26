@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { IconArrowRight } from "@tabler/icons-react";
 
 import { cn } from "@core/utils";
 import { t } from "@lib/i18n";
@@ -22,6 +24,14 @@ type ExperienceEntry = {
     positions: Position[];
 };
 
+type AboutProps = {
+    id?: string;
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    showMoreLink?: boolean;
+};
+
 const EXPERIENCE_KEYS = ["cyberno", "overc", "dornica", "platin"] as const;
 
 const EXPERIENCE_IMAGES: Record<(typeof EXPERIENCE_KEYS)[number], string> = {
@@ -31,10 +41,11 @@ const EXPERIENCE_IMAGES: Record<(typeof EXPERIENCE_KEYS)[number], string> = {
     platin: "/images/platin.jpg",
 };
 
-const About = () => {
+const About = ({ id, eyebrow, title, description, showMoreLink = true }: AboutProps) => {
     const translate = t("home.about");
     const [tab, setTab] = useState<"experience" | "education">("experience");
     const educationItems = translate.raw<EducationItem[]>("educationItems");
+    const resolvedTitle = title ?? translate("title");
 
     const tabs = [
         { id: "experience", label: translate("experience") },
@@ -42,16 +53,32 @@ const About = () => {
     ] as const;
 
     return (
-        <section className="border-b border-border">
+        <section id={id} className="scroll-mt-24 border-b border-border">
             <div className="container-page grid gap-12 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:py-20">
                 <div className="lg:sticky lg:top-24 lg:self-start">
-                    <p className="eyebrow">{translate("eyebrow")}</p>
-                    <h2 className="mt-3 text-2xl font-semibold text-strong sm:text-3xl">{translate("title")}</h2>
-                    <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">{translate("description")}</p>
+                    <p className="eyebrow">{eyebrow ?? translate("eyebrow")}</p>
+                    <h2 className="mt-3 text-2xl font-semibold text-strong sm:text-3xl">{resolvedTitle}</h2>
+                    <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+                        {description ?? translate("description")}
+                    </p>
+
+                    {showMoreLink ? (
+                        <Link
+                            href="/about"
+                            className="group mt-4 inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+                        >
+                            {translate("more")}
+                            <IconArrowRight
+                                size={14}
+                                className="transition-transform duration-300 group-hover:translate-x-0.5"
+                                aria-hidden
+                            />
+                        </Link>
+                    ) : null}
 
                     <div
                         role="tablist"
-                        aria-label={translate("title")}
+                        aria-label={resolvedTitle}
                         className="mt-8 inline-flex rounded-lg border border-border bg-surface p-1"
                     >
                         {tabs.map((item) => (

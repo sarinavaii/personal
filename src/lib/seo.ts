@@ -86,6 +86,9 @@ export function pageMetadata({
         description: resolvedDescription,
         alternates: {
             canonical: url,
+            types: {
+                "application/rss+xml": absoluteUrl("/feed.xml"),
+            },
         },
         authors: [{ name: siteName, url: SITE_URL }],
         keywords: resolvedKeywords,

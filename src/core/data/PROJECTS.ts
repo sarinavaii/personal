@@ -39,7 +39,7 @@ export const PROJECTS: Project[] = [
         category: "Agency website",
         description:
             "Frontend work on Platin's marketing website and related digital deliverables — responsive pages, campaign and service sections, and iterative releases while working with design and communications on an agency that handles branding, campaigns, and client projects at scale.",
-        website: "https://platin.agency/",
+        website: "https://platinagency.com/en",
         gallery: [],
     },
     {

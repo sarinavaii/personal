@@ -6,7 +6,7 @@ const ProjectsList = () => {
     const translate = t("projects");
 
     return (
-        <section aria-label="All projects">
+        <section aria-label="Public projects">
             <div className="container-page py-14">
                 <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                     <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
@@ -22,6 +22,10 @@ const ProjectsList = () => {
                         <ProjectCard key={project.title} project={project} />
                     ))}
                 </div>
+
+                <p className="mt-8 border-t border-border pt-6 text-sm leading-relaxed text-muted">
+                    {translate("private-note")}
+                </p>
             </div>
         </section>
     );

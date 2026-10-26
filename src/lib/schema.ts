@@ -28,6 +28,27 @@ export type PersonNode = {
     image: string;
     sameAs: string[];
     knowsAbout: string[];
+    worksFor: {
+        "@type": "Organization";
+        name: string;
+        url: string;
+    };
+    address: {
+        "@type": "PostalAddress";
+        addressLocality: string;
+        addressCountry: string;
+    };
+};
+
+export type ProfilePageNode = {
+    "@type": "ProfilePage";
+    "@id": string;
+    url: string;
+    name: string;
+    description: string;
+    inLanguage: "en";
+    mainEntity: { "@id": string };
+    dateModified: string;
 };
 
 export type WebSiteNode = {
@@ -67,7 +88,7 @@ export type BreadcrumbNode = {
     }>;
 };
 
-export type JsonLdNode = PersonNode | WebSiteNode | BlogPostingNode | BreadcrumbNode;
+export type JsonLdNode = PersonNode | WebSiteNode | BlogPostingNode | BreadcrumbNode | ProfilePageNode;
 
 export type JsonLdGraph = {
     "@context": "https://schema.org";
@@ -103,6 +124,31 @@ export function personSchema(): PersonNode {
         image: absoluteUrl("/images/profile.jpg"),
         sameAs: socialProfiles(),
         knowsAbout: keywords(),
+        worksFor: {
+            "@type": "Organization",
+            name: "Cyberno",
+            url: "https://cyberno.ir",
+        },
+        address: {
+            "@type": "PostalAddress",
+            addressLocality: "Sari",
+            addressCountry: "IR",
+        },
+    };
+}
+
+export function profilePageSchema(): ProfilePageNode {
+    const translate = t();
+
+    return {
+        "@type": "ProfilePage",
+        "@id": `${absoluteUrl("/about")}#profile`,
+        url: absoluteUrl("/about"),
+        name: `About ${translate("common.site-name")}`,
+        description: translate("about.meta-description"),
+        inLanguage: "en",
+        mainEntity: { "@id": PERSON_ID },
+        dateModified: new Date().toISOString(),
     };
 }
 

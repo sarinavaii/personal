@@ -13,6 +13,7 @@ type StaticEntry = {
 
 const STATIC_ENTRIES: StaticEntry[] = [
     { path: "", changeFrequency: "daily", priority: 1 },
+    { path: "/about", changeFrequency: "monthly", priority: 0.8 },
     { path: "/blog", changeFrequency: "weekly", priority: 0.8 },
     { path: "/projects", changeFrequency: "monthly", priority: 0.7 },
     { path: "/contact", changeFrequency: "yearly", priority: 0.6 },

@@ -6,6 +6,7 @@ import {
     IconBrandTelegram,
     IconBrandYoutube,
     IconMail,
+    IconRss,
 } from "@tabler/icons-react";
 
 import LogoMark from "@ui/LogoMark";
@@ -28,6 +29,7 @@ const SOCIAL_ICONS = {
 
 const PAGE_LINKS = [
     { href: "/", key: "home" },
+    { href: "/about", key: "about" },
     { href: "/projects", key: "projects" },
     { href: "/blog", key: "blog" },
     { href: "/contact", key: "contact" },
@@ -98,6 +100,15 @@ const Footer = () => {
                                     </li>
                                 );
                             })}
+                            <li>
+                                <Link
+                                    href="/feed.xml"
+                                    className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+                                >
+                                    <IconRss size={15} aria-hidden />
+                                    {translate("footer.rss")}
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>

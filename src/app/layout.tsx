@@ -44,6 +44,9 @@ export function generateMetadata(): Metadata {
         publisher: siteName,
         alternates: {
             canonical: absoluteUrl("/"),
+            types: {
+                "application/rss+xml": absoluteUrl("/feed.xml"),
+            },
         },
         openGraph: {
             type: "website",
