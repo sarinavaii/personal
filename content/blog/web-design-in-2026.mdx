@@ -1,0 +1,132 @@
+---
+title: "What Web Design Actually Looks Like in Late 2026"
+description: "Which trends made it into production this year, which are still stuck on award sites, and the CSS that separates the two."
+date: "2026-10-27"
+published: true
+tags:
+    - design
+    - css
+    - intermediate
+---
+
+Trend reports mostly describe moodboards. This is about what I keep seeing in production sites, client work and code review: the decisions that have become defaults, the ones that only survive on award pages, and the CSS behind both.
+
+## Type got loud, layout got quiet
+
+Display type is bigger and tighter than it was two years ago. Variable fonts, oxblood-red headlines, oversized serif wordmarks, letter-spacing pulled negative until it nearly touches. This is everywhere in 2026, and it is cheap to ship because fonts got better and `clamp()` removed the breakpoint math.
+
+The structure under all that type went the other way. Fewer drop shadows, fewer rounded cards floating on gradients, more hairline rules and flat surfaces. The visual budget moved from decoration to typography, which is why so many current sites look like a well-set document with one enormous headline.
+
+```css
+.display {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+}
+```
+
+Balanced wrapping stops the headline leaving one word alone on the last line, which matters more now that the headline is 80px.
+
+## Bento grids grew up
+
+The bento layout, a grid of mixed-size tiles, has been around long enough to stop being a trend and become a pattern. It survived because it holds genuinely different content: a screenshot here, a metric there, a quote in the tall cell. Apple's product pages did the popularising; everyone else did the copying.
+
+What changed is the implementation. Two years ago most of these were hand-positioned divs with magic row spans. Now they are ordinary grids with a couple of spanning rules, and the tiles align internally with subgrid.
+
+```css
+.bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.bento > .tile-wide {
+    grid-column: span 2;
+}
+
+.bento > .tile-tall {
+    grid-row: span 2;
+}
+
+.bento > .tile {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+}
+```
+
+The pattern is also where sameness set in. When every SaaS homepage has the same five-tile composition with a dashboard screenshot in the big cell, the layout stops communicating anything. I have talked two clients out of it this year for exactly that reason.
+
+## Colour moved into OKLCH and got quieter
+
+Token work is finally in the perceptual colour spaces. `oklch()` for palette definition, `color-mix()` for hover and border states, one loud accent against warm neutrals instead of four competing gradients. The muted palettes are partly a reaction to a decade of saturated purple, and partly practical: OKLCH keeps lightness consistent across a palette, so contrast survives a theme change.
+
+```css
+:root {
+    --surface: oklch(0.97 0.008 80);
+    --ink: oklch(0.22 0.01 80);
+    --accent: oklch(0.62 0.19 32);
+
+    --accent-hover: oklch(from var(--accent) calc(l - 0.08) c h);
+    --accent-line: color-mix(in oklch, var(--accent) 30%, transparent);
+}
+```
+
+The other half of this trend is texture. Fine grain over flat colour, paper-like backgrounds, barely-there noise. It reads as a rejection of the perfectly smooth gradient, and it costs about eight lines of CSS plus a small PNG.
+
+## Glass came back with a contrast bill
+
+Translucent panels returned in force after Apple's Liquid Glass work, and the web version is `backdrop-filter` plus a semi-transparent background. It looks convincing on a bright hero image and falls apart on text-heavy content, where the panel has to sit over an unknown background.
+
+The version that survives production has a solid fallback and a real background colour behind the blur:
+
+```css
+.panel {
+    background: oklch(0.99 0.005 80 / 0.82);
+    border: 1px solid oklch(0.9 0.01 80 / 0.6);
+    backdrop-filter: blur(18px) saturate(1.4);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+    .panel {
+        background: oklch(0.99 0.005 80);
+    }
+}
+```
+
+The accessibility issue is real and routinely ignored: text at 4.5:1 over a solid surface drops below that once the surface is at 80% opacity and something dark scrolls underneath. If the panel contains body copy rather than a label, I use a near-opaque background and let the blur do the rest.
+
+## Motion became native or nothing
+
+Almost none of the motion work I see now ships as a JavaScript animation library. Route changes use the View Transitions API, scroll effects use CSS scroll-driven animations, and entrance animations use `@starting-style`. The browser does the interpolation, which means it also respects `prefers-reduced-motion` without extra plumbing.
+
+Durations shrank too. Two years ago a page transition was 400ms; now anything above 250ms feels like the site is thinking. The exception is scroll-linked motion, where the user controls the pace and duration is irrelevant.
+
+What is fading is motion as decoration: parallax on every section, cards floating up on scroll, hover states that take 600ms to settle. That vocabulary now reads as dated, in the same way auto-playing carousels do.
+
+## AI became an interface, not a feature
+
+The most visible change of the last year is structural. Chat is no longer a widget in the corner; it is the page. Search boxes turned into prompt boxes, empty states turned into suggested prompts, and the answer arrives as a streamed document with citations underneath.
+
+Designing that well is mostly about states nobody used to design: the first token arriving, a partial answer that changes, a citation that might be wrong, a regenerate button, an escape hatch back to the normal UI. The sites that feel trustworthy show where the text came from. The ones that do not feel like a magic trick with a legal disclaimer.
+
+There is a backlash, and it is aesthetically specific. The purple gradient, the sparkle icon, the generic 3D blob illustration, the assistant that greets you by name. Those have become the visual signature of low-effort AI product, and good teams are actively avoiding them.
+
+## Accessibility turned into a deadline
+
+For European products, the European Accessibility Act became enforceable in June 2025. That moved accessibility from a quarterly aspiration to a procurement requirement, and it shows in the work: focus states designed rather than defaulted, target sizes checked, custom selects rebuilt because the old one could not be operated by keyboard.
+
+WCAG 2.2's focus-appearance and target-size criteria did more for interface quality than most design trends this year, largely because they are testable.
+
+## What I am tired of
+
+Scroll-jacking on marketing pages. Hero sections that are a stock photo plus a headline plus two buttons, indistinguishable from the next site. Cookie banners designed to be harder to dismiss than the thing they are asking about. Dashboards mocked up with fake numbers and no indication that they are fake. And the phrase "delightful" attached to a loading spinner.
+
+None of those are new. They persist because they are easy, and because nobody gets performance-reviewed for removing an effect.
+
+## The through-line
+
+The interesting shift is not a visual style. It is that the browser caught up. Layout, colour, motion and transitions that used to need libraries or build tooling are now a handful of declarations, which means design decisions and CSS decisions are the same conversation.
+
+The sites I have liked most this year are the ones that used that to remove things: fewer effects, fewer dependencies, a tighter type scale, and one accent colour doing actual work.

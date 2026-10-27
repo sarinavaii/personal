@@ -1,0 +1,107 @@
+---
+title: "CSS Subgrid: When Nested Layouts Finally Line Up"
+description: "Subgrid lets a nested element share its parent's tracks. Where that saves markup, where the model bends, and what the fallback costs."
+date: "2026-10-26"
+published: true
+tags:
+    - css
+    - layout
+    - tutorial
+    - intermediate
+---
+
+I built a pricing page once where the three cards looked fine until the copy changed. One plan had a two-line description, so its price sat lower than the others, and the "Start trial" buttons ended up at three different heights. The fix was a pile of `min-height` values per breakpoint, which stayed correct for about a month. Then we translated the page and every card had different text again.
+
+The cards were the same width. Their contents were not. That is the problem subgrid solves.
+
+## Why Nested Grids Ignore Each Other
+
+A child grid starts from scratch. It computes its own tracks from its own content and knows nothing about the grid around it:
+
+```css
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.card {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+}
+```
+
+Three cards in a row, three grids inside them. Each `.card` sizes its own `auto` rows. If one title wraps, only that card's body moves down. The containers are siblings, but their rows never cooperate.
+
+## Sharing the Parent's Rows
+
+You can tell the child to use the parent's track list instead of building one:
+
+```css
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 1.5rem;
+}
+
+.card {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+}
+```
+
+The title of every card now sits on row one, the description on row two, the button on row three. A long title makes that row taller for all three cards at once, which is what you wanted all along. No pixel values, no measuring, no wrapper elements.
+
+Columns work the same way. A form is the other place I use this constantly:
+
+```css
+.form {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+    gap: 0.75rem 1.5rem;
+}
+
+.field {
+    display: grid;
+    grid-column: span 2;
+    grid-template-columns: subgrid;
+}
+```
+
+Labels line up and inputs start at the same x position, while each field stays a self-contained component you can move around.
+
+## The Four Things That Catch People
+
+**You have to span the tracks first.** `grid-template-rows: subgrid` only inherits rows the element already occupies. Without the matching `grid-row: span 3`, there is nothing to inherit and the declaration does nothing useful.
+
+**Subgrid does not add tracks.** `grid-template-rows: subgrid 100px` is not a thing. The element joins the parent's sizing; it cannot insert a track of its own.
+
+**Gaps are the subgrid's decision.** Gutters between the inherited rows come from the subgrid element's own `gap`, not the parent's. The parent's gap only applies between the subgrid and its siblings. I have gotten this backwards more than once.
+
+**Names have to be unique enough.** Line names inherited from the parent keep working, which is handy, but two nested subgrids with the same names in the same place will confuse you faster than they will confuse the browser.
+
+## What the Fallback Costs
+
+Support is broad enough now that a lot of sites can use subgrid without a plan B. When you do need one, `@supports` keeps it honest:
+
+```css
+@supports not (grid-template-rows: subgrid) {
+    .card {
+        grid-template-rows: auto;
+    }
+
+    .card-link {
+        margin-top: auto;
+    }
+}
+```
+
+You lose cross-card alignment. Nothing breaks. For most card grids that is a small enough regression that I do not bother with a fallback at all; I only add it when the alignment is doing real work, like a pricing table where mismatched buttons look like a bug.
+
+## Where I Skip It
+
+Subgrid is only useful when the nested element really does share a grid with its parent. A sidebar widget, a chart legend, a component dropped into an unrelated page: keep those as normal grids. Alignment you cannot see is not alignment worth inheriting.
+
+For the pricing cards, the final CSS was about eight lines shorter than the version with `min-height`. That is the part I like. It removed code, and it kept working after translation.

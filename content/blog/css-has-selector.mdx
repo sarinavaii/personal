@@ -1,6 +1,6 @@
 ---
 title: "CSS :has() — The Parent Selector That Changes Everything"
-description: "How :has() works, what it enables, and practical patterns for conditional styling based on descendants, siblings, and form state."
+description: "Conditional styling based on descendants, siblings and form state, with the performance caveats that actually matter."
 date: "2025-10-21"
 published: true
 tags:
@@ -9,9 +9,7 @@ tags:
     - intermediate
 ---
 
-# CSS `:has()` — The Parent Selector That Changes Everything
-
-For decades, CSS could only style elements based on their ancestors or preceding siblings — never their descendants. `:has()` is the **relational pseudo-class** that inverts this: it matches an element based on what it contains.
+For a long time CSS could only style an element from its ancestors or from siblings before it. `:has()` matches an element based on what it contains.
 
 ## Basic Syntax
 
@@ -33,9 +31,9 @@ section:not(:has(*)) {
 }
 ```
 
-## Conditional Card Layouts
+`section:not(:has(*))` is the one I reach for most. CMS templates render a wrapper whether or not there is content in it.
 
-Style a card differently depending on whether it has an image:
+## Conditional Card Layouts
 
 ```css
 .card {
@@ -55,11 +53,9 @@ Style a card differently depending on whether it has an image:
 }
 ```
 
-No JavaScript, no additional classes, no conditional rendering tricks.
+I had a grid where cards without images were shorter and the rows never lined up. Tying the layout to the content fixed it better than the modifier class did.
 
 ## Form State Styling
-
-`:has()` makes form state styling significantly cleaner:
 
 ```css
 /* Form group is valid when its input has a value and no error */
@@ -79,9 +75,9 @@ form:has(input:required:invalid) button[type="submit"] {
 }
 ```
 
-## Sibling Selection via Parent
+Keep the server-side validation. `pointer-events: none` will not stop someone tabbing to the button and pressing Enter.
 
-`:has()` enables a form of "sibling-before" selection that CSS never had:
+## Sibling Selection via Parent
 
 ```css
 /* Style an element that comes BEFORE a certain sibling */
@@ -91,11 +87,9 @@ li:has(~ li.active) {
 }
 ```
 
-This was previously impossible without JavaScript.
+Step indicators are the obvious use: everything before the current step dims. Doing that from JavaScript meant a second pass over the list.
 
 ## Quantity Queries
-
-Count children and style accordingly:
 
 ```css
 /* Grid with 1 item — full width */
@@ -113,6 +107,8 @@ Count children and style accordingly:
     grid-template-columns: repeat(3, 1fr);
 }
 ```
+
+`:has(:nth-child(3))` is true for three items and for thirty, so the last rule means "three or more". Exact counts past three get ugly.
 
 ## Navigation Highlighting
 
@@ -135,24 +131,25 @@ body:has(dialog[open])::before {
 }
 ```
 
-The `body:has(dialog[open])` pattern is a clean replacement for the common `document.body.classList.add("modal-open")` pattern.
+`body:has(dialog[open])` replaced a `modal-open` class in one of my projects. The scroll lock can't drift out of sync with the dialog now, which used to happen when a route change closed it without running cleanup.
 
 ## Performance Considerations
 
-`:has()` with complex selectors can be expensive. Guidelines:
+Engines handle `:has()` better than they used to, but the selector is still re-evaluated when the DOM changes:
 
-- Avoid `:has(*)` on large lists (checks every child).
-- Prefer `:has(> child)` (direct child) over `:has(descendant)` when possible.
-- Avoid using `:has()` on the `:root` or `html` element with complex selectors — it recalculates on every DOM change.
+- Avoid `:has(*)` on large lists, since it checks every child.
+- Prefer `:has(> child)` over `:has(descendant)` when the markup allows it.
+- Keep complex `:has()` selectors off `:root` and `html`.
 
 ## Browser Support
 
-`:has()` is fully supported in all modern browsers:
-- **Chrome 105+** (August 2022)
-- **Safari 15.4+** (March 2022 — shipped first!)
-- **Firefox 121+** (December 2023)
-- **Edge 105+** (August 2022)
+- Chrome 105+ (August 2022)
+- Safari 15.4+ (March 2022, which was first)
+- Firefox 121+ (December 2023)
+- Edge 105+ (August 2022)
+
+If your audience includes an older Firefox ESR, treat `:has()` as an enhancement rather than load-bearing layout.
 
 ---
 
-`:has()` is already changing how CSS is written. Start replacing JavaScript-driven class toggling with `:has()` — the result is leaner, more declarative, and more maintainable.
+I have been deleting `modal-open`-style classes since Safari shipped this. Try it on one conditional layout first; stylesheet logic is easier to leave alone six months later.

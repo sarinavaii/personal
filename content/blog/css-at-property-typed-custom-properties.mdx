@@ -1,6 +1,6 @@
 ---
 title: "CSS @property: Typed Custom Properties That Actually Animate"
-description: "How @property unlocks animated gradients, typed CSS variables, and smarter design tokens."
+description: "Typed custom properties make gradients and other complex values animatable, and give design tokens an actual type."
 date: "2025-03-11"
 published: true
 tags:
@@ -10,13 +10,13 @@ tags:
     - animation
 ---
 
-# CSS `@property`: Typed Custom Properties That Actually Animate
+I spent an afternoon trying to animate a gradient progress bar, wondering why the transition did nothing. The answer is that custom properties are stored as strings. The browser sees `--stop: 20%` and `--stop: 80%` as two unrelated pieces of text, so it can't work out the frames between them and the value snaps.
 
-CSS custom properties (`--my-var`) are powerful but have one fundamental limitation: the browser treats their values as **opaque strings**. That means you can't animate them, and you get no type safety. `@property` solves both.
+`@property` fixes that. It tells the browser what kind of value a property holds, which makes it animatable and gives the cascade a fallback for invalid values.
 
 ## What Is `@property`?
 
-`@property` lets you register a custom property with a **type**, an **initial value**, and an **inheritance rule**. The browser then understands what the value represents, enabling interpolation (animation) and better cascade behavior.
+`@property` registers a custom property with a type, an initial value, and an inheritance rule.
 
 ```css
 @property --hue {
@@ -26,12 +26,14 @@ CSS custom properties (`--my-var`) are powerful but have one fundamental limitat
 }
 ```
 
+Once registered, the browser knows `--hue` is a number and can interpolate it. It can also reject values that don't match.
+
 ## Animating Gradients (The Killer Use Case)
 
-Without `@property`, this doesn't animate smoothly — the browser can't interpolate between two gradient strings:
+This doesn't animate. The gradient jumps from the start value to the end value:
 
 ```css
-/* ❌ This just snaps — no animation */
+/* No animation, the value snaps */
 .box {
     --color-stop: 0%;
     background: linear-gradient(to right, red var(--color-stop), blue);
@@ -42,10 +44,10 @@ Without `@property`, this doesn't animate smoothly — the browser can't interpo
 }
 ```
 
-With `@property`, the browser knows `--color-stop` is a `<percentage>` and interpolates it correctly:
+Register it as a `<percentage>` and the same transition runs smoothly:
 
 ```css
-/* ✅ Smooth animation */
+/* Smooth animation */
 @property --color-stop {
     syntax: "<percentage>";
     initial-value: 0%;
@@ -63,7 +65,7 @@ With `@property`, the browser knows `--color-stop` is a `<percentage>` and inter
 
 ## Supported Syntax Types
 
-`@property` supports a range of CSS value types via the `syntax` descriptor:
+The `syntax` descriptor accepts these:
 
 | Syntax           | Example value     |
 |------------------|-------------------|
@@ -77,16 +79,18 @@ With `@property`, the browser knows `--color-stop` is a `<percentage>` and inter
 | `<transform-function>` | `rotate(45deg)` |
 | `*`              | Any value         |
 
+The wildcard brings back the string behaviour.
+
 ## Typed Design Tokens
 
-`@property` makes design tokens safer. Instead of a raw string that could be anything:
+The other use is catching mistakes. A plain variable is a string, so nothing stops this until it looks wrong:
 
 ```css
 /* Before: no validation */
 :root { --spacing-md: 16px; }
 ```
 
-You get a typed, validated property:
+Registered, the property has a declared type and a fallback:
 
 ```css
 @property --spacing-md {
@@ -96,7 +100,7 @@ You get a typed, validated property:
 }
 ```
 
-If you accidentally write `--spacing-md: red`, the browser falls back to `initial-value` instead of using the invalid value silently.
+If someone writes `--spacing-md: red`, the declaration is invalid and the browser uses `initial-value`. I've only bothered for tokens that get animated or used in `calc()`, since registering everything is a lot of boilerplate.
 
 ## Real Example: Animated Hue Rotation
 
@@ -117,12 +121,12 @@ If you accidentally write `--spacing-md: red`, the browser falls back to `initia
 }
 ```
 
-This cycles the badge through all hues continuously — not achievable with a plain custom property.
+The badge cycles through the hue wheel. Unregistered, it would jump from 0 to 360, the same colour, so it would appear to do nothing.
 
 ## Browser Support
 
-`@property` is supported in **all modern browsers** as of 2025 (Chrome 85+, Edge 85+, Firefox 128+, Safari 16.4+). You can use it in production with confidence.
+`@property` is supported in all modern browsers as of 2025 (Chrome 85+, Edge 85+, Firefox 128+, Safari 16.4+), so there's no need to guard it.
 
 ---
 
-`@property` is one of the most underused CSS features available. Typed tokens and animatable gradients alone make it worth adding to your baseline.
+Small at-rule, narrow uses, but animated gradients come up often enough that I keep it.

@@ -1,6 +1,6 @@
 ---
 title: "CSS Logical Properties: Write Once, Support Every Writing Direction"
-description: "Replace physical CSS properties (left, right, margin-top) with logical equivalents that work across LTR, RTL, and vertical writing modes."
+description: "Logical properties replace left, right, top and bottom with rules that follow the writing direction, which is what RTL support actually needs."
 date: "2025-07-01"
 published: true
 tags:
@@ -10,18 +10,16 @@ tags:
     - i18n
 ---
 
-# CSS Logical Properties: Write Once, Support Every Writing Direction
+Physical properties like `margin-left` and `border-top` assume text runs left to right and top to bottom. Set `dir="rtl"` on a page and a sidebar that looked fine starts pushing the wrong way. Change the writing mode and the layout is sideways.
 
-Physical CSS properties (`margin-left`, `padding-right`, `border-top`) are written assuming left-to-right, top-to-bottom text. For RTL languages (Arabic, Hebrew) or vertical writing modes (traditional Chinese, Japanese), you historically needed to override them manually.
-
-**CSS Logical Properties** replace physical directions with writing-mode-relative equivalents. Write them once and they work correctly in any direction.
+Logical properties name the same edges relative to the writing mode instead of the screen, so you declare them once and they follow the text.
 
 ## The Core Concept
 
-Instead of thinking in terms of "left/right/top/bottom," think in terms of:
+Put left, right, top and bottom aside for a moment:
 
-- **Inline axis** — the direction text flows (horizontal in LTR, horizontal but reversed in RTL, vertical in some East Asian modes).
-- **Block axis** — perpendicular to text flow (vertical in most cases).
+- Inline axis: the direction text flows (horizontal in LTR, horizontal but reversed in RTL, vertical in some East Asian modes).
+- Block axis: perpendicular to text flow (vertical in most cases).
 
 | Physical | Logical Equivalent |
 |----------|-------------------|
@@ -46,7 +44,7 @@ Instead of thinking in terms of "left/right/top/bottom," think in terms of:
 }
 ```
 
-In LTR, `inline-start` maps to `left`. In RTL, it maps to `right`. You don't need to override anything.
+That is the whole change. `inline-start` resolves to left in LTR and right in RTL; same numbers, different mapping, nothing to override.
 
 ## Shorthand Logical Properties
 
@@ -60,6 +58,7 @@ In LTR, `inline-start` maps to `left`. In RTL, it maps to `right`. You don't nee
 ```
 
 This replaces:
+
 ```css
 .section {
     margin-left: auto;
@@ -70,6 +69,8 @@ This replaces:
     padding-right: 1.5rem;
 }
 ```
+
+Converting our design system buttons was mostly deletion in the diff.
 
 ## Width and Height
 
@@ -91,7 +92,7 @@ This replaces:
 }
 ```
 
-In vertical writing modes, `inline-size` becomes the height and `block-size` becomes the width — automatically.
+`inline-size` is width while text runs horizontally and height once it doesn't, so the same rule gives a different box under `writing-mode: vertical-rl`.
 
 ## Borders and Inset
 
@@ -107,7 +108,7 @@ In vertical writing modes, `inline-size` becomes the height and `block-size` bec
 }
 ```
 
-For positioned elements, `top/left/bottom/right` become `inset-block-start`, `inset-inline-start`, etc.:
+Positioned elements work the same way:
 
 ```css
 /* Physical */
@@ -130,6 +131,8 @@ For positioned elements, `top/left/bottom/right` become `inset-block-start`, `in
 }
 ```
 
+The `inset` shorthand is still ordered top, right, bottom, left. Mixing it with logical longhands in one rule is confusing, and I have done it.
+
 ## Text Alignment
 
 ```css
@@ -143,6 +146,8 @@ For positioned elements, `top/left/bottom/right` become `inset-block-start`, `in
     text-align: start;
 }
 ```
+
+`left` still works, and an English-only site won't break either way. I use `start` so the next person doesn't assume the direction is fixed.
 
 ## Full Reference Map
 
@@ -162,8 +167,8 @@ For positioned elements, `top/left/bottom/right` become `inset-block-start`, `in
 
 ## Browser Support
 
-Logical properties have full support in all modern browsers. The shorthand forms (`margin-inline`, `padding-block`) are fully supported since 2021.
+Logical properties have full support in all modern browsers. The shorthand forms like `margin-inline` and `padding-block` have been stable since 2021.
 
 ---
 
-Logical properties are not just for RTL support — they make CSS more semantic and easier to reason about in any writing mode. Adopt them in new components as a baseline practice.
+If you're starting a component library, use logical properties from the first commit. Retrofitting a codebase that mixes both is tedious, so existing sites are better off migrating a component at a time.

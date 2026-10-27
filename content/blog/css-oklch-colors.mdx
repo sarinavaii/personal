@@ -1,6 +1,6 @@
 ---
 title: "Stop Using HEX Colors: A Practical Guide to oklch()"
-description: "oklch is the color space CSS has always needed — perceptually uniform, easy to manipulate, and wide-gamut ready."
+description: "Perceptually even colour, predictable lightness steps, wide-gamut output, and the contrast caveat that usually goes unmentioned."
 date: "2025-05-20"
 published: true
 tags:
@@ -10,13 +10,11 @@ tags:
     - design
 ---
 
-# Stop Using HEX Colors: A Practical Guide to `oklch()`
-
-HEX and RGB colors are machine-friendly but human-hostile. Adjusting lightness or saturation requires recalculating all three channels. `oklch()` — now supported in all modern browsers — is designed to match how humans actually perceive color.
+Picking a HEX color is guesswork. If a shade comes out too dark, you open a picker, nudge a channel, and hope the hue stayed put. `oklch()` separates lightness, chroma and hue, so you can change one without recalculating the other two.
 
 ## What Is oklch?
 
-`oklch` stands for **OK** (a perceptual correction) + **L**ightness + **C**hroma + **H**ue. It uses the Oklab color space, which is engineered so equal numeric differences produce equal perceived differences.
+`oklch` is **OK** (a perceptual correction) plus **L**ightness, **C**hroma and **H**ue. It sits on Oklab, where equal numeric steps look like equal perceptual steps. RGB and HSL don't have that property.
 
 The syntax:
 
@@ -32,7 +30,7 @@ color: oklch(L C H / alpha);
 
 ## Why oklch Beats HSL
 
-HSL has a well-known problem: colors at the same "lightness" value look wildly different in perceived brightness.
+HSL's lightness channel lies to you. Two colors at the same value can look nothing alike:
 
 ```css
 /* Both at 50% HSL lightness — but yellow looks much brighter */
@@ -40,16 +38,18 @@ hsl(60deg 100% 50%)   /* Yellow — eye-searingly bright */
 hsl(240deg 100% 50%)  /* Blue — much darker perceptually */
 ```
 
-In `oklch`, the same lightness value actually looks the same:
+Yellow at 50% glares; blue at 50% reads as a deep navy. In `oklch`, the same lightness value looks the same:
 
 ```css
 oklch(0.7 0.2 60)   /* Yellow — consistent perceived lightness */
 oklch(0.7 0.2 240)  /* Blue — same perceived lightness */
 ```
 
+Perceptual lightness isn't contrast, though. Matching L values won't fix unreadable text, and I've shipped a palette like that.
+
 ## Building a Color Palette
 
-The power of `oklch` is systematic palette generation. Change only the hue and get a harmonious set:
+The useful part is generating a palette by varying one channel. Hold L and C, step the hue:
 
 ```css
 :root {
@@ -65,11 +65,11 @@ The power of `oklch` is systematic palette generation. Change only the hue and g
 }
 ```
 
-All these colors have the same perceived lightness and saturation — consistent without manually tuning each one.
+All eight read at roughly the same weight. The same set in HSL needs manual brightness fixes, especially around yellow and blue.
 
 ## Generating Shades
 
-Vary only the lightness to generate a full scale:
+Shades are the same trick on the lightness axis:
 
 ```css
 :root {
@@ -86,9 +86,11 @@ Vary only the lightness to generate a full scale:
 }
 ```
 
+Chroma tapers at both ends so the light and dark steps don't look neon. That curve came from trial and error.
+
 ## Wide Gamut Colors
 
-`oklch` can address colors outside the sRGB gamut — P3 and Rec2020 colors on capable displays:
+`oklch` can describe colors outside the sRGB gamut, including P3 and Rec2020:
 
 ```css
 .vivid {
@@ -97,11 +99,11 @@ Vary only the lightness to generate a full scale:
 }
 ```
 
-Browsers automatically clamp to the display's capability. On a standard sRGB screen it shows the closest match; on a P3 display it shows the full vivid color.
+The browser maps that into whatever the display can show. On an sRGB monitor you get a muted green; on a P3 display the same value is noticeably more saturated. If the exact color matters on sRGB screens, keep the values inside the smaller gamut.
 
 ## Using oklch in Tailwind CSS
 
-Tailwind CSS v4 uses oklch internally for its default palette. You can define custom colors in your config:
+Tailwind v4 defines its default palette in oklch. Custom colors are plain strings in the theme config:
 
 ```js
 // tailwind.config.js
@@ -125,4 +127,4 @@ module.exports = {
 
 ---
 
-`oklch()` is supported in all modern browsers and Tailwind v4. There's no reason to write HEX colors for new projects.
+I haven't reached for a HEX value for a new palette in a while. Convert a handful of your tokens and see whether the shades you keep fighting with were badly chosen numbers.

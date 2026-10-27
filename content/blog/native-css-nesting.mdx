@@ -1,6 +1,6 @@
 ---
 title: "Native CSS Nesting Is Here: Ditch the Preprocessor"
-description: "CSS now supports nesting natively — no Sass or Less needed. Here's the syntax, the edge cases, and how to migrate."
+description: "Native CSS nesting works in every current browser. The syntax, the `&` rules, and what still needs a preprocessor."
 date: "2025-12-02"
 published: true
 tags:
@@ -9,9 +9,7 @@ tags:
     - beginner
 ---
 
-# Native CSS Nesting Is Here: Ditch the Preprocessor
-
-CSS nesting — writing selectors inside other selectors — was the main reason many developers adopted Sass or Less. It's now natively supported in all modern browsers, with no build step required.
+Nesting selectors inside other selectors was the main reason I put up with Sass for years. Browsers handle it natively now, and there's no build step involved.
 
 ## Basic Syntax
 
@@ -38,7 +36,7 @@ CSS nesting — writing selectors inside other selectors — was the main reason
 }
 ```
 
-This is equivalent to writing:
+Which is the same as writing this:
 
 ```css
 .card { background: white; border-radius: 8px; padding: 1.5rem; }
@@ -49,7 +47,7 @@ This is equivalent to writing:
 
 ## The `&` Selector
 
-`&` refers to the parent selector. It's required when you're concatenating to the parent selector (not adding a descendant):
+`&` means the parent selector. You need it when you're appending to the parent rather than adding a descendant:
 
 ```css
 .button {
@@ -70,9 +68,11 @@ This is equivalent to writing:
 }
 ```
 
+Bare `.icon` and `& .icon` compile to the same thing. I still write the second one when I mean a descendant, because it survives being moved out of the block during a refactor.
+
 ## Media Queries Inside Selectors
 
-Nesting works with `@media`, `@supports`, and other at-rules:
+`@media`, `@supports` and other at-rules nest too:
 
 ```css
 .sidebar {
@@ -91,11 +91,11 @@ Nesting works with `@media`, `@supports`, and other at-rules:
 }
 ```
 
-No more scattering media query overrides across the file. The responsive behavior lives with the component.
+The responsive overrides stay next to the rule they change. In flat CSS the mobile version of a component ends up 400 lines below it.
 
 ## Nesting and Specificity
 
-Nested selectors carry the same specificity as if they were written flat. There's no specificity bonus for nesting:
+A nested selector has the same specificity as the flat version. Nesting adds no weight:
 
 ```css
 .card .title { color: red; }
@@ -108,9 +108,11 @@ Nested selectors carry the same specificity as if they were written flat. There'
 /* Specificity: 0-2-0 — same */
 ```
 
+Good news when porting Sass, less so if you hoped nesting would settle a specificity fight. It won't.
+
 ## Key Difference From Sass: Interpolation
 
-Native CSS nesting does **not** support Sass-style selector interpolation:
+Native nesting has no equivalent of Sass selector interpolation:
 
 ```scss
 /* Sass — works */
@@ -123,11 +125,11 @@ $prefix: "btn";
 /* This is not possible natively */
 ```
 
-If you need dynamic selector generation, you still need a preprocessor or JavaScript.
+If selectors have to be generated from a variable, a preprocessor or JavaScript is still the way.
 
 ## Mixing With CSS Custom Properties
 
-Nesting pairs well with custom properties for component themes:
+Custom properties and nesting go together well for component theming:
 
 ```css
 .button {
@@ -149,9 +151,11 @@ Nesting pairs well with custom properties for component themes:
 }
 ```
 
+Overriding `--bg` on hover rather than `background` keeps the hover rule from having to know the base colour. Small thing, but it's the reason I started structuring themes this way.
+
 ## Migrating From Sass
 
-Most Sass nesting migrates directly. Watch for these differences:
+Most Sass nesting converts one-to-one. The differences worth knowing:
 
 | Feature | Sass | Native CSS |
 |---------|------|------------|
@@ -164,16 +168,17 @@ Most Sass nesting migrates directly. Watch for these differences:
 | Functions | `darken()` etc. | `oklch()`, `color-mix()` |
 | Loops | `@each`, `@for` | ❌ Not supported |
 
-For projects that only use Sass for nesting and variables, native CSS is now a complete replacement.
+If nesting and variables were the only Sass features a project used, native CSS covers it now.
 
 ## Browser Support
 
-Native CSS nesting is fully supported:
-- **Chrome 120+** (December 2023)
-- **Firefox 117+** (August 2023)
-- **Safari 17.2+** (December 2023)
-- **Edge 120+** (December 2023)
+All current browsers support it:
+
+- Chrome 120+ (December 2023)
+- Firefox 117+ (August 2023)
+- Safari 17.2+ (December 2023)
+- Edge 120+ (December 2023)
 
 ---
 
-If your Sass usage is limited to nesting and variables, you can remove the preprocessor entirely. Less tooling, less build complexity, same result.
+So the preprocessor can go, provided nothing else in the build depends on it. Fewer tools to keep current, and the CSS does the same job.

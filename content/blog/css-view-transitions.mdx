@@ -1,0 +1,144 @@
+---
+title: "View Transitions: Animate Between Pages Without an Animation Library"
+description: "How the View Transitions API works, what the pseudo-elements give you, and the two mistakes that make it look broken."
+date: "2026-09-21"
+published: true
+tags:
+    - css
+    - animation
+    - tutorial
+    - intermediate
+---
+
+The first page transition I ever shipped was a pair of CSS classes and a `setTimeout`. Fade the list out over 200ms, swap the DOM, fade it back in. It looked fine in a demo and terrible in use, because any click during those 200ms produced a flash of half-faded content. The user could outrun the animation, and there was no good way to stop them.
+
+The View Transitions API exists because that problem is not solvable with a class and a timer. The browser takes a snapshot of the current state, runs your DOM update, snapshots the result, and animates between the two images. Interrupt it and it blends from whatever is on screen instead of starting over.
+
+## The Basic Call
+
+```js
+document.startViewTransition(() => {
+    list.replaceChildren(...newItems);
+});
+```
+
+That is a cross-fade of the whole page, and it already behaves better than most hand-rolled versions. If your update is asynchronous, return a promise and the browser waits:
+
+```js
+document.startViewTransition(async () => {
+    const html = await fetch("/partials/list").then((response) => response.text());
+    list.innerHTML = html;
+});
+```
+
+## Naming the Elements That Should Move
+
+A cross-fade is fine. Moving things is the interesting part. Give an element a name and the browser treats the before and after versions as the same object:
+
+```css
+.avatar {
+    view-transition-name: avatar;
+}
+```
+
+In practice you set the name dynamically, because only one element can hold it at a time:
+
+```js
+async function openProfile(userId) {
+    const source = document.querySelector(`[data-user="${userId}"] .avatar`);
+    source.style.viewTransitionName = "avatar";
+
+    await document.startViewTransition(async () => {
+        renderProfile(userId);
+    }).finished;
+
+    document.querySelector(".profile .avatar").style.viewTransitionName = "";
+}
+```
+
+The avatar now travels from the list into the header. Two rules do most of the work here. Names have to be unique within each snapshot; duplicate names abort the transition, and the browser logs an error rather than falling back gracefully. And for a morph, both states need the name. If only the new state has it, the element fades in from nothing, which looks like a bug even though it is the documented behaviour.
+
+## The Pseudo-Elements
+
+Every named element generates a small tree you can style:
+
+```css
+::view-transition-old(card) {
+    animation: 180ms ease-out both fade-out;
+}
+
+::view-transition-new(card) {
+    animation: 220ms ease-in both fade-in;
+}
+
+::view-transition-group(root) {
+    animation-duration: 250ms;
+}
+```
+
+`group` is the container that moves and scales. `image-pair` holds the two snapshots. The `old` and `new` pseudo-elements are the snapshots themselves, and the default cross-fade is just CSS you are allowed to replace. Splitting the durations like this is usually what makes a transition feel intentional rather than sluggish: the outgoing content can leave faster than the incoming content arrives.
+
+## Across Real Page Loads
+
+For a multi-page site, one rule in both documents opts in:
+
+```css
+@view-transition {
+    navigation: auto;
+}
+```
+
+The same `view-transition-name` values now work across navigations. No JavaScript, no router integration.
+
+This is also where framework expectations go wrong. Client-side routing is not a document navigation. In the Next.js App Router, clicking a `<Link>` does not trigger this path, so `@view-transition` never fires and it looks like the feature is broken. You have to call `startViewTransition` around the router update yourself.
+
+## With React
+
+React batches state updates, so the DOM may not have changed by the time your callback returns. `flushSync` forces the commit inside the snapshot window:
+
+```tsx
+import { flushSync } from "react-dom";
+
+function navigate(to: string) {
+    if (!document.startViewTransition) {
+        router.push(to);
+        return;
+    }
+
+    document.startViewTransition(() => {
+        flushSync(() => router.push(to));
+    });
+}
+```
+
+Use it here and nowhere else. Forcing synchronous rendering across the app undoes the scheduler for no benefit.
+
+## Motion Preferences
+
+Transitions are decorative, so they should disappear when someone asks for less motion. The CSS version covers transitions you did not start yourself:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
+```
+
+Or skip the call entirely:
+
+```js
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduceMotion || !document.startViewTransition) {
+    router.push(to);
+    return;
+}
+```
+
+## What I Would Do Differently
+
+Keep the durations short. Route transitions over 300ms feel slow on the fifth click, even if they looked elegant in review. Give different elements different names only when you actually want them to morph; a name on everything turns a page change into a fairground. And feature-detect the method rather than the browser, so Safari and Firefox get a plain, instant navigation instead of a broken one.
+
+For the list-to-detail case, the version in this post replaced roughly forty lines of fade-in/fade-out state management. That is the strongest argument for it, more than the animation itself.

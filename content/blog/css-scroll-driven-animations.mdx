@@ -1,6 +1,6 @@
 ---
 title: "CSS Scroll-Driven Animations: No JavaScript Required"
-description: "Build scroll-linked animations purely in CSS using the Animation Timeline API — progress bars, reveal effects, and parallax."
+description: "Scroll-linked animation in CSS only, from progress bars to parallax, plus the jank that scaleX and a careless animation-range cause."
 date: "2025-04-08"
 published: true
 tags:
@@ -10,20 +10,18 @@ tags:
     - intermediate
 ---
 
-# CSS Scroll-Driven Animations: No JavaScript Required
-
-Scroll-linked animations have historically required `IntersectionObserver` or scroll event listeners. The **CSS Scroll-Driven Animations** spec — now supported in all modern browsers — moves this entirely into CSS.
+Scroll-linked effects have usually meant an `IntersectionObserver` or a `scroll` listener with a `requestAnimationFrame` guard. CSS scroll-driven animations move that into the stylesheet.
 
 ## Two Types of Scroll Timelines
 
-There are two timeline types:
+1. **`scroll()`** links progress to scroll position in a container.
+2. **`view()`** links progress to an element's visibility in a scroller.
 
-1. **`scroll()`** — links animation progress to scroll position within a scroll container.
-2. **`view()`** — links animation progress to an element's visibility within a scroller.
+You pick one per animation with `animation-timeline`.
 
 ## Progress Bar With `scroll()`
 
-A reading progress bar that fills as the user scrolls the page:
+A progress bar that fills as you scroll:
 
 ```css
 @keyframes grow {
@@ -44,7 +42,9 @@ A reading progress bar that fills as the user scrolls the page:
 }
 ```
 
-`scroll(root block)` — root is the scroll container (the document), block is the scroll axis (vertical). No JavaScript. No event listeners.
+`scroll(root block)` is the document scroller on the vertical axis. Without `both`, the bar snaps to zero outside the range.
+
+`width` triggers layout on every frame, so if the bar stutters, pin the element at full width and animate `transform: scaleX()` instead.
 
 ## Reveal on Scroll With `view()`
 
@@ -69,11 +69,11 @@ Fade elements in as they enter the viewport:
 }
 ```
 
-`animation-range: entry 0% entry 40%` means the animation plays from when the element first enters the viewport to when 40% of it is visible.
+`entry 0% entry 40%` starts as the top edge enters and finishes once 40% of the element is visible. On a tall card that is a long scroll; I ended up nearer 20%.
 
 ## `animation-range` Reference
 
-The `animation-range` property controls which portion of the timeline drives the animation:
+It picks which portion of the timeline drives the animation:
 
 | Keyword | Meaning |
 |---------|---------|
@@ -90,9 +90,11 @@ animation-range: entry 0% entry 100%;
 animation-range: cover 25% cover 75%;
 ```
 
+`cover` is usually what people mean by "while it's on screen". `contain` counts only the stretch where it is fully inside the viewport.
+
 ## Named Timelines for Complex Layouts
 
-If the scroll container isn't an ancestor of the animated element, use a named timeline:
+Use a named timeline when the scroller is not an ancestor:
 
 ```css
 .scroller {
@@ -105,6 +107,8 @@ If the scroll container isn't an ancestor of the animated element, use a named t
     animation-timeline: --my-scroll;
 }
 ```
+
+The name has to be a custom identifier starting with `--`, or the declaration is dropped.
 
 ## Parallax Effect
 
@@ -121,10 +125,12 @@ If the scroll container isn't an ancestor of the animated element, use a named t
 }
 ```
 
+Parallax from a scroll listener is where I have seen the worst jank.
+
 ## Browser Support
 
-Scroll-driven animations are in **Chrome 115+**, **Edge 115+**, and **Safari 18+** (shipped fall 2024). Firefox support arrived in **Firefox 132**. Use `@supports (animation-timeline: scroll())` for safe progressive enhancement.
+Chrome 115+, Edge 115+, Safari 18+ (fall 2024) and Firefox 132. Wrap it in `@supports (animation-timeline: scroll())`: an ignored `animation-timeline` leaves a normal timed animation, so cards fade in on load instead of on scroll.
 
 ---
 
-Scroll-driven animations reduce JavaScript bundle size and move animation logic where it belongs — in CSS. Replace your IntersectionObserver reveal patterns today.
+Progress bars and fade-ins are where this has stuck for me. Neither needs a library.

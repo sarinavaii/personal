@@ -1,0 +1,170 @@
+---
+title: "Animating height: auto Is Finally Possible"
+description: "interpolate-size and calc-size() remove the oldest hack in CSS. How they work, where they still fall short, and the fallback I keep using."
+date: "2026-07-30"
+published: true
+tags:
+    - css
+    - animation
+    - tutorial
+    - intermediate
+---
+
+I once shipped an accordion with `max-height: 999px` and a 300ms transition. It looked right until someone opened a panel with more text than the others: the animation finished long before the height did, then the panel jumped the last two hundred pixels. I spent an afternoon tuning the duration against the longest possible content, which is not a solution so much as a bet that the content never changes.
+
+The root cause is obvious once you see it. `auto` is not a length, so there is nothing to interpolate. Two newer CSS features fix that properly.
+
+## The Grid Trick, Which Still Works
+
+If you want something that works everywhere today, the `0fr` to `1fr` grid transition is the most reliable option:
+
+```css
+.panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 250ms ease;
+}
+
+.panel[data-open="true"] {
+    grid-template-rows: 1fr;
+}
+
+.panel > div {
+    overflow: hidden;
+}
+```
+
+Fractional units are interpolable, and `auto` never enters the picture. The inner wrapper is required, since the overflow has to be clipped by the grid item rather than the grid itself. It is a trick, but it is a trick that has held up for years.
+
+## interpolate-size
+
+The direct fix is a single property that allows interpolation between a length and an intrinsic keyword:
+
+```css
+:root {
+    interpolate-size: allow-keywords;
+}
+```
+
+Now this works:
+
+```css
+.disclosure {
+    height: 0;
+    overflow: hidden;
+    transition: height 250ms ease;
+}
+
+.disclosure[data-open="true"] {
+    height: auto;
+}
+```
+
+The browser computes the `auto` height and animates to it. No magic number, no ResizeObserver, no layout thrash.
+
+I scope it rather than putting it on `:root`:
+
+```css
+.disclosure {
+    interpolate-size: allow-keywords;
+}
+```
+
+The property changes how `height`, `width`, `min-height`, `max-height` and their logical equivalents behave, including how `calc-size()` resolves. App-wide it is easy to forget you enabled it and then spend an hour wondering why a flex item animates when it should snap. Scoped, the surprise stays local.
+
+## calc-size() When You Need More
+
+`calc-size()` is the lower-level version. It takes an intrinsic size as a basis and lets you compute from it:
+
+```css
+.card {
+    height: 0;
+    transition: height 300ms ease;
+}
+
+.card[data-expanded="true"] {
+    height: calc-size(auto, size + 1.5rem);
+}
+```
+
+Inside the function, `size` refers to the basis, so you can add to it or multiply it:
+
+```css
+.thumbnail {
+    width: calc-size(min-content, size * 2);
+}
+
+.overlay {
+    max-height: calc-size(max-content, size - 2rem);
+}
+```
+
+This is how you animate to the content height while leaving room for a footer, without guessing at pixels.
+
+## Elements That Start Hidden
+
+Height transitions usually pair with something appearing: a popover, a dialog, a toast. Those start in a state the browser has never painted, so there is nothing to transition from. `@starting-style` supplies that first frame:
+
+```css
+dialog[open] {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 200ms ease,
+        transform 200ms ease,
+        display 200ms allow-discrete,
+        overlay 200ms allow-discrete;
+}
+
+@starting-style {
+    dialog[open] {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+```
+
+The `allow-discrete` keyword is what keeps `display: none` and the top layer in the transition instead of removing them at frame zero. Without it the element disappears before the animation can run, and you get a flash with no visible motion.
+
+## Both Together
+
+The accordion I use now keeps the grid version as the baseline and lets `interpolate-size` take over where it is supported:
+
+```css
+.accordion-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    transition: grid-template-rows 250ms ease;
+}
+
+.accordion-panel[data-open="true"] {
+    grid-template-rows: 1fr;
+}
+
+.accordion-panel > div {
+    overflow: hidden;
+}
+
+@supports (interpolate-size: allow-keywords) {
+    .accordion-panel,
+    .accordion-panel[data-open="true"] {
+        interpolate-size: allow-keywords;
+        grid-template-rows: none;
+        height: 0;
+        transition: height 250ms ease;
+    }
+
+    .accordion-panel[data-open="true"] {
+        height: auto;
+    }
+}
+```
+
+No measuring, and the unsupported path is the one that already worked.
+
+## Support
+
+`interpolate-size` and `calc-size()` are Chromium features. They are in Chrome and Edge now, and not in Safari or Firefox as far as I can tell from testing. `@starting-style` has wider support but is still recent enough to check before relying on it.
+
+The grid trick stays the baseline; these properties are an enhancement. Writing the fallback first is not extra work here; it is the same markup with one extra `@supports` block, and it means the accordion behaves correctly in every browser instead of only in the one you tested.

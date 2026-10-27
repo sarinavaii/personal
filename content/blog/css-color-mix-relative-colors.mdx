@@ -1,0 +1,131 @@
+---
+title: "Stop Hand-Picking Shades: color-mix() and Relative Colors"
+description: "Derive hover states, borders and a whole palette from one brand colour in CSS, so a theme change stops being an afternoon of colour picking."
+date: "2026-08-27"
+published: true
+tags:
+    - css
+    - design
+    - tutorial
+    - intermediate
+---
+
+The design file for a project I worked on had fourteen variations of the same blue. Four tints, four shades, a border blue, a focus blue, a disabled blue, two overlay blues. All hand-picked, all slightly inconsistent, and all of them wrong the week the brand colour changed.
+
+I have stopped doing that. One token now, with the rest derived in CSS at runtime.
+
+## Mixing Two Colours
+
+`color-mix()` blends two colours in a chosen interpolation space, with optional weights:
+
+```css
+:root {
+    --brand: oklch(0.62 0.19 265);
+    --brand-hover: color-mix(in oklch, var(--brand) 85%, black);
+    --brand-subtle: color-mix(in oklch, var(--brand) 12%, white);
+    --brand-border: color-mix(in oklch, var(--brand) 30%, transparent);
+}
+```
+
+You do not have to make the percentages sum to 100. Leave one out and it becomes the complement, so the first line reads as 85% brand and 15% black.
+
+The space matters. Mixing in `srgb` is what most colour pickers do, and it often lands on something muddy in the middle because sRGB interpolation takes a detour through the wrong part of the colour space. `oklch` and `oklab` are perceptually uniform, so a 15% step toward black looks like a 15% step. Pick one of the two and stay consistent; the difference between them is small enough that switching halfway through a palette is the real mistake.
+
+Mixing toward `transparent` behaves differently enough to mention separately. `color-mix()` interpolates in premultiplied alpha space, so you get the brand colour at 20% opacity rather than a washed-out grey. Use `white` instead when you want an opaque tint and `transparent` when you want an overlay.
+
+## Changing One Channel
+
+Mixing needs a second colour. When you want to move a single channel of one colour, relative syntax is the better tool:
+
+```css
+:root {
+    --brand: oklch(0.62 0.19 265);
+
+    --brand-strong: oklch(from var(--brand) calc(l - 0.12) c h);
+    --brand-soft: oklch(from var(--brand) calc(l + 0.18) calc(c * 0.5) h);
+    --brand-muted: oklch(from var(--brand) l calc(c * 0.25) h);
+}
+```
+
+`oklch(from var(--brand) ...)` says: convert this colour to `oklch`, then let me compute the channels from `l`, `c` and `h`. The three examples darken it, lighten and desaturate it, and desaturate it without touching lightness.
+
+Once that clicks, a scale stops being a design task and becomes a formula:
+
+```css
+:root {
+    --brand: oklch(0.62 0.19 265);
+
+    --brand-100: oklch(from var(--brand) calc(l + 0.30) calc(c * 0.20) h);
+    --brand-200: oklch(from var(--brand) calc(l + 0.20) calc(c * 0.40) h);
+    --brand-300: oklch(from var(--brand) calc(l + 0.10) calc(c * 0.65) h);
+    --brand-400: oklch(from var(--brand) l c h);
+    --brand-500: oklch(from var(--brand) calc(l - 0.08) c h);
+    --brand-600: oklch(from var(--brand) calc(l - 0.16) c h);
+}
+```
+
+Hue stays put across the whole ramp, which is the part hand-picked hex values almost never get right. Change `--brand` and the ramp follows.
+
+The same syntax works in other spaces, with different channel names:
+
+```css
+--brand-alpha: rgb(from var(--brand) r g b / 0.5);
+--brand-darker: oklch(from var(--brand) calc(l - 0.1) c h);
+```
+
+Channels keep their own types. In `oklch`, `l` and `c` are numbers, so `calc(l - 0.1)` is fine. In `hsl`, `s` and `l` are percentages, and `calc(l - 10%)` is what you need. Writing `calc(l - 10)` there produces an invalid colour and drops the declaration without an error you will notice.
+
+## A Button That Derives Everything
+
+The pattern I use for interactive components:
+
+```css
+.button {
+    --button-bg: var(--brand);
+
+    background: var(--button-bg);
+    color: color-mix(in oklch, white 92%, var(--button-bg));
+    border: 1px solid oklch(from var(--button-bg) calc(l - 0.1) c h);
+    border-radius: 6px;
+    padding: 0.625rem 1rem;
+    transition: background-color 150ms ease;
+}
+
+.button:hover {
+    --button-bg: oklch(from var(--brand) calc(l - 0.07) c h);
+}
+
+.button:focus-visible {
+    outline: 2px solid color-mix(in oklch, var(--brand) 45%, transparent);
+    outline-offset: 2px;
+}
+```
+
+The text colour is a near-white tinted by the button background, which keeps it cohesive without hard-coding a second value. The focus ring is the same hue at low alpha. Variants override one custom property and inherit everything else:
+
+```css
+.button[data-variant="danger"] {
+    --brand: oklch(0.58 0.21 27);
+}
+
+.button[data-variant="neutral"] {
+    --brand: oklch(0.55 0.01 265);
+}
+```
+
+Hover, border, text and focus follow without a single extra selector.
+
+## Support and One Gotcha
+
+Both features work in current browsers. If you need older ones, define a static value first and let the derived one override it:
+
+```css
+:root {
+    --brand-hover: #4338ca;
+    --brand-hover: oklch(from var(--brand) calc(l - 0.07) c h);
+}
+```
+
+An unsupported declaration is discarded and the fallback stays. But relative colours only resolve if the referenced value is a valid colour at computed-value time, so give `--brand` a default in `var()`: `var(--brand, #4f46e5)`. Without it, the whole declaration fails, and the failure is silent.
+
+The real payoff is not tidiness. When the brand colour changes, or dark mode needs different role tokens, or someone asks for a high-contrast variant, the work is redefining two or three values instead of auditing every component that hard-coded a shade.

@@ -1,6 +1,6 @@
 ---
 title: "React Server Components: The Mental Model That Makes It Click"
-description: "Stop fighting Server Components and start using them effectively. Here's the mental model that makes RSC architecture make sense."
+description: "What `\"use client\"` actually marks, how server data reaches client components, and the serialization rule behind most RSC errors."
 date: "2025-05-06"
 published: true
 tags:
@@ -10,18 +10,17 @@ tags:
     - intermediate
 ---
 
-# React Server Components: The Mental Model That Makes It Click
-
-React Server Components (RSC) have been production-ready in Next.js since v13, but many developers still find them confusing. The root of the confusion is usually a broken mental model. Here's the one that works.
+Server Components have been stable in Next.js since v13, and people still bounce off them. Most of the confusion I've seen comes from one wrong assumption: that `"use client"` marks a component. It marks a boundary.
 
 ## The Core Mental Model
 
-Think of your component tree as having **two rendering environments**:
+Your component tree runs in two environments.
 
-- **Server**: Has access to databases, file system, secrets. Renders once per request. Sends HTML + a serializable component tree to the client.
-- **Client**: Has access to browser APIs, event handlers, state. Receives the server's output and hydrates interactive parts.
+The server has the database, the filesystem and the secrets. It renders once per request and sends back HTML plus a description of the component tree the client can understand.
 
-The boundary between them is `"use client"`. Everything above a `"use client"` boundary (toward the root) is a Server Component by default.
+The client has browser APIs, event handlers and state. It receives that output and hydrates the parts that need to respond to a user.
+
+The line between them is the `"use client"` directive. Everything above that line, toward the root, is a Server Component by default.
 
 ## What Server Components Can and Cannot Do
 
@@ -60,11 +59,11 @@ export default async function PostsPage() {
 }
 ```
 
-No API route needed. No client-side fetch. The data never touches the browser until it's rendered HTML.
+No API route, no client-side fetch. By the time the browser sees anything, the data is already markup. The `next: { revalidate }` option is Next-specific; the async component itself is plain React.
 
 ## Passing Server Data to Client Components
 
-Server Components can import and render Client Components, passing data as props. The data must be **serializable** (no functions, no class instances).
+Server Components can import and render Client Components, passing data as props. Props have to be serializable, which rules out functions and class instances.
 
 ```tsx
 // components/LikeButton.tsx
@@ -95,9 +94,11 @@ export default async function PostPage({ params }) {
 }
 ```
 
+Functions are the usual trip-up. Handing an `onClick` down from a Server Component fails, because it can't cross the wire, so the handler lives inside the Client Component.
+
 ## The "Client Boundary" Rule
 
-`"use client"` marks a boundary, not a single component. Everything **imported by** a Client Component is also treated as client code, even if it doesn't use the directive.
+`"use client"` marks a boundary, not a single component. Everything imported by a Client Component is treated as client code, even if the file has no directive.
 
 ```
 ServerPage (server)
@@ -105,11 +106,11 @@ ServerPage (server)
     └── SomeComponent (also client — even without "use client")
 ```
 
-This is why you want `"use client"` as **low in the tree as possible** — keep data fetching and heavy logic on the server.
+This is the reason to push `"use client"` as far down the tree as you can. I moved it down two levels in a docs layout once, just to keep the markdown renderer on the server, and the shipped bundle lost a chunk of parsing code. Data fetching and heavy logic stay on the server that way.
 
 ## Server Actions: Mutations From the Server
 
-Server Actions let you define server-side functions that can be called from Client Components:
+Server Actions let you define server-side functions that Client Components can call:
 
 ```tsx
 // app/actions.ts
@@ -137,8 +138,8 @@ export function NewPostForm() {
 }
 ```
 
-This works without an API route and progressively enhances — the form works even without JavaScript.
+No API route involved. Because the form posts to a real action, it also works before JavaScript has loaded.
 
 ---
 
-The RSC mental model: server renders data into markup, client adds interactivity. Move `"use client"` as far down the tree as possible and let the server handle the rest.
+Server Components render data into markup and Client Components add the interactivity on top. Keep `"use client"` low in the tree and let the server do the rest.

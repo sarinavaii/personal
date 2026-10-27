@@ -1,0 +1,128 @@
+---
+title: "useDeferredValue: Keep Slow Lists Feeling Instant"
+description: "What useDeferredValue actually defers, why it needs memoised children to do anything, and where a debounce is still the right tool."
+date: "2026-06-25"
+published: true
+tags:
+    - react
+    - tutorial
+    - intermediate
+---
+
+A search field filtering two thousand rows is a small performance problem with an outsized feel. Every keystroke re-renders the list, the input drops a frame or two, and the page starts to feel like it is thinking about whether to accept your typing.
+
+The instinct is to debounce the query. That fixes the list and breaks the input, because now the characters you type appear late. `useDeferredValue` avoids both failures: the field updates immediately, and the expensive part catches up when the browser has a free moment.
+
+## The Shape of It
+
+```tsx
+"use client";
+
+import { useDeferredValue, useState } from "react";
+
+export function SearchableList({ items }: { items: Item[] }) {
+    const [query, setQuery] = useState("");
+    const deferredQuery = useDeferredValue(query);
+
+    const results = items.filter((item) =>
+        item.title.toLowerCase().includes(deferredQuery.toLowerCase())
+    );
+
+    return (
+        <>
+            <input value={query} onChange={(event) => setQuery(event.target.value)} />
+            <ResultList items={results} stale={query !== deferredQuery} />
+        </>
+    );
+}
+```
+
+Two updates happen per keystroke. `query` updates synchronously and drives the input. `deferredQuery` lags, and React renders the list at a lower priority. If another keystroke arrives first, the pending render is thrown away and restarted with the newer value.
+
+The `query !== deferredQuery` comparison is how you know a deferred render is in flight. I use it to dim the list slightly. A list showing results for the previous query looks broken if it is not marked as stale.
+
+## It Is Not a Debounce
+
+These get conflated because they sound similar, but the mechanism is different in a way that changes when you should reach for each.
+
+A debounce waits a fixed amount of time and then runs. `useDeferredValue` waits for React to have capacity, with no delay at all. If the browser is idle, the deferred render happens immediately after the urgent one. If the user keeps typing, the deferred work never finishes and never has to.
+
+That makes deferred values good for render work and bad for network requests. There is no cancellation, no minimum interval, and no way to say "wait until they stop typing." For a fetch, debounce it, or abort the previous request.
+
+## Why It Sometimes Appears to Do Nothing
+
+The hook lets React skip a subtree during urgent renders. It cannot skip a subtree that is not memoised, because the parent re-render drags the children with it:
+
+```tsx
+function ResultList({ items }: { items: Item[] }) {
+    return (
+        <ul>
+            {items.map((item) => (
+                <Row key={item.id} item={item} />
+            ))}
+        </ul>
+    );
+}
+```
+
+Wrap it:
+
+```tsx
+const ResultList = memo(function ResultList({ items }: { items: Item[] }) {
+    return (
+        <ul>
+            {items.map((item) => (
+                <Row key={item.id} item={item} />
+            ))}
+        </ul>
+    );
+});
+```
+
+The same applies to the filtered array. Rebuild it inline and the new identity defeats the memo boundary on every urgent pass:
+
+```tsx
+const results = useMemo(
+    () => items.filter((item) => matches(item, deferredQuery)),
+    [items, deferredQuery]
+);
+```
+
+This is the part that makes people give up on the hook. Without the memo boundary there is nothing being deferred, and the behaviour looks identical to not using it.
+
+## The Second Argument in React 19
+
+React 19 added an initial value:
+
+```tsx
+const deferredQuery = useDeferredValue(query, "");
+```
+
+It is the value used on the first render, before any deferred update has happened. The case that matters is when the initial value is expensive and arrives from a Server Component:
+
+```tsx
+function Results({ initialItems }: { initialItems: Item[] }) {
+    const deferredItems = useDeferredValue(initialItems, []);
+    // Renders empty first, then fills in
+}
+```
+
+Without it, the first render includes the full dataset and blocks. Usually you want that on initial load; occasionally you want the shell first.
+
+## Deferred Value or Transition
+
+They overlap enough that picking one is mostly about what you control. If the slow work comes from a value you do not own, defer the value. If you own the update, wrap it in `startTransition` and read `isPending` for the indicator.
+
+| | `useDeferredValue` | `useTransition` |
+|---|---|---|
+| Wraps | A value you consume | A state update you trigger |
+| Pending signal | `value !== deferredValue` | `isPending` |
+| Fits | Expensive rendering of props | Expensive state changes |
+
+You can combine them, and occasionally a codebase needs both, but needing both in one component usually means the state should be split differently.
+
+## Where I Do Not Use It
+
+Validation messages. A hint that lags 300ms behind the field reads as a bug, not as speed. Cheap lists, where the bookkeeping costs more than the render. And anything that must match the input exactly, like a live character count.
+
+For the filtered list case, though, it is two lines and no timers, and the loading spinner I would otherwise have written never needs to exist.

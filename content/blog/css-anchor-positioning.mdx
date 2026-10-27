@@ -1,6 +1,6 @@
 ---
 title: "CSS Anchor Positioning: No More JavaScript Tooltips"
-description: "How the new CSS Anchor Positioning API lets you attach elements to each other natively — no JS needed."
+description: "Attach a tooltip or dropdown to another element in CSS, with fallback positions when the preferred side has no room."
 date: "2025-01-14"
 published: true
 tags:
@@ -10,13 +10,13 @@ tags:
     - intermediate
 ---
 
-# CSS Anchor Positioning: No More JavaScript Tooltips
+I've shipped the same tooltip logic in three codebases: measure the trigger with `getBoundingClientRect()`, place the panel, re-measure on scroll and resize. It works until someone puts the trigger in a scrolling container, and the panel drifts from the button.
 
-For years, positioning tooltips, dropdowns, and popovers required JavaScript libraries like Floating UI or Popper.js. CSS Anchor Positioning — now shipping in stable browsers — changes that completely.
+Anchor positioning moves all of that into CSS.
 
 ## What Is Anchor Positioning?
 
-Anchor Positioning lets you **tether one element's position to another element** using pure CSS. You declare an anchor, then position a target relative to it.
+One element becomes the anchor. A second declares it's positioned against it.
 
 ```css
 /* Step 1: Name the anchor */
@@ -34,17 +34,17 @@ Anchor Positioning lets you **tether one element's position to another element**
 }
 ```
 
-No JavaScript. No `getBoundingClientRect()`. No resize listeners.
+The `translate: -50%` pulls the tooltip back by half its width, since `anchor(center)` aligns left edges. Miss it and the tooltip sits 40px right.
 
-## Why Does This Matter?
+## What It Replaces
 
-- **Zero JS dependency** for common UI patterns (tooltips, dropdowns, context menus).
-- **Scroll-aware by default**: the browser tracks the anchor through scrolling automatically.
-- **Works with `position-try`**: define fallback positions when there's no space in the preferred direction.
+Tooltips and dropdowns stop needing a positioning library. The browser tracks the anchor through scrolling, so the panel follows the button instead of drifting away from it. And `position-try` gives you fallback positions when the preferred direction has no room.
+
+Most of the bugs in my old tooltip code were scroll bugs.
 
 ## The `position-try` Fallback System
 
-This is where it gets powerful. You can define multiple fallback positions and the browser picks the first one that fits in the viewport:
+You define a few alternatives and the browser uses the first that fits. A tooltip that would overflow the bottom flips above the button:
 
 ```css
 @position-try --flip-above {
@@ -60,14 +60,14 @@ This is where it gets powerful. You can define multiple fallback positions and t
 }
 ```
 
-If the tooltip would overflow below the screen, it automatically flips above the button.
+You can list several fallbacks; the browser tries them in order. I haven't tested many at once.
 
 ## Real-World Use Cases
 
-- **Tooltips and popovers** — the canonical example.
-- **Select dropdowns** — native-feeling custom selects.
-- **Context menus** — right-click menus anchored to the cursor position.
-- **Floating labels** — labels that follow their input fields.
+- Tooltips and popovers: the example everyone starts with.
+- Select dropdowns: custom selects that open near their trigger.
+- Context menus: right-click menus anchored to a zero-size element at the cursor.
+- Floating labels: labels that stay attached to their inputs.
 
 ### Minimal Working Example
 
@@ -91,10 +91,12 @@ If the tooltip would overflow below the screen, it automatically flips above the
 }
 ```
 
+The tooltip uses `position: fixed` rather than `absolute`. With popovers, that's usually the version that behaves.
+
 ## Browser Support
 
-As of early 2025, Anchor Positioning is available in **Chrome 125+** and **Edge 125+**. Firefox and Safari are actively implementing it. Use `@supports (anchor-name: --x)` to gate usage safely.
+As of early 2025, anchor positioning is available in Chrome 125+ and Edge 125+. Firefox and Safari are still implementing it, so gate the CSS with `@supports (anchor-name: --x)` and keep the old solution as a fallback.
 
 ---
 
-CSS Anchor Positioning is one of the most impactful additions to CSS in years. Start replacing your JS-powered float layers today.
+Worth adopting, but I'd keep the JS fallback in production for now.

@@ -1,0 +1,109 @@
+---
+title: "Better Headlines Without JavaScript: text-wrap: balance and pretty"
+description: "Two CSS declarations that fix stranded headline words and orphaned paragraph endings. When each one helps, and when it makes things worse."
+date: "2026-10-12"
+published: true
+tags:
+    - css
+    - design
+    - tutorial
+    - beginner
+---
+
+A headline that leaves one word alone on the last line is the kind of detail that makes a page look unfinished, even when nobody can say why. I used to fix it with a `<br>`, which held until the copy changed, or with a `max-width` nudge, which held until the viewport changed.
+
+`text-wrap` handles both cases now, in CSS, with no measurement code.
+
+## Balancing Headings
+
+`text-wrap: balance` tells the browser to spread words evenly across lines instead of filling each line greedily:
+
+```css
+h1,
+h2,
+h3 {
+    text-wrap: balance;
+}
+```
+
+Instead of a three-line heading with a single word on the last line, you get two lines of similar length. The browser picks the break points; you just give it permission to try.
+
+The algorithm is not free, so browsers treat it as a short-block optimization and fall back to normal wrapping past a few lines. That is why the usual advice is to put it on headings and leave body copy alone. The advice is right, though the reason is less about taste than about the browser quietly giving up on long blocks.
+
+One more constraint. `text-wrap: balance` does nothing on inline elements, and nothing on a block whose width is determined by its own text. The block needs a resolved width first, otherwise there is nothing to balance against.
+
+## Fixing Paragraph Endings
+
+Body text has a different problem. You are not trying to even out every line; you want to avoid a single word dangling at the end, and avoid the short final line that makes a paragraph look truncated.
+
+```css
+p,
+li,
+blockquote {
+    text-wrap: pretty;
+}
+```
+
+`pretty` is cheaper and less ambitious than `balance`. It looks ahead a line or two and makes small adjustments so the paragraph ends well. It will not redistribute the whole block.
+
+`balance` optimizes the shape of the block, `pretty` optimizes its last line. Use them on the wrong elements and you either waste work or get no visible change.
+
+## What I Ship
+
+Two rules, applied globally, plus a measure cap:
+
+```css
+h1,
+h2,
+h3,
+h4 {
+    text-wrap: balance;
+    max-inline-size: 30ch;
+}
+
+p,
+li {
+    text-wrap: pretty;
+    max-inline-size: 65ch;
+}
+```
+
+The `max-inline-size` values matter more than the wrapping properties. A balanced heading stretched across a 1600px viewport produces lines so long that even distribution looks worse than a natural break. Constrain the measure first, then balance inside it.
+
+## nowrap Is in the Same Family
+
+`text-wrap` also takes `nowrap`, which is the modern spelling of `white-space: nowrap` for the wrapping axis:
+
+```css
+.badge {
+    text-wrap: nowrap;
+}
+```
+
+It is a shorthand for `text-wrap-mode` and `text-wrap-style`. You rarely need the longhands, but they are there when you want to be explicit about the difference:
+
+```css
+.summary {
+    text-wrap-mode: wrap;
+    text-wrap-style: pretty;
+}
+```
+
+## Why It Is Safe to Add Today
+
+Unknown keyword values are ignored, so older browsers keep wrapping text exactly as they always did:
+
+```css
+p {
+    text-wrap: wrap;
+    text-wrap: pretty;
+}
+```
+
+That second declaration drops out, and nothing else changes. No `@supports`, no layout shift, no JavaScript. The worst case is the pre-2023 rendering, which is what most of the web still looks like.
+
+## Where It Does Not Help
+
+Buttons and short labels are too short to balance. A heading inside a 200px sidebar can come out looking worse balanced than broken naturally, because there is not enough room for the algorithm to work with. And anything that must break at a specific word still needs `&nbsp;` or a `<br>`.
+
+Everything else gets the two declarations. This site has had them in its base stylesheet since the redesign, and I have not thought about a stranded headline word since.

@@ -1,6 +1,6 @@
 ---
 title: "React 19 Hooks You Should Be Using in Next.js"
-description: "useOptimistic, use(), useFormStatus, and the new Actions model — practical patterns for React 19 in a Next.js 15 codebase."
+description: "useOptimistic, use(), useFormStatus and useActionState, with the placement rules and argument order that are easy to get wrong."
 date: "2025-11-11"
 published: true
 tags:
@@ -10,13 +10,11 @@ tags:
     - intermediate
 ---
 
-# React 19 Hooks You Should Be Using in Next.js
-
-React 19 shipped with a set of hooks designed around the Server Actions model. Here are the ones that matter for Next.js development and how to use them correctly.
+React 19 shipped hooks built around Server Actions. These are the ones I reach for in Next.js, and where each has tripped me up.
 
 ## `useOptimistic`: Instant UI Updates
 
-`useOptimistic` shows a temporary UI state while an async operation (like a Server Action) is in flight. When the operation settles, the real state takes over.
+`useOptimistic` holds a temporary UI state while an async operation is in flight. When it settles, React renders from the real state again.
 
 ```tsx
 "use client";
@@ -41,11 +39,11 @@ export function LikeButton({ postId, initialLikes, initialLiked }) {
 }
 ```
 
-The UI shows the new state instantly. If the server action fails, React reverts to `initialLiked`.
+The heart fills on the click, before the request finishes. If the action fails, the button returns to `initialLiked`. I hand-rolled that once.
 
 ## `use()`: Consume Promises and Context
 
-`use()` is a new primitive that unwraps a Promise or Context value inside a component — including inside conditions and loops (unlike hooks).
+`use()` unwraps a Promise or Context value inside a component. It isn't a hook in the rules-of-hooks sense, so it can be called inside a condition or a loop.
 
 ### Resolving a Promise
 
@@ -69,6 +67,8 @@ export default function Page() {
 }
 ```
 
+It doesn't fetch anything, which was my first wrong assumption. The promise has to exist already, usually created on the server and handed down. Without a `Suspense` boundary, the nearest parent catches the wait.
+
 ### Reading Context
 
 ```tsx
@@ -87,7 +87,7 @@ function ThemedButton({ children }) {
 
 ## `useFormStatus`: Access Parent Form State
 
-`useFormStatus` returns the pending state of a parent `<form>` — no prop drilling needed.
+`useFormStatus` reads the pending state of the nearest parent `<form>`.
 
 ```tsx
 "use client";
@@ -114,9 +114,11 @@ function ContactForm() {
 }
 ```
 
+It has to be a child of the form. Call it in the component that renders `<form>` and `pending` stays `false`; that cost me an afternoon. It also lives in `react-dom`.
+
 ## `useActionState`: Form Actions With State
 
-`useActionState` (previously `useFormState`) manages the state returned from a Server Action across submissions:
+`useActionState` (it was `useFormState` before the 19 release) keeps the value returned by a Server Action across submissions:
 
 ```tsx
 "use client";
@@ -159,13 +161,15 @@ export async function createPost(prevState: State, formData: FormData): Promise<
 }
 ```
 
+The argument order is easy to get backwards: previous state first, then the form data. Return the same shape on every path.
+
 ## `useTransition`: Non-Blocking State Updates
 
-`useTransition` marks state updates as non-urgent, keeping the UI responsive during async work. In React 19, it works with async functions directly:
+`useTransition` marks updates as low priority so input stays responsive during async work. React 19 lets `startTransition` take an async function directly.
 
 ```tsx
 "use client";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 
 export function SearchInput() {
     const [isPending, startTransition] = useTransition();
@@ -188,6 +192,8 @@ export function SearchInput() {
 }
 ```
 
+Typing keeps up while the request runs. Two responses can still land out of order, though. I've had to track a request id for that more than once.
+
 ## When to Use Which
 
 | Hook | Use case |
@@ -200,4 +206,4 @@ export function SearchInput() {
 
 ---
 
-These hooks are designed to work together with Server Actions and the RSC model. Adopt them incrementally — start with `useOptimistic` and `useFormStatus` for the most immediate impact.
+They're designed to work with Server Actions, so one in isolation rarely helps. Start with `useOptimistic` and `useFormStatus` if you have hand-rolled pending state to delete.
